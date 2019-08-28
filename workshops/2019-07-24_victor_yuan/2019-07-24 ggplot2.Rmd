@@ -1,0 +1,267 @@
+---
+title: "Introduction to ggplot2"
+output:
+  html_document:
+    keep_md: true
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    theme: spacelab
+    self_contained: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+Who: Victor Yuan, [Trainee Omics Group (TOG)](https://bcchr-trainee-omics-group.github.io/)
+
+What: Introduction to plotting in R with ggplot2
+
+Where: BC Children's Hospital Research Institute
+
+When: July 24, 2019
+
+# Introduction 
+
+## Who is this tutorial for?
+
+Beginners in R, who have little to no experience with plotting in R. I've tailored this to the TOG 
+study group by making common visualizations of omics data, but this tutorial is easily generalizable 
+to other types of data.
+
+## What is ggplot2?
+
+* ggplot2 is an R package for data visualization using the 'Grammar of Graphics' system proposed by [Leland Wilkinson (2005)](#Sources) (**gg**plot2 = **G**rammar of **G**raphics)
+*  which translates to an easy to learn syntax with very high customizability
+* written by Hadley Whickham
+* [ggplot2 documentation](https://ggplot2.tidyverse.org/)
+
+What is a **Grammar of graphics**?
+
+Paraphrased: A graphic is a mapping from data to **aesthetic** (color, shape, size) and **geometric** objects, (lines, points, bars). *-ggplot2 book*
+
+# Essential components of a ggplot graph
+
+There are several components of every ggplot2 graph. Every ggplot2 graph requires *at least* three components:
+
+1. **Data**. A dataframe of variables to be visualized. Where your *variables are in columns* and *observations are in the rows*
+
+2. **Aesthetics**. "Aesthetic mappings" are how we tell which variables in our data correspond to each component of the resulting graphic (e.g. x-axis, y-axis, color, shape, etc.)
+
+3. **Geoms**. "Geometries" or geoms refer to the specific **geom**etric objects that are going to represent the data. For example, `geom_boxplot` creates a box plot, `geom_point` creates points on the graph, `geom_bar` creates bar plots, ..., etc. 
+
+We will begin the workshop by exploring these components first, and then later we will look at other components of the ggplot2  system that allow for more complex graphs and finer customization.
+ 
+# Workshop 
+
+## Setup
+
+For this workshop you need to install the following libraries:
+
+Make sure you have a recent version of R.
+
+```{r eval = F}
+install.packages(c('ggplot2', 'readr', 'dplyr'))
+```
+
+Then to load it into an R session:
+
+```{r, message = F}
+library(ggplot2)
+library(readr)
+```
+
+We will be working with a 48 sample dataset of studying molecular changes associated with preeclampsia (citation).
+
+To read in this data:
+
+```{r}
+data <- read_csv('https://raw.githubusercontent.com/wvictor14/TOG/master/data/GSE98224.csv')
+data
+```
+
+ggplot2 requires visualized data to be in a dataframe. This is somewhat of a drawback for genomic data, as the convention of most workflows is to keep the molecular data separate from the sample-specific data. The work-around for this is to add the specific molecular variables to sample data, when needing to visualize together. 
+
+
+## Data, aesthetics, geometries
+
+Next, we will go over the essential 3 components of every ggplot2 graph (data, aesthetics, and geometries) with an example.
+
+Continuous variable x continuous variable
+
+```{r}
+# just data = blank page
+ggplot(data = data)
+
+# aesthetics = axes appear
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886))
+
+# add geometry = complete graph
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point()
+
+# add additional geoms 
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+
+# can change default color 
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point(color = 'blue') +
+  geom_smooth(method = 'lm', color = 'black')
+
+# assigning different aesthetics
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886, color = maternal_ethnicity)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+
+# same as
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886, color = maternal_ethnicity)) +
+  geom_point(aes(x = ga_weeks, y = cg20970886, color = maternal_ethnicity)) +
+  geom_smooth(method = 'lm',
+              aes(x = ga_weeks, y = cg20970886, color = NULL))
+
+# problem is too superfluous code, better solution:
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point(aes(color = maternal_ethnicity)) +
+  geom_smooth(method = 'lm')
+
+# extra stuff: inside and outside of the aesthetics call
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point(color = 'blue') +
+  geom_smooth(method = 'lm')
+
+ggplot(data = data, aes(x = ga_weeks, y = cg20970886)) +
+  geom_point(aes(color = 'blue')) +
+  geom_smooth(method = 'lm')
+```
+
+## Scales, Themes, facets
+
+Some components are not always required but are very often used to change the appearance of graphs:
+
+4. **Layers - stats**. Certain statistical transformations can be specified using **stats** layers. For example, if we wanted ggplot2 to create a histogram over a continuous variable, we would need to indicate how big the bins are. 
+
+5. **Scales**. **Scales** specify *how* data is mapped to the "aesthetics" of the graph. For example, if we wanted to color data points by *sex*, we can indicate what colors to use by using **scales**, otherwise ggplot2 will use a default color palette.
+
+6. **Coordinate system**. Use this to flip axes, change to polar coordinates, or map to a geographical map (or any other image).
+
+7. **Facets**. Graphs can be broken up into several subsets by using **facetting**
+
+8. **Theme**. Changes the finer aspects of graphs, e.g. text size, grid lines, legend position. Sensible defaults are used.
+
+Next we will look at some more advanced features of ggplot2 that allow for more complex and fine-tuned visualizations
+
+We will also take this as an opportunity to explore visualizations for discrete by continuous graphs.
+
+Here we look at case-control status (Preeclampsia vs control) and methylation
+
+```{r}
+table(data$diagnosis)
+
+# 3 essential components
+ggplot(data = data, aes(x = diagnosis, y = cg20970886)) +
+  geom_boxplot()
+
+# can edit as we did above
+ggplot(data = data, aes(x = diagnosis, y = cg20970886)) +
+  geom_boxplot(color = 'blue')
+
+ggplot(data = data, aes(x = diagnosis, y = cg20970886)) +
+  geom_boxplot(aes(fill = maternal_ethnicity))
+
+# overlay jittered points
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, color = maternal_ethnicity)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(dodge.width = 0.75, jitter.width = 0.1))
+```
+
+We can use scales to change which colors we want to color the boxplots by.
+
+```{r}
+# named vector to map colors
+fill_vector <- setNames(c('#ff6d45', '#66c24a'),  c('PE', 'non-PE') )
+fill_vector
+
+# change fill color with scale_fill_manual
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5)) +
+  scale_fill_manual(values = fill_vector)
+
+# change x and y 
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5)) +
+  scale_fill_manual(values = fill_vector) +
+  scale_x_discrete(labels = c('Controls', 'Cases'), position = 'top') +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c(0, 50, 100),
+                     name = 'cg2097086 (%)') 
+```
+
+The *theme* allows for a customization of the non-data components of a plot. Things like the title, labels, font size, gridlines, etc.
+
+```{r}
+## theme
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5)) +
+  scale_fill_manual(values = fill_vector) +
+  scale_x_discrete(labels = c('Controls', 'Cases'), position = 'top') +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c(0, 50, 100),
+                     name = 'cg2097086 (%)') +
+  theme(axis.text = element_text(colour = 'blue'),
+        legend.title = element_text(colour = 'blue'),
+        panel.border = element_rect(linetype = 'dashed', fill = NA, colour = 'blue'),
+        panel.grid.major.x  = element_line(colour = 'black')) 
+
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5)) +
+  scale_fill_manual(values = fill_vector) +
+  scale_x_discrete(labels = c('Controls', 'Cases'), position = 'top') +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c(0, 50, 100),
+                     name = 'cg2097086 (%)') +
+  theme_bw()
+```
+
+There are customized themes that have settings preset. You can use these as a 'base' and edit specific elements of the theme after them.
+
+```{r}
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5)) +
+  scale_fill_manual(values = fill_vector) +
+  scale_x_discrete(labels = c('Controls', 'Cases'), position = 'top') +
+  scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c(0, 50, 100),
+                     name = 'cg2097086 (%)') +
+  theme_bw() +
+  theme(axis.text = element_text(colour = 'blue'))
+```
+
+Sometimes it is useful to create several plots, each time plotting only certain data points by a grouping variable. This can be done with **facets**.
+
+```{r}
+ggplot(data = data, aes(x = diagnosis, y = cg20970886, fill = diagnosis)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.5), 
+             aes(color = diagnosis), show.legend = F)  +
+  facet_wrap(vars(maternal_ethnicity), nrow = 3)
+
+```
+
+# Sources {#Sources}
+
+[TOG at BCCHR](https://www.bcchr.ca/tog/)
+
+[TOG homepage](https://bcchr-trainee-omics-group.github.io/)
+
+Wilkinson, Leland. 2005. The Grammar of Graphics. 2nd ed. Statistics and Computing. Springer.
+
+[ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+
+[ggplot2 extensions](http://www.ggplot2-exts.org/gallery/)
+
+[ggplot2 documentation](https://ggplot2.tidyverse.org/)
+
+[r 4 data science data visualization chapter](https://r4ds.had.co.nz/data-visualisation.html)
