@@ -1,0 +1,421 @@
+---
+title: "Introduction to data wrangling in R"
+output:
+  html_document:
+    keep_md: true
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    theme: paper
+    self_contained: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+Who: Victor Yuan, [Trainee Omics Group (TOG)](https://bcchr-trainee-omics-group.github.io/)
+
+What: Introduction to data wrangling in R
+
+Where: BC Children's Hospital Research Institute
+
+When: October 3rd, 2019
+
+# Introduction 
+
+There will be two parts of this tutorial. First part we'll go over some helpful beginner tips of working with R and Rstudio. The second part will focus on using the r package `dplyr` to manipulate ("wrangle") data in R.
+
+## Who is this tutorial for?
+
+- Those interested using R for data analysis
+- Beginners in R, and those curious about `dplyr` and **tidyverse**
+
+## Setup
+
+- Please have the latest version of R and Rstudio installed. 
+- Download the [r markdown file](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2019-10-03_victor_yuan) for this workshop and open it in Rstudio.
+
+- Install the following R packages now, if you haven't already:
+
+```{r, eval = F}
+install.packages(c('gapminder', 'tidyverse'))
+```
+
+# Part 1: Brief intro to R and Rstudio
+
+To learn data manipulation in R, some understanding of how to use R is required. A comprehensive lesson on R is out of the scope of this tutorial, but here I go over some of the basics that will be helpful to follow along the data wrangling portion of this workshop. 
+
+Depending on the attendees experience, we may start here or further down the tutorial.
+
+## Resources
+
+- [R Swirl](https://swirlstats.com/) for interactive lesson on programming with R
+- [Advanced R - Vocabulary](http://adv-r.had.co.nz/Vocabulary.html) for list of basic R "vocabulary"
+
+## Topics
+
+- running code from scripts / rmd. Line-by-line, run all, run code chunk
+- error messages
+- assignment operator
+
+## Running code (4 min)
+
+Demonstration: running R code in console 
+
+Options to run code from scripts
+
+* Running code line-by-line (Windows: `ctrl` `+` `enter`, Mac: `cmd` `+` `enter`)
+* Run code chunk
+* Run all
+
+99% of the time you should be writing your code down into either an R script (a file ending in `.r`), or an r markdown file (a file ending in `.rmd`).
+
+Here's some code to run from a script
+
+In `.rmd` files, code needs to be in code chunks (insert code chunk shortcut is Windows: `ctrl` `+` `alt` `+` `i`, Mac: `cmd` `+` `alt` `+` `i`)
+
+```{r}
+1 + 2 + 3 + 4 + 5
+
+"Code on multiple lines:"
+
+sum(1, 2,
+    3,
+    4, 5)
+```
+
+## Error messages (4 min)
+
+When you encounter an error, this is what you should do:
+
+1. Inspect your code for simple mistakes. Examples: are you missing a bracket or quotation mark? Did you mean to use `=` instead of `==`? Did you spell the name of the function or object wrong?
+2. Make sure you are using the function correctly. Use the `?` command to pull up the help page.
+3. Make sure your input is correct. Does the function expect a `data.frame` but you gave it a `vector`?
+4. Copy and paste the error and the name of the function you are using into **Google**.
+
+## Environment, Assignment (4 min)
+
+Every R studio session begins as a blank slate.
+
+The **assignment** operator `<-` creates a new object in your environment
+
+```{r}
+a_new_r_object <- 1
+```
+
+The new r object can be named whatever. It can now be interacted with further.
+
+We can print an r object to screen by calling its name: 
+
+```{r}
+a_new_r_object
+```
+
+We can modify it:
+
+```{r}
+a_new_r_object + 21
+```
+
+But note to store these modifications, we need to assign it again
+
+*Before modification:*
+
+```{r}
+a_new_r_object
+```
+
+*After modification and assignment:*
+
+```{r}
+a_new_r_object <- a_new_r_object + 21
+
+a_new_r_object
+```
+
+## Data frames
+
+`data.frame` objects are by far the most common and useful way to work with your data in R.
+
+A data.frame is basically just a table, it has a certain number of rows, and a certain number of columns.
+
+
+"trees" is a built-in dataset in R available as a `data.frame`.
+
+```{r}
+trees
+```
+
+The columns of the trees `data.frame` object are individual `vector` objects. So trees has 3 columns/vectors that are each 31 elements long.
+
+Some basic functions to help understand your `data.frame` objects.
+
+```{r}
+# number of rows
+nrow(trees)
+
+# number of columns
+ncol(trees)
+
+# row x columns
+dim(trees)
+
+# some basic info on the "structure" of the data.frame
+str(trees)
+
+# calculates some summary statistics on each column
+summary(trees)
+
+# print first 6 rows
+head(trees)
+
+# print last 6 rows
+tail(trees)
+```
+
+We are going to use the "gapminder" dataset today, which is stored as a special type of `data.frame`, called a `tibble`. 
+
+- tibbles have a special printing output
+- tibbles never have row names
+- any function that works with `data.frame` objects (e.g. `str`, `summary`), will also work with `tibble` objects 
+- use functions `as_tibble` and `as.data.frame` to convert between `tibble` and `data.frame`
+
+```{r}
+library(gapminder)
+
+# tibble
+gapminder
+
+# data.frame 
+head(as.data.frame(gapminder), n = 50)
+```
+
+Note that I printed only the first 50 rows of the `data.frame` version of gapminder. By default, printing `tibble` objects will display the top 10 rows to avoid over-printing.
+
+# Part 2: Intro to data wrangling
+
+<!---The following chunk allows errors when knitting--->
+
+```{r allow errors, echo = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+## Topics
+
+* "Base R" vs tidyverse
+* dplyr basic functions
+* Relational/comparison and logical operators
+
+## Resources
+
+Most of this material is inspired from the [STAT 545 `dplyr` lecture](https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-i.html)
+
+Other resources for `dplyr`:
+
+* [Old STAT 545 `dplyr` tutorial](http://stat545.com/block009_dplyr-intro.html)
+* [The `dplyr` vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html)
+
+## Base-R vs tidyverse
+
+The [tidyverse](https://www.tidyverse.org/) is a collection of packages that were designed under a specific philosophy of making data analysis in R easy, reproducible, and consistent. The tidyverse packages:
+
+* has an easy-to-read syntax
+* can be much quicker (to write)  
+* are comprehensive in covering a wide variety of applications (e.g. `ggplot2` for plotting, `dplyr` for data manipulation, ..., etc.)
+
+Most base-r operations can be replaced with tidyverse code. However, in genomics research, this is less true because many genomics analysis workflows rely on [**Bioconductor**](https://www.bioconductor.org/).
+
+[Bioconductor](https://www.bioconductor.org/) is an online R package repository specifically for analyzing and storing genomic data. If you are in genomics, it is highly likely you will use these packages. Bioconductor is basically all based in base-R code, so learning *some* base-R is going to be a requirement for any genomics analysis.
+
+## dplyr: syntax
+
+Here we will cover the basic functions in dplyr:
+
+- `select`
+- `arrange`
+
+```{r load packages, warning = FALSE, message = FALSE}
+# load your packages here:
+library(FILL_THIS_IN)
+library(FILL_THIS_IN)
+```
+
+### `select()` (8 min)
+
+1. Make a data frame containing the columns `year`, `lifeExp`, `country` from the gapminder data, in that order.
+
+```{r}
+select(gapminder, FILL_THIS_IN)
+```
+
+
+2. Select all variables, from `country` to `lifeExp`.
+
+```{r}
+# This will work:
+select(gapminder, country, continent, year, lifeExp)
+
+# Better way:
+select(gapminder, FILL_THIS_IN)
+```
+
+
+3. Select all variables, except `lifeExp`.
+
+```{r}
+select(gapminder, FILL_THIS_IN)
+```
+
+4. Put `continent` first. Hint: use the `everything()` function.
+
+```{r}
+select(gapminder, FILL_THIS_IN, FILL_THIS_IN)
+```
+
+### `arrange()` (8 min)
+
+1. Order by year.
+
+```{r}
+arrange(gapminder, FILL_THIS_IN)
+```
+
+2. Order by year, in descending order.
+
+```{r}
+arrange(gapminder, FILL_THIS_IN)
+```
+
+3. Order by year, then by life expectancy.
+
+```{r}
+arrange(gapminder, FILL_THIS_IN, FILL_THIS_IN)
+```
+
+## Piping, `%>%` (8 min)
+
+Note: think of `%>%` as the word "then"!
+
+Demonstration:
+
+Here I want to combine `select()` Task 1 with `arrange()` Task 3.
+
+This is how I could do it by *nesting* the two function calls:
+
+```{r nesting functions example, eval = F}
+# Nesting function calls can be hard to read
+arrange(select(gapminder, year, lifeExp, country), year, lifeExp)
+```
+
+Now using with pipes:
+
+```{r}
+# alter the below to include 2 "pipes"
+gapminder %>%
+  select(year, lifeExp, country) %>%
+  arrange(year, lifeExp)
+```
+
+
+### R Operators (4 min)
+
+**Arithmetic** operators allow us to carry out mathematical operations:
+
+| Operator | Description |
+|------|:---------|
+| + | Add |
+| - | Subtract |
+| * | Multiply |
+| / | Divide |
+| ^ | Exponent |
+| %% | Modulus (remainder from division) |
+
+**Relational** operators allow us to compare values:
+
+| Operator | Description |
+|------|:---------|
+| < | Less than |
+| > | Greater than |
+| <= | Less than or equal to |
+| >= | Greater than or equal to |
+| == | Equal to |
+| != | Not equal to |
+
+* Arithmetic and relational operators work on vectors.
+
+**Logical** operators allow us to carry out boolean operations:
+
+| Operator | Description |
+|---|:---|
+| ! | Not |
+| \| | Or (element_wise) |
+| & | And (element-wise) |
+| \|\| | Or |
+| && | And |
+
+
+## `filter()` (6 min)
+
+1. Only take data with population greater than 100 million.
+
+```{r}
+gapminder %>%
+  filter(FILL_THIS_IN)
+```
+
+2. Your turn: of those rows filtered from step 1., only take data from Asia.
+
+```{r}
+gapminder %>%
+  filter(FILL_THIS_IN)
+```
+
+3. Only take data from countries Brazil and China. 
+
+```{r}
+gapminder %>%
+  filter(FILL_THIS_IN)
+```
+
+## `mutate()` (8 min)
+
+The `mutate()` function _creates_ new columns in the tibble by transforming other variables. Like `select()`, `filter()`, and `arrange()`, the `mutate()` function also takes a tibble as its first argument, and returns a tibble. 
+
+The general syntax is:
+
+```
+mutate(tibble, NEW_COLUMN_NAME = CALCULATION)
+```
+
+1. Make a new column named `GDP` that equals to multiplying GPD per capita with population.
+
+```{r}
+gapminder %>%
+  mutate(FILL_THIS_IN)
+```
+
+2. Make a new column named `GDP_bill`, that is GDP in billions.
+
+```{r}
+gapminder %>%
+  mutate(FILL_THIS_IN)
+```
+
+Your turn: Make a new column called `cc` that pastes the country name followed by the continent, separated by a comma. (Hint: use the `paste` function with the `sep=", "` argument).
+
+# Bonus Exercises
+
+If there's time remaining, we can try these more difficult exercises.
+
+1. Take all countries in Europe that have a GDP per capita greater than 10000, and select all variables except `gdpPercap`.
+
+2. Take the first three columns, and extract the variable names.
+
+3. Of the `iris` data frame, take all columns that start with the word "Petal". 
+    - Hint: take a look at the "Select helpers" documentation by running the following code: `?tidyselect::select_helpers`.
+    
+4. Convert the population to a number in billions.
+
+5. Filter the rows of the iris dataset for Sepal.Length >= 4.6 and Petal.Width >= 0.5.
+
+Exercises 3. and 5. are from [r-exercises](https://www.r-exercises.com/2017/10/19/dplyr-basic-functions-exercises/).
