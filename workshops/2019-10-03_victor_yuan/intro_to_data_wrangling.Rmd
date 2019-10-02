@@ -10,7 +10,7 @@ output:
     theme: paper
     self_contained: yes
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Who: Victor Yuan, [Trainee Omics Group (TOG)](https://bcchr-trainee-omics-group.github.io/)
@@ -56,7 +56,7 @@ Depending on the attendees experience, we may start here or further down the tut
 
 - running code from scripts / rmd. Line-by-line, run all, run code chunk
 - error messages
-- assignment operator
+- data frames
 
 ## Running code (4 min)
 
@@ -93,47 +93,8 @@ When you encounter an error, this is what you should do:
 3. Make sure your input is correct. Does the function expect a `data.frame` but you gave it a `vector`?
 4. Copy and paste the error and the name of the function you are using into **Google**.
 
-## Environment, Assignment (4 min)
 
-Every R studio session begins as a blank slate.
-
-The **assignment** operator `<-` creates a new object in your environment
-
-```{r}
-a_new_r_object <- 1
-```
-
-The new r object can be named whatever. It can now be interacted with further.
-
-We can print an r object to screen by calling its name: 
-
-```{r}
-a_new_r_object
-```
-
-We can modify it:
-
-```{r}
-a_new_r_object + 21
-```
-
-But note to store these modifications, we need to assign it again
-
-*Before modification:*
-
-```{r}
-a_new_r_object
-```
-
-*After modification and assignment:*
-
-```{r}
-a_new_r_object <- a_new_r_object + 21
-
-a_new_r_object
-```
-
-## Data frames
+## Data frames (4 min)
 
 `data.frame` objects are by far the most common and useful way to work with your data in R.
 
