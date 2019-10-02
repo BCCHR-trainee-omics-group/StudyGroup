@@ -4,9 +4,11 @@ output:
   html_document:
     keep_md: true
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     toc_float:
-      collapsed: false
+      collapsed: true
+      smooth_scroll: true
+    number_sections:  true
     theme: paper
     self_contained: yes
 editor_options: 
@@ -22,8 +24,6 @@ Where: BC Children's Hospital Research Institute
 When: October 3rd, 2019
 
 # Introduction 
-
-There will be two parts of this tutorial. First part we'll go over some helpful beginner tips of working with R and Rstudio. The second part will focus on using the r package `dplyr` to manipulate ("wrangle") data in R.
 
 ## Who is this tutorial for?
 
@@ -41,38 +41,41 @@ There will be two parts of this tutorial. First part we'll go over some helpful 
 install.packages(c('gapminder', 'tidyverse'))
 ```
 
-# Part 1: Brief intro to R and Rstudio
+## Learning outcomes
 
-To learn data manipulation in R, some understanding of how to use R is required. A comprehensive lesson on R is out of the scope of this tutorial, but here I go over some of the basics that will be helpful to follow along the data wrangling portion of this workshop. 
+- Familiarity with tidyverse syntax
+- Understanding how to use dplyr to manipulate data in R
+- "Piping"
 
-Depending on the attendees experience, we may start here or further down the tutorial.
+# Brief intro to R and Rstudio
+
+To learn data manipulation in R, some understanding of how to use R is required. A comprehensive lesson on R is out of the scope of this tutorial, but here I go over some of the basics that will be helpful to follow along the data wrangling portion of this workshop.
+
+## Topics
+
+- Running code from scripts / rmd. Line-by-line, run all, run code chunk
+- Error messages
+- `data.frame` and `tibble` objects
 
 ## Resources
 
 - [R Swirl](https://swirlstats.com/) for interactive lesson on programming with R
-- [Advanced R - Vocabulary](http://adv-r.had.co.nz/Vocabulary.html) for list of basic R "vocabulary"
-
-## Topics
-
-- running code from scripts / rmd. Line-by-line, run all, run code chunk
-- error messages
-- data frames
+- *R for data science* [tibbles chapter](http://r4ds.had.co.nz/tibbles.html) to learn more about tibble/data.frames
 
 ## Running code (4 min)
 
-Demonstration: running R code in console 
+Two ways to run code in Rstudio:
 
-Options to run code from scripts
+1. Run code in console 
+2. Run code from scripts (several options):
 
 * Running code line-by-line (Windows: `ctrl` `+` `enter`, Mac: `cmd` `+` `enter`)
-* Run code chunk
+* Run code chunk (for *rmarkdown* files)
 * Run all
 
-99% of the time you should be writing your code down into either an R script (a file ending in `.r`), or an r markdown file (a file ending in `.rmd`).
+I recommend using **r markdown file (recommended)** for all of your analysis scripts.
 
-Here's some code to run from a script
-
-In `.rmd` files, code needs to be in code chunks (insert code chunk shortcut is Windows: `ctrl` `+` `alt` `+` `i`, Mac: `cmd` `+` `alt` `+` `i`)
+Demonstrate different ways to run code:
 
 ```{r}
 1 + 2 + 3 + 4 + 5
@@ -84,6 +87,8 @@ sum(1, 2,
     4, 5)
 ```
 
+In `.rmd` files, code needs to be in code chunks (insert code chunk shortcut is Windows: `ctrl` `+` `alt` `+` `i`, Mac: `cmd` `+` `alt` `+` `i`)
+
 ## Error messages (4 min)
 
 When you encounter an error, this is what you should do:
@@ -94,12 +99,11 @@ When you encounter an error, this is what you should do:
 4. Copy and paste the error and the name of the function you are using into **Google**.
 
 
-## Data frames (4 min)
+## Data frames and tibbles (5 min)
 
 `data.frame` objects are by far the most common and useful way to work with your data in R.
 
 A data.frame is basically just a table, it has a certain number of rows, and a certain number of columns.
-
 
 "trees" is a built-in dataset in R available as a `data.frame`.
 
@@ -134,7 +138,7 @@ head(trees)
 tail(trees)
 ```
 
-We are going to use the "gapminder" dataset today, which is stored as a special type of `data.frame`, called a `tibble`. 
+We are going to use the "gapminder" dataset today, which is stored as a special type of `data.frame`, called a [`tibble`](https://tibble.tidyverse.org/index.html). 
 
 - tibbles have a special printing output
 - tibbles never have row names
@@ -153,7 +157,7 @@ head(as.data.frame(gapminder), n = 50)
 
 Note that I printed only the first 50 rows of the `data.frame` version of gapminder. By default, printing `tibble` objects will display the top 10 rows to avoid over-printing.
 
-# Part 2: Intro to data wrangling
+# Intro to tidyverse
 
 <!---The following chunk allows errors when knitting--->
 
@@ -182,18 +186,29 @@ The [tidyverse](https://www.tidyverse.org/) is a collection of packages that wer
 
 * has an easy-to-read syntax
 * can be much quicker (to write)  
-* are comprehensive in covering a wide variety of applications (e.g. `ggplot2` for plotting, `dplyr` for data manipulation, ..., etc.)
+* are comprehensive in covering a wide variety of applications (e.g. [`ggplot2`](https://ggplot2.tidyverse.org/) for plotting, [`dplyr`](https://dplyr.tidyverse.org/) for data manipulation, ..., etc.)
 
 Most base-r operations can be replaced with tidyverse code. However, in genomics research, this is less true because many genomics analysis workflows rely on [**Bioconductor**](https://www.bioconductor.org/).
 
 [Bioconductor](https://www.bioconductor.org/) is an online R package repository specifically for analyzing and storing genomic data. If you are in genomics, it is highly likely you will use these packages. Bioconductor is basically all based in base-R code, so learning *some* base-R is going to be a requirement for any genomics analysis.
 
-## dplyr: syntax
+## Tidyverse syntax (2 min)
 
-Here we will cover the basic functions in dplyr:
+- Almost all functions from a **tidyverse** package will accept a `tibble` or `data.frame` as the first argument.
 
-- `select`
-- `arrange`
+```
+function(a_tibble, operations_involving_columns)
+```
+
+- **tidyverse** functions tend to be [named](https://principles.tidyverse.org/function-names.html) as verbs. (e.g. `select()`, `pivot_longer()`, `str_extract()`)
+
+- More information on the design principles behind tidyverse packages can be found [here](https://principles.tidyverse.org/index.html).
+
+# Basic `dplyr` functions
+
+**Let's continue the tutorial in the raw r markdown file and work on the exercises.**
+
+Before filling out the exercises,  we need to load in the `dplyr` and `gapminder` R packages.
 
 ```{r load packages, warning = FALSE, message = FALSE}
 # load your packages here:
@@ -255,20 +270,22 @@ arrange(gapminder, FILL_THIS_IN, FILL_THIS_IN)
 
 ## Piping, `%>%` (8 min)
 
-Note: think of `%>%` as the word "then"!
+*Piping* refers to using the `%>%` operator to write nested function calls in a more readable manner.
 
-Demonstration:
+- Takes an output as the input for the first argument of the next function.
 
-Here I want to combine `select()` Task 1 with `arrange()` Task 3.
+- Think of `%>%` as the word "then"!
 
-This is how I could do it by *nesting* the two function calls:
+**Demonstration:** Here I want to combine `select()` Task 1 with `arrange()` Task 3.
+
+This is how I could do it by *nesting* the two function calls, **without piping**:
 
 ```{r nesting functions example, eval = F}
 # Nesting function calls can be hard to read
 arrange(select(gapminder, year, lifeExp, country), year, lifeExp)
 ```
 
-Now using with pipes:
+Now using **with piping**:
 
 ```{r}
 # alter the below to include 2 "pipes"
@@ -277,8 +294,9 @@ gapminder %>%
   arrange(year, lifeExp)
 ```
 
-
 ### R Operators (4 min)
+
+See knitted html for pretty tables.
 
 **Arithmetic** operators allow us to carry out mathematical operations:
 
@@ -363,6 +381,90 @@ gapminder %>%
 ```
 
 Your turn: Make a new column called `cc` that pastes the country name followed by the continent, separated by a comma. (Hint: use the `paste` function with the `sep=", "` argument).
+
+# `dplyr`: grouped operations
+
+*Most of this material was taken/modified from the [STAT545 lecture: Intro to data wrangling, Part II](https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-ii.html)*
+
+## Resources
+
+- [STAT545 lecture: Intro to data wrangling, Part II](https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-ii.html)
+- [r4ds: transform](http://r4ds.had.co.nz/transform.html)
+- [Intro to `dplyr` vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html)
+
+## `summarize()` (3 min)
+
+Like `mutate()`, the `summarize()` function also creates new columns, but the calculations that make the new columns must reduce down to a single number.
+
+For example, let’s compute the mean and standard deviation of life expectancy in the gapminder data set:
+
+```{r}
+gapminder %>% 
+  summarize(mu    = mean(lifeExp),
+            sigma = sd(lifeExp))
+```
+
+Notice that all other columns were dropped. This is necessary, because there’s no obvious way to compress the other columns down to a single row. This is unlike `mutate(`), which keeps all columns.
+
+As it is, this is hardly useful. But that’s outside of the context of *grouping*, coming up next...
+
+## `group_by()` (15 min)
+
+* `group_by()` allows you to apply functions to separate chunks of your data frame, where the chunks are defined by a specified grouping variable.
+
+Let’s group the gapminder dataset by continent and year:
+
+```{r}
+gapminder %>% 
+  group_by(continent, year)
+```
+
+The only thing different from a regular tibble is the indication of grouping variables above the tibble. This means that the tibble is recognized as having “chunks” defined by unique combinations of continent and year:
+
+- Asia in 1952 is one chunk.
+- Asia in 1957 is another chunk.
+- Europe in 1952 is another chunk.
+- etc…
+
+Notice that the data frame isn’t rearranged by chunk!
+
+Now that the tibble is grouped, operations that you do on a grouped tibble will be done independently within each chunk, as if no other chunks exist.
+
+1. What is the mean and standard deviation for each year for every continent?
+
+```{r}
+gapminder %>% 
+  group_by(continent, year) %>% 
+  FILL_THIS_IN(mu    = FILL_THIS_IN,
+            sigma = FILL_THIS_IN)
+```
+
+2. In the gapminder dataset, how many rows are there for each continent? Hint: use the convenience function `dplyr::n()`
+
+```{r}
+# solution 1
+gapminder %>%
+  group_by(FILL_THIS_IN) %>%
+  FILL_THIS_IN
+
+# solution 2: use dplyr::count()
+
+```
+
+2. (a) What's the minimum life expectancy for each continent and each year? (b) Arrange by min life expectancy.
+
+```{r}
+gapminder %>% 
+  group_by(FILL_THIS_IN, FILL_THIS_IN) %>% 
+  FILL_THIS_IN(min_life = min(FILL_THIS_IN)) %>%
+  arrange(FILL_THIS_IN)
+```
+
+3. Calculate the growth in population since the first year on record _for each country_. Here's another convenience function for you: `dplyr::first()`. 
+
+```{r}
+
+```
 
 # Bonus Exercises
 

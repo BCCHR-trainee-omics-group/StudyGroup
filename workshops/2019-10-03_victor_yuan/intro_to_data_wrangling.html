@@ -1466,7 +1466,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3,h4",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
@@ -1475,7 +1475,7 @@ $(document).ready(function ()  {
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
-    options.showAndHide = false;
+    options.showAndHide = true;
     options.smoothScroll = true;
 
     // tocify
@@ -1536,12 +1536,6 @@ div.tocify {
   border-radius: 0px;
 }
 
-.tocify-subheader {
-  display: inline;
-}
-.tocify-subheader .tocify-item {
-  font-size: 0.95em;
-}
 
 </style>
 
@@ -1581,17 +1575,16 @@ div.tocify {
 <p>Where: BC Children’s Hospital Research Institute</p>
 <p>When: October 3rd, 2019</p>
 <div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>There will be two parts of this tutorial. First part we’ll go over some helpful beginner tips of working with R and Rstudio. The second part will focus on using the r package <code>dplyr</code> to manipulate (“wrangle”) data in R.</p>
+<h1><span class="header-section-number">1</span> Introduction</h1>
 <div id="who-is-this-tutorial-for" class="section level2">
-<h2>Who is this tutorial for?</h2>
+<h2><span class="header-section-number">1.1</span> Who is this tutorial for?</h2>
 <ul>
 <li>Those interested using R for data analysis</li>
 <li>Beginners in R, and those curious about <code>dplyr</code> and <strong>tidyverse</strong></li>
 </ul>
 </div>
 <div id="setup" class="section level2">
-<h2>Setup</h2>
+<h2><span class="header-section-number">1.2</span> Setup</h2>
 <ul>
 <li>Please have the latest version of R and Rstudio installed.</li>
 <li><p>Download the <a href="https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2019-10-03_victor_yuan">r markdown file</a> for this workshop and open it in Rstudio.</p></li>
@@ -1599,38 +1592,47 @@ div.tocify {
 </ul>
 <pre class="r"><code>install.packages(c(&#39;gapminder&#39;, &#39;tidyverse&#39;))</code></pre>
 </div>
-</div>
-<div id="part-1-brief-intro-to-r-and-rstudio" class="section level1">
-<h1>Part 1: Brief intro to R and Rstudio</h1>
-<p>To learn data manipulation in R, some understanding of how to use R is required. A comprehensive lesson on R is out of the scope of this tutorial, but here I go over some of the basics that will be helpful to follow along the data wrangling portion of this workshop.</p>
-<p>Depending on the attendees experience, we may start here or further down the tutorial.</p>
-<div id="resources" class="section level2">
-<h2>Resources</h2>
+<div id="learning-outcomes" class="section level2">
+<h2><span class="header-section-number">1.3</span> Learning outcomes</h2>
 <ul>
-<li><a href="https://swirlstats.com/">R Swirl</a> for interactive lesson on programming with R</li>
-<li><a href="http://adv-r.had.co.nz/Vocabulary.html">Advanced R - Vocabulary</a> for list of basic R “vocabulary”</li>
+<li>Familiarity with tidyverse syntax</li>
+<li>Understanding how to use dplyr to manipulate data in R</li>
+<li>“Piping”</li>
 </ul>
 </div>
+</div>
+<div id="brief-intro-to-r-and-rstudio" class="section level1">
+<h1><span class="header-section-number">2</span> Brief intro to R and Rstudio</h1>
+<p>To learn data manipulation in R, some understanding of how to use R is required. A comprehensive lesson on R is out of the scope of this tutorial, but here I go over some of the basics that will be helpful to follow along the data wrangling portion of this workshop.</p>
 <div id="topics" class="section level2">
-<h2>Topics</h2>
+<h2><span class="header-section-number">2.1</span> Topics</h2>
 <ul>
-<li>running code from scripts / rmd. Line-by-line, run all, run code chunk</li>
-<li>error messages</li>
-<li>assignment operator</li>
+<li>Running code from scripts / rmd. Line-by-line, run all, run code chunk</li>
+<li>Error messages</li>
+<li><code>data.frame</code> and <code>tibble</code> objects</li>
+</ul>
+</div>
+<div id="resources" class="section level2">
+<h2><span class="header-section-number">2.2</span> Resources</h2>
+<ul>
+<li><a href="https://swirlstats.com/">R Swirl</a> for interactive lesson on programming with R</li>
+<li><em>R for data science</em> <a href="http://r4ds.had.co.nz/tibbles.html">tibbles chapter</a> to learn more about tibble/data.frames</li>
 </ul>
 </div>
 <div id="running-code-4-min" class="section level2">
-<h2>Running code (4 min)</h2>
-<p>Demonstration: running R code in console</p>
-<p>Options to run code from scripts</p>
+<h2><span class="header-section-number">2.3</span> Running code (4 min)</h2>
+<p>Two ways to run code in Rstudio:</p>
+<ol style="list-style-type: decimal">
+<li>Run code in console</li>
+<li>Run code from scripts (several options):</li>
+</ol>
 <ul>
 <li>Running code line-by-line (Windows: <code>ctrl</code> <code>+</code> <code>enter</code>, Mac: <code>cmd</code> <code>+</code> <code>enter</code>)</li>
-<li>Run code chunk</li>
+<li>Run code chunk (for <em>rmarkdown</em> files)</li>
 <li>Run all</li>
 </ul>
-<p>99% of the time you should be writing your code down into either an R script (a file ending in <code>.r</code>), or an r markdown file (a file ending in <code>.rmd</code>).</p>
-<p>Here’s some code to run from a script</p>
-<p>In <code>.rmd</code> files, code needs to be in code chunks (insert code chunk shortcut is Windows: <code>ctrl</code> <code>+</code> <code>alt</code> <code>+</code> <code>i</code>, Mac: <code>cmd</code> <code>+</code> <code>alt</code> <code>+</code> <code>i</code>)</p>
+<p>I recommend using <strong>r markdown file (recommended)</strong> for all of your analysis scripts.</p>
+<p>Demonstrate different ways to run code:</p>
 <pre class="r"><code>1 + 2 + 3 + 4 + 5</code></pre>
 <pre><code>## [1] 15</code></pre>
 <pre class="r"><code>&quot;Code on multiple lines:&quot;</code></pre>
@@ -1639,9 +1641,10 @@ div.tocify {
     3,
     4, 5)</code></pre>
 <pre><code>## [1] 15</code></pre>
+<p>In <code>.rmd</code> files, code needs to be in code chunks (insert code chunk shortcut is Windows: <code>ctrl</code> <code>+</code> <code>alt</code> <code>+</code> <code>i</code>, Mac: <code>cmd</code> <code>+</code> <code>alt</code> <code>+</code> <code>i</code>)</p>
 </div>
 <div id="error-messages-4-min" class="section level2">
-<h2>Error messages (4 min)</h2>
+<h2><span class="header-section-number">2.4</span> Error messages (4 min)</h2>
 <p>When you encounter an error, this is what you should do:</p>
 <ol style="list-style-type: decimal">
 <li>Inspect your code for simple mistakes. Examples: are you missing a bracket or quotation mark? Did you mean to use <code>=</code> instead of <code>==</code>? Did you spell the name of the function or object wrong?</li>
@@ -1650,30 +1653,8 @@ div.tocify {
 <li>Copy and paste the error and the name of the function you are using into <strong>Google</strong>.</li>
 </ol>
 </div>
-<div id="environment-assignment-4-min" class="section level2">
-<h2>Environment, Assignment (4 min)</h2>
-<p>Every R studio session begins as a blank slate.</p>
-<p>The <strong>assignment</strong> operator <code>&lt;-</code> creates a new object in your environment</p>
-<pre class="r"><code>a_new_r_object &lt;- 1</code></pre>
-<p>The new r object can be named whatever. It can now be interacted with further.</p>
-<p>We can print an r object to screen by calling its name:</p>
-<pre class="r"><code>a_new_r_object</code></pre>
-<pre><code>## [1] 1</code></pre>
-<p>We can modify it:</p>
-<pre class="r"><code>a_new_r_object + 21</code></pre>
-<pre><code>## [1] 22</code></pre>
-<p>But note to store these modifications, we need to assign it again</p>
-<p><em>Before modification:</em></p>
-<pre class="r"><code>a_new_r_object</code></pre>
-<pre><code>## [1] 1</code></pre>
-<p><em>After modification and assignment:</em></p>
-<pre class="r"><code>a_new_r_object &lt;- a_new_r_object + 21
-
-a_new_r_object</code></pre>
-<pre><code>## [1] 22</code></pre>
-</div>
-<div id="data-frames" class="section level2">
-<h2>Data frames</h2>
+<div id="data-frames-and-tibbles-5-min" class="section level2">
+<h2><span class="header-section-number">2.5</span> Data frames and tibbles (5 min)</h2>
 <p><code>data.frame</code> objects are by far the most common and useful way to work with your data in R.</p>
 <p>A data.frame is basically just a table, it has a certain number of rows, and a certain number of columns.</p>
 <p>“trees” is a built-in dataset in R available as a <code>data.frame</code>.</p>
@@ -1754,7 +1735,7 @@ tail(trees)</code></pre>
 ## 29  18.0     80   51.5
 ## 30  18.0     80   51.0
 ## 31  20.6     87   77.0</code></pre>
-<p>We are going to use the “gapminder” dataset today, which is stored as a special type of <code>data.frame</code>, called a <code>tibble</code>.</p>
+<p>We are going to use the “gapminder” dataset today, which is stored as a special type of <code>data.frame</code>, called a <a href="https://tibble.tidyverse.org/index.html"><code>tibble</code></a>.</p>
 <ul>
 <li>tibbles have a special printing output</li>
 <li>tibbles never have row names</li>
@@ -1835,11 +1816,11 @@ head(as.data.frame(gapminder), n = 50)</code></pre>
 <p>Note that I printed only the first 50 rows of the <code>data.frame</code> version of gapminder. By default, printing <code>tibble</code> objects will display the top 10 rows to avoid over-printing.</p>
 </div>
 </div>
-<div id="part-2-intro-to-data-wrangling" class="section level1">
-<h1>Part 2: Intro to data wrangling</h1>
+<div id="intro-to-tidyverse" class="section level1">
+<h1><span class="header-section-number">3</span> Intro to tidyverse</h1>
 <!---The following chunk allows errors when knitting--->
 <div id="topics-1" class="section level2">
-<h2>Topics</h2>
+<h2><span class="header-section-number">3.1</span> Topics</h2>
 <ul>
 <li>“Base R” vs tidyverse</li>
 <li>dplyr basic functions</li>
@@ -1847,7 +1828,7 @@ head(as.data.frame(gapminder), n = 50)</code></pre>
 </ul>
 </div>
 <div id="resources-1" class="section level2">
-<h2>Resources</h2>
+<h2><span class="header-section-number">3.2</span> Resources</h2>
 <p>Most of this material is inspired from the <a href="https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-i.html">STAT 545 <code>dplyr</code> lecture</a></p>
 <p>Other resources for <code>dplyr</code>:</p>
 <ul>
@@ -1856,31 +1837,40 @@ head(as.data.frame(gapminder), n = 50)</code></pre>
 </ul>
 </div>
 <div id="base-r-vs-tidyverse" class="section level2">
-<h2>Base-R vs tidyverse</h2>
+<h2><span class="header-section-number">3.3</span> Base-R vs tidyverse</h2>
 <p>The <a href="https://www.tidyverse.org/">tidyverse</a> is a collection of packages that were designed under a specific philosophy of making data analysis in R easy, reproducible, and consistent. The tidyverse packages:</p>
 <ul>
 <li>has an easy-to-read syntax</li>
 <li>can be much quicker (to write)<br />
 </li>
-<li>are comprehensive in covering a wide variety of applications (e.g. <code>ggplot2</code> for plotting, <code>dplyr</code> for data manipulation, …, etc.)</li>
+<li>are comprehensive in covering a wide variety of applications (e.g. <a href="https://ggplot2.tidyverse.org/"><code>ggplot2</code></a> for plotting, <a href="https://dplyr.tidyverse.org/"><code>dplyr</code></a> for data manipulation, …, etc.)</li>
 </ul>
 <p>Most base-r operations can be replaced with tidyverse code. However, in genomics research, this is less true because many genomics analysis workflows rely on <a href="https://www.bioconductor.org/"><strong>Bioconductor</strong></a>.</p>
 <p><a href="https://www.bioconductor.org/">Bioconductor</a> is an online R package repository specifically for analyzing and storing genomic data. If you are in genomics, it is highly likely you will use these packages. Bioconductor is basically all based in base-R code, so learning <em>some</em> base-R is going to be a requirement for any genomics analysis.</p>
 </div>
-<div id="dplyr-syntax" class="section level2">
-<h2>dplyr: syntax</h2>
-<p>Here we will cover the basic functions in dplyr:</p>
+<div id="tidyverse-syntax-2-min" class="section level2">
+<h2><span class="header-section-number">3.4</span> Tidyverse syntax (2 min)</h2>
 <ul>
-<li><code>select</code></li>
-<li><code>arrange</code></li>
+<li>Almost all functions from a <strong>tidyverse</strong> package will accept a <code>tibble</code> or <code>data.frame</code> as the first argument.</li>
 </ul>
+<pre><code>function(a_tibble, operations_involving_columns)</code></pre>
+<ul>
+<li><p><strong>tidyverse</strong> functions tend to be <a href="https://principles.tidyverse.org/function-names.html">named</a> as verbs. (e.g. <code>select()</code>, <code>pivot_longer()</code>, <code>str_extract()</code>)</p></li>
+<li><p>More information on the design principles behind tidyverse packages can be found <a href="https://principles.tidyverse.org/index.html">here</a>.</p></li>
+</ul>
+</div>
+</div>
+<div id="basic-dplyr-functions" class="section level1">
+<h1><span class="header-section-number">4</span> Basic <code>dplyr</code> functions</h1>
+<p><strong>Let’s continue the tutorial in the raw r markdown file and work on the exercises.</strong></p>
+<p>Before filling out the exercises, we need to load in the <code>dplyr</code> and <code>gapminder</code> R packages.</p>
 <pre class="r"><code># load your packages here:
 library(FILL_THIS_IN)</code></pre>
 <pre><code>## Error in library(FILL_THIS_IN): there is no package called &#39;FILL_THIS_IN&#39;</code></pre>
 <pre class="r"><code>library(FILL_THIS_IN)</code></pre>
 <pre><code>## Error in library(FILL_THIS_IN): there is no package called &#39;FILL_THIS_IN&#39;</code></pre>
 <div id="select-8-min" class="section level3">
-<h3><code>select()</code> (8 min)</h3>
+<h3><span class="header-section-number">4.0.1</span> <code>select()</code> (8 min)</h3>
 <ol style="list-style-type: decimal">
 <li>Make a data frame containing the columns <code>year</code>, <code>lifeExp</code>, <code>country</code> from the gapminder data, in that order.</li>
 </ol>
@@ -1907,7 +1897,7 @@ select(gapminder, FILL_THIS_IN)</code></pre>
 <pre><code>## Error in select(gapminder, FILL_THIS_IN, FILL_THIS_IN): could not find function &quot;select&quot;</code></pre>
 </div>
 <div id="arrange-8-min" class="section level3">
-<h3><code>arrange()</code> (8 min)</h3>
+<h3><span class="header-section-number">4.0.2</span> <code>arrange()</code> (8 min)</h3>
 <ol style="list-style-type: decimal">
 <li>Order by year.</li>
 </ol>
@@ -1924,23 +1914,26 @@ select(gapminder, FILL_THIS_IN)</code></pre>
 <pre class="r"><code>arrange(gapminder, FILL_THIS_IN, FILL_THIS_IN)</code></pre>
 <pre><code>## Error in arrange(gapminder, FILL_THIS_IN, FILL_THIS_IN): could not find function &quot;arrange&quot;</code></pre>
 </div>
-</div>
 <div id="piping-8-min" class="section level2">
-<h2>Piping, <code>%&gt;%</code> (8 min)</h2>
-<p>Note: think of <code>%&gt;%</code> as the word “then”!</p>
-<p>Demonstration:</p>
-<p>Here I want to combine <code>select()</code> Task 1 with <code>arrange()</code> Task 3.</p>
-<p>This is how I could do it by <em>nesting</em> the two function calls:</p>
+<h2><span class="header-section-number">4.1</span> Piping, <code>%&gt;%</code> (8 min)</h2>
+<p><em>Piping</em> refers to using the <code>%&gt;%</code> operator to write nested function calls in a more readable manner.</p>
+<ul>
+<li><p>Takes an output as the input for the first argument of the next function.</p></li>
+<li><p>Think of <code>%&gt;%</code> as the word “then”!</p></li>
+</ul>
+<p><strong>Demonstration:</strong> Here I want to combine <code>select()</code> Task 1 with <code>arrange()</code> Task 3.</p>
+<p>This is how I could do it by <em>nesting</em> the two function calls, <strong>without piping</strong>:</p>
 <pre class="r"><code># Nesting function calls can be hard to read
 arrange(select(gapminder, year, lifeExp, country), year, lifeExp)</code></pre>
-<p>Now using with pipes:</p>
+<p>Now using <strong>with piping</strong>:</p>
 <pre class="r"><code># alter the below to include 2 &quot;pipes&quot;
 gapminder %&gt;%
   select(year, lifeExp, country) %&gt;%
   arrange(year, lifeExp)</code></pre>
 <pre><code>## Error in gapminder %&gt;% select(year, lifeExp, country) %&gt;% arrange(year, : could not find function &quot;%&gt;%&quot;</code></pre>
 <div id="r-operators-4-min" class="section level3">
-<h3>R Operators (4 min)</h3>
+<h3><span class="header-section-number">4.1.1</span> R Operators (4 min)</h3>
+<p>See knitted html for pretty tables.</p>
 <p><strong>Arithmetic</strong> operators allow us to carry out mathematical operations:</p>
 <table>
 <thead>
@@ -2048,7 +2041,7 @@ gapminder %&gt;%
 </div>
 </div>
 <div id="filter-6-min" class="section level2">
-<h2><code>filter()</code> (6 min)</h2>
+<h2><span class="header-section-number">4.2</span> <code>filter()</code> (6 min)</h2>
 <ol style="list-style-type: decimal">
 <li>Only take data with population greater than 100 million.</li>
 </ol>
@@ -2069,7 +2062,7 @@ gapminder %&gt;%
 <pre><code>## Error in gapminder %&gt;% filter(FILL_THIS_IN): could not find function &quot;%&gt;%&quot;</code></pre>
 </div>
 <div id="mutate-8-min" class="section level2">
-<h2><code>mutate()</code> (8 min)</h2>
+<h2><span class="header-section-number">4.3</span> <code>mutate()</code> (8 min)</h2>
 <p>The <code>mutate()</code> function <em>creates</em> new columns in the tibble by transforming other variables. Like <code>select()</code>, <code>filter()</code>, and <code>arrange()</code>, the <code>mutate()</code> function also takes a tibble as its first argument, and returns a tibble.</p>
 <p>The general syntax is:</p>
 <pre><code>mutate(tibble, NEW_COLUMN_NAME = CALCULATION)</code></pre>
@@ -2088,8 +2081,80 @@ gapminder %&gt;%
 <p>Your turn: Make a new column called <code>cc</code> that pastes the country name followed by the continent, separated by a comma. (Hint: use the <code>paste</code> function with the <code>sep=&quot;, &quot;</code> argument).</p>
 </div>
 </div>
+<div id="dplyr-grouped-operations" class="section level1">
+<h1><span class="header-section-number">5</span> <code>dplyr</code>: grouped operations</h1>
+<p><em>Most of this material was taken/modified from the <a href="https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-ii.html">STAT545 lecture: Intro to data wrangling, Part II</a></em></p>
+<div id="resources-2" class="section level2">
+<h2><span class="header-section-number">5.1</span> Resources</h2>
+<ul>
+<li><a href="https://stat545guidebook.netlify.com/intro-to-data-wrangling-part-ii.html">STAT545 lecture: Intro to data wrangling, Part II</a></li>
+<li><a href="http://r4ds.had.co.nz/transform.html">r4ds: transform</a></li>
+<li><a href="https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html">Intro to <code>dplyr</code> vignette</a></li>
+</ul>
+</div>
+<div id="summarize-3-min" class="section level2">
+<h2><span class="header-section-number">5.2</span> <code>summarize()</code> (3 min)</h2>
+<p>Like <code>mutate()</code>, the <code>summarize()</code> function also creates new columns, but the calculations that make the new columns must reduce down to a single number.</p>
+<p>For example, let’s compute the mean and standard deviation of life expectancy in the gapminder data set:</p>
+<pre class="r"><code>gapminder %&gt;% 
+  summarize(mu    = mean(lifeExp),
+            sigma = sd(lifeExp))</code></pre>
+<pre><code>## Error in gapminder %&gt;% summarize(mu = mean(lifeExp), sigma = sd(lifeExp)): could not find function &quot;%&gt;%&quot;</code></pre>
+<p>Notice that all other columns were dropped. This is necessary, because there’s no obvious way to compress the other columns down to a single row. This is unlike <code>mutate(</code>), which keeps all columns.</p>
+<p>As it is, this is hardly useful. But that’s outside of the context of <em>grouping</em>, coming up next…</p>
+</div>
+<div id="group_by-15-min" class="section level2">
+<h2><span class="header-section-number">5.3</span> <code>group_by()</code> (15 min)</h2>
+<ul>
+<li><code>group_by()</code> allows you to apply functions to separate chunks of your data frame, where the chunks are defined by a specified grouping variable.</li>
+</ul>
+<p>Let’s group the gapminder dataset by continent and year:</p>
+<pre class="r"><code>gapminder %&gt;% 
+  group_by(continent, year)</code></pre>
+<pre><code>## Error in gapminder %&gt;% group_by(continent, year): could not find function &quot;%&gt;%&quot;</code></pre>
+<p>The only thing different from a regular tibble is the indication of grouping variables above the tibble. This means that the tibble is recognized as having “chunks” defined by unique combinations of continent and year:</p>
+<ul>
+<li>Asia in 1952 is one chunk.</li>
+<li>Asia in 1957 is another chunk.</li>
+<li>Europe in 1952 is another chunk.</li>
+<li>etc…</li>
+</ul>
+<p>Notice that the data frame isn’t rearranged by chunk!</p>
+<p>Now that the tibble is grouped, operations that you do on a grouped tibble will be done independently within each chunk, as if no other chunks exist.</p>
+<ol style="list-style-type: decimal">
+<li>What is the mean and standard deviation for each year for every continent?</li>
+</ol>
+<pre class="r"><code>gapminder %&gt;% 
+  group_by(continent, year) %&gt;% 
+  FILL_THIS_IN(mu    = FILL_THIS_IN,
+            sigma = FILL_THIS_IN)</code></pre>
+<pre><code>## Error in gapminder %&gt;% group_by(continent, year) %&gt;% FILL_THIS_IN(mu = FILL_THIS_IN, : could not find function &quot;%&gt;%&quot;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>In the gapminder dataset, how many rows are there for each continent? Hint: use the convenience function <code>dplyr::n()</code></li>
+</ol>
+<pre class="r"><code># solution 1
+gapminder %&gt;%
+  group_by(FILL_THIS_IN) %&gt;%
+  FILL_THIS_IN</code></pre>
+<pre><code>## Error in gapminder %&gt;% group_by(FILL_THIS_IN) %&gt;% FILL_THIS_IN: could not find function &quot;%&gt;%&quot;</code></pre>
+<pre class="r"><code># solution 2: use dplyr::count()</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><ol style="list-style-type: lower-alpha">
+<li>What’s the minimum life expectancy for each continent and each year? (b) Arrange by min life expectancy.</li>
+</ol></li>
+</ol>
+<pre class="r"><code>gapminder %&gt;% 
+  group_by(FILL_THIS_IN, FILL_THIS_IN) %&gt;% 
+  FILL_THIS_IN(min_life = min(FILL_THIS_IN)) %&gt;%
+  arrange(FILL_THIS_IN)</code></pre>
+<pre><code>## Error in gapminder %&gt;% group_by(FILL_THIS_IN, FILL_THIS_IN) %&gt;% FILL_THIS_IN(min_life = min(FILL_THIS_IN)) %&gt;% : could not find function &quot;%&gt;%&quot;</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Calculate the growth in population since the first year on record <em>for each country</em>. Here’s another convenience function for you: <code>dplyr::first()</code>.</li>
+</ol>
+</div>
+</div>
 <div id="bonus-exercises" class="section level1">
-<h1>Bonus Exercises</h1>
+<h1><span class="header-section-number">6</span> Bonus Exercises</h1>
 <p>If there’s time remaining, we can try these more difficult exercises.</p>
 <ol style="list-style-type: decimal">
 <li><p>Take all countries in Europe that have a GDP per capita greater than 10000, and select all variables except <code>gdpPercap</code>.</p></li>
