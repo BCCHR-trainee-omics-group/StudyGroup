@@ -33,7 +33,7 @@ When: October 3rd, 2019
 ## Setup
 
 - Please have the latest version of R and Rstudio installed. 
-- Download the [r markdown file](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2019-10-03_victor_yuan) for this workshop and open it in Rstudio.
+- Download the [r markdown file](workshops/2019-10-03_intro_to_data_manipulation/intro_to_data_manipulation.Rmd) for this workshop and open it in Rstudio.
 
 - Install the following R packages now, if you haven't already:
 
