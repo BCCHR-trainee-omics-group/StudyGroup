@@ -164,6 +164,8 @@ Image downloaded from [https://mathbitsnotebook.com/Algebra2/Statistics/STzScore
 
 The Z score indicates how far away a values is from the mean. A z score of 0 means that the data point's value is equal to the mean of all the data points in that group. A z score of 1 indicates that the data point's value is 1 standard deviation away from the group's average and so forth. 
 Now, let's apply Z score normalization ("scaling") to our data for the heatmap:
+=======
+The Z score indicates how far away a values is from the mean. A z score of 0 means that the data point's value is equal to the mean of all the data points in that group. A z score of 1 indicates that the data point's value is 1 standard deviation away from the group's average.
 
 
 ```r
@@ -176,6 +178,8 @@ Note that we are choosing to scale by row, meaning the Z score will be calculate
 
 Now let's take a look at how the clustering dendograms on the rows and columns are generated: We can indicate whether we want to cluster the rows and/or columns by using the Booleans TRUE or FALSE. Note that they have to be written in capital letters. You can also abbreviate using T and F. For the clustering method, we have many options available, such as single or complete clustering. Personally, I like to use Ward's criterion for clustering. If you are interested in learning more about the clustering methods and their advantages and disadvantages, you can check out the UBC STAT540 lecture on Cluster Analysis.
 
+=======
+Now let's take a look at how the clustering dendograms on the rows and columns are generated:
 
 ```r
 pheatmap(t(data), scale = "row",
@@ -186,6 +190,9 @@ pheatmap(t(data), scale = "row",
 ![](Heatmaps_and_PCA_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 Now, it would be nice to know which column corresponds to which sample and whether the species cluster together or separately. The column names are added but since we have 150 samples, they are hard to read. Let's remove the labels and instead add their species by colour code on top:
+We can indicate whether we want to cluster the rows and/or columns by using the Booleans TRUE or FALSE. Note that they have to be written in capital letters. You can also abbreviate using T and F. For the clustering method, we have many options available, such as single or complete clustering. Personally, I like to use Ward's criterion for clustering. If you are interested in learning more about the clustering methods and their advantages and disadvantages, you can check out the UBC STAT540 lecture on Cluster Analysis.
+
+Now, it would be nice to know which column corresponds to which sample and whether the species cluster together or separately. We could add the column names but since we hav 150 samples, they would be hard to read. Instead, lets add their species by colour code on top:
 
 ```r
 pheatmap(t(data), scale = "row",
@@ -210,7 +217,10 @@ pheatmap(t(data), scale = "row",
 
 ![](Heatmaps_and_PCA_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
+
 As a last exercise, let's change the colours used in the heatmap: Here, weuse colorRampPalette to create our own gradient. We specify colours for the lowest, mean and highest value and create 77 "levels". This number is a bit arbitrary, it just has to be high enough to create the impression of a smooth gradient. Using an odd number ensures that the gradient will be centered at the Z score of 0.
+
+As a last exercise, let's change the colours used in the heatmap: 
 
 ```r
 pheatmap(t(data), scale = "row",
@@ -356,7 +366,9 @@ eigencorplot(p, metavars = "Species.num", components = getComponents(p, seq_len(
 
 ![](Heatmaps_and_PCA_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
+
 We can see a strong, statistically significant correlation between Species and principal component one. This should not be surprising as we clearly saw the separation in our PC plot.
+
 You can supply more arguments to eigencorplot() to for example set cut-offs for statistical significance or perform correction for multiple testing. Take a look at their vignette (linked above in the Resources section).
 
 Keep in mind that not only experimental factors (stimulation type or dose) can drive the variability in your data but also underlying biological or technical factors. For example, age or sex of the donor can have a major impact but if you don't have that data available, you can not test for it, and some PCs might have high contribution with seemingly "no" explanation based on your meta data. More importantly, technical variability is a major issue in omics research. Ideally, experimental design should minimize this but that is not always happening. Even with the best possible experimnetal design, it is a good idea to include technical factors (e.g. sequencing batch) in your meta data and see how it correlates with your PCs. This kind of analysis can give you an idea which variables you need to correct for in your downstream analyses.
