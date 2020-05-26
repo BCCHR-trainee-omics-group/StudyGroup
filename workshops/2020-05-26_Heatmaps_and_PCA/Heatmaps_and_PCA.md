@@ -162,9 +162,9 @@ Let's take a look at this graph:
 
 Image downloaded from [https://mathbitsnotebook.com/Algebra2/Statistics/STzScores.html](https://mathbitsnotebook.com/Algebra2/Statistics/STzScores.html)
 
+
 The Z score indicates how far away a values is from the mean. A z score of 0 means that the data point's value is equal to the mean of all the data points in that group. A z score of 1 indicates that the data point's value is 1 standard deviation away from the group's average and so forth. 
 Now, let's apply Z score normalization ("scaling") to our data for the heatmap:
-=======
 The Z score indicates how far away a values is from the mean. A z score of 0 means that the data point's value is equal to the mean of all the data points in that group. A z score of 1 indicates that the data point's value is 1 standard deviation away from the group's average.
 
 
@@ -178,7 +178,6 @@ Note that we are choosing to scale by row, meaning the Z score will be calculate
 
 Now let's take a look at how the clustering dendograms on the rows and columns are generated: We can indicate whether we want to cluster the rows and/or columns by using the Booleans TRUE or FALSE. Note that they have to be written in capital letters. You can also abbreviate using T and F. For the clustering method, we have many options available, such as single or complete clustering. Personally, I like to use Ward's criterion for clustering. If you are interested in learning more about the clustering methods and their advantages and disadvantages, you can check out the UBC STAT540 lecture on Cluster Analysis.
 
-=======
 Now let's take a look at how the clustering dendograms on the rows and columns are generated:
 
 ```r
