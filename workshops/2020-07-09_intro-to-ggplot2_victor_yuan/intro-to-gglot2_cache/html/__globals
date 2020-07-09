@@ -1,0 +1,12 @@
+unnamed-chunk-1	install.packages	tidyverse
+unnamed-chunk-2	library
+unnamed-chunk-3	read_csv
+unnamed-chunk-4	geo_data
+our-first-plot-1	geo_data	ggplot
+our-first-plot-1-out	geo_data	ggplot
+our-first-plot-2	aes	cg20970886	ga_weeks	geo_data	ggplot
+our-first-plot-2-out	aes	cg20970886	ga_weeks	geo_data	ggplot
+our-first-plot-3	aes	cg20970886	ga_weeks	geo_data	geom_point	ggplot
+our-first-plot-3-out	aes	cg20970886	ga_weeks	geo_data	geom_point	ggplot
+our-first-plot-4	aes	cg20970886	ga_weeks	geo_data	geom_point	geom_smooth	ggplot
+our-first-plot-4-out	aes	cg20970886	ga_weeks	geo_data	geom_point	geom_smooth	ggplot

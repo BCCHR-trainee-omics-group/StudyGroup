@@ -1,0 +1,11 @@
+.left-code {
+  color: black;
+  width: 55%;
+  height: 92%;
+  float: left;
+}
+.right-plot {
+  width: 43%;
+  float: right;
+  padding-left: 1%;
+}

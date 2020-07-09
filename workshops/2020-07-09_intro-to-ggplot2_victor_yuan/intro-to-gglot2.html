@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to ggplot2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Victor Yuan" />
+    <meta name="date" content="2020-07-09" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/middlebury-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to ggplot2
+### Victor Yuan
+### 2020-07-09
+
+---
+
+
+
+
+# Set up
+
+Install these packages
+
+
+```r
+install.packages(tidyverse)
+```
+
+Load libraries
+
+
+```r
+library(tidyverse)
+```
+
+```
+## -- Attaching packages -------------------------------------------- tidyverse 1.3.0 --
+```
+
+```
+## v ggplot2 3.3.0     v purrr   0.3.3
+## v tibble  2.1.3     v dplyr   0.8.4
+## v tidyr   1.0.2     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0
+```
+
+```
+## -- Conflicts ----------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+```
+
+---
+
+# Load gene expression / methylation data
+
+
+```r
+geo_data &lt;- read_csv('https://raw.githubusercontent.com/wvictor14/TOG/master/data/GSE98224.csv')
+
+geo_data
+```
+
+```
+## # A tibble: 48 x 159
+##    expr_geo_id meth_geo_id diagnosis tissue maternal_age maternal_bmi
+##    &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+##  1 GSM1940495  GSM2589532  PE        Place~           37         19.5
+##  2 GSM1940496  GSM2589533  PE        Place~           40         25.7
+##  3 GSM1940499  GSM2589534  PE        Place~           37         25  
+##  4 GSM1940500  GSM2589535  PE        Place~           38         26.2
+##  5 GSM1940501  GSM2589536  PE        Place~           33         31.2
+##  6 GSM1940502  GSM2589537  PE        Place~           26         31.2
+##  7 GSM1940505  GSM2589538  PE        Place~           31         18.6
+##  8 GSM1940506  GSM2589539  PE        Place~           37         25.2
+##  9 GSM1940507  GSM2589540  non-PE    Place~           35         18.6
+## 10 GSM1940508  GSM2589541  PE        Place~           32         26.6
+## # ... with 38 more rows, and 153 more variables: maternal_ethnicity &lt;chr&gt;,
+## #   ga_weeks &lt;dbl&gt;, ga_days &lt;dbl&gt;, transcript_8033795 &lt;dbl&gt;,
+## #   transcript_8103881 &lt;dbl&gt;, transcript_7904014 &lt;dbl&gt;,
+## #   transcript_8127692 &lt;dbl&gt;, transcript_7990031 &lt;dbl&gt;,
+## #   transcript_8121144 &lt;dbl&gt;, transcript_8150846 &lt;dbl&gt;,
+## #   transcript_7962246 &lt;dbl&gt;, transcript_7941890 &lt;dbl&gt;,
+## #   transcript_7896644 &lt;dbl&gt;, transcript_7992897 &lt;dbl&gt;,
+## #   transcript_7973002 &lt;dbl&gt;, transcript_7979800 &lt;dbl&gt;,
+## #   transcript_8112007 &lt;dbl&gt;, transcript_8036686 &lt;dbl&gt;,
+## #   transcript_8001325 &lt;dbl&gt;, transcript_8180328 &lt;dbl&gt;,
+## #   transcript_8109283 &lt;dbl&gt;, transcript_8041223 &lt;dbl&gt;,
+## #   transcript_8144703 &lt;dbl&gt;, transcript_7997556 &lt;dbl&gt;,
+## #   transcript_7955896 &lt;dbl&gt;, transcript_7939897 &lt;dbl&gt;,
+## #   transcript_8035078 &lt;dbl&gt;, transcript_8113094 &lt;dbl&gt;,
+## #   transcript_7893397 &lt;dbl&gt;, transcript_8110708 &lt;dbl&gt;,
+## #   transcript_8102610 &lt;dbl&gt;, transcript_8083407 &lt;dbl&gt;,
+## #   transcript_8174592 &lt;dbl&gt;, transcript_7922299 &lt;dbl&gt;,
+## #   transcript_7979269 &lt;dbl&gt;, transcript_8074593 &lt;dbl&gt;,
+## #   transcript_7967810 &lt;dbl&gt;, transcript_8052562 &lt;dbl&gt;,
+## #   transcript_7927775 &lt;dbl&gt;, transcript_8005601 &lt;dbl&gt;,
+## #   transcript_8129974 &lt;dbl&gt;, transcript_8070295 &lt;dbl&gt;,
+## #   transcript_7952795 &lt;dbl&gt;, transcript_8044743 &lt;dbl&gt;,
+## #   transcript_7896053 &lt;dbl&gt;, transcript_7894489 &lt;dbl&gt;,
+## #   transcript_8048889 &lt;dbl&gt;, transcript_7894063 &lt;dbl&gt;,
+## #   transcript_8171539 &lt;dbl&gt;, transcript_8011396 &lt;dbl&gt;,
+## #   transcript_7983157 &lt;dbl&gt;, transcript_8171848 &lt;dbl&gt;,
+## #   transcript_8097443 &lt;dbl&gt;, cg04950931 &lt;dbl&gt;, cg21697851 &lt;dbl&gt;,
+## #   cg20092728 &lt;dbl&gt;, cg12804791 &lt;dbl&gt;, cg11619216 &lt;dbl&gt;, cg07802350 &lt;dbl&gt;,
+## #   cg13175060 &lt;dbl&gt;, cg25632577 &lt;dbl&gt;, cg11811391 &lt;dbl&gt;, cg20981848 &lt;dbl&gt;,
+## #   cg14025883 &lt;dbl&gt;, cg25493658 &lt;dbl&gt;, cg01491071 &lt;dbl&gt;, cg03777414 &lt;dbl&gt;,
+## #   cg20586124 &lt;dbl&gt;, cg16175792 &lt;dbl&gt;, cg25961733 &lt;dbl&gt;, cg13912117 &lt;dbl&gt;,
+## #   cg27307465 &lt;dbl&gt;, cg23825057 &lt;dbl&gt;, cg17949440 &lt;dbl&gt;, cg04098985 &lt;dbl&gt;,
+## #   cg16886987 &lt;dbl&gt;, cg22860917 &lt;dbl&gt;, cg21594328 &lt;dbl&gt;, cg23903035 &lt;dbl&gt;,
+## #   cg14393923 &lt;dbl&gt;, cg25103160 &lt;dbl&gt;, cg04640920 &lt;dbl&gt;, cg01522692 &lt;dbl&gt;,
+## #   cg23249922 &lt;dbl&gt;, cg15903956 &lt;dbl&gt;, cg10688297 &lt;dbl&gt;, cg07989490 &lt;dbl&gt;,
+## #   cg16090790 &lt;dbl&gt;, cg01519765 &lt;dbl&gt;, cg18444702 &lt;dbl&gt;, cg16404259 &lt;dbl&gt;,
+## #   cg12077460 &lt;dbl&gt;, cg22517735 &lt;dbl&gt;, cg01713086 &lt;dbl&gt;, cg16734734 &lt;dbl&gt;,
+## #   cg00886182 &lt;dbl&gt;, cg07891440 &lt;dbl&gt;, cg15715892 &lt;dbl&gt;, cg21368161 &lt;dbl&gt;,
+## #   cg03766264 &lt;dbl&gt;, ...
+```
+
+---
+layout: false
+class: inverse center middle text-white
+
+# 3 essential components 
+## to every ggplot2 graph
+
+### **Data**, **Geom**etry, **Aes**thetics
+
+---
+
+First step of every ggplot2 call is to *declare* the data.
+
+.pull-left[
+
+```r
+*ggplot(data = geo_data)
+```
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-1-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+Then, we can assign variables in our data to different *aesthetics* of the plot.
+
+.pull-left[
+
+
+```r
+ggplot(data = geo_data,
+*      aes(x = ga_weeks,
+*          y = cg20970886))
+```
+
+This is referred to as *aesthetic mapping*.
+
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-2-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+Add **geometries (geoms)** to complete the plot.
+
+.pull-left[
+
+
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886)) +
+* geom_point()
+```
+
+Geoms are like saying what type of plot you want (e.g. scatterplot, boxplots, histograms... etc.)
+
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-3-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+There are many *geoms*. Sometimes it makes sense to combine several.
+
+.pull-left[
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886)) +
+* geom_point() +
+* geom_smooth(method = "lm")
+```
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-4-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+We can assign other variables to other aesthetics, e.g. color.
+
+.pull-left[
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886,
+*          color = maternal_ethnicity)) +
+  geom_point() + 
+  geom_smooth(method = "lm") 
+```
+
+But note that this assigned maternal ethnicity to the color of both points and lines!
+
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-5-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+To assign color exclusively to points (and not lines), put inside specific geom:
+
+.pull-left[
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886)) + 
+* geom_point(aes(color = maternal_ethnicity)) +
+  geom_smooth(method = "lm") 
+```
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-6-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+Can change the *shape* of points
+
+.pull-left[
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886)) + 
+  geom_point(aes(color = maternal_ethnicity),
+*            shape = 3) +
+  geom_smooth(method = "lm") 
+```
+
+See [reference](https://ggplot2.tidyverse.org/reference/scale_shape.html) for complete list of shapes.
+
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-6-2-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+A common mistake is to forget the aesthetic call.
+
+.pull-left[
+
+```r
+ggplot(data = geo_data,
+       aes(x = ga_weeks,    
+           y = cg20970886)) + 
+* geom_point(color = "blue",
+             shape = 3) + 
+  geom_smooth(method = "lm") 
+```
+]
+
+.pull-right[
+&lt;img src="intro-to-gglot2_files/figure-html/our-first-plot-7-out-1.png" width="100%" height="100%" /&gt;
+]
+
+This assigns color to all the data
+
+---
+
+At this point, we've covered the 3 essential components to any ggplot2 plot:
+
+1. **Data** - declare with a `ggplot(data = ...)` call 
+
+2. **Aesthetics** - assign input to plot components with `aes()`, e.g. (x/y position, color)
+
+3. **Geoms** - declare the type of geometry, e.g. `+ geom_point()` for points
+
+---
+
+# There are so many geoms
+
+Each geom has their own required aesthetics, and optional ones
+
+- `geom_point` requires `x` and `y`, and that they be numeric variables
+- `geom_boxplot` requires `x` and `y`, but `x` must be categorical
+- `geom_histogram` and `geom_density` requires `x`
+- `geom_text` requires `x`, `y`, and `text`
+
+Check out [tidyverse site](https://ggplot2.tidyverse.org/reference/#section-geoms) for full list.
+
+You can visit help pages for more information on a specific geom's options (e.g. `?geom_point`)
+
+Now we know the basics, we can explore ways to customize our plots
+
+---
+.left-code[
+
+
+```r
+*ggplot(data = geo_data)
+```
+
+We'll start by looking at the methylation of this CpG site between preeclamptic and non-preeclamptic samples
+
+First we declare the data.
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-1-1-out-1.png" width="100%" height="100%" /&gt;
+]
+
+PE: diagnosed with preeclampsia
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+*      aes(x = diagnosis,
+*          y = cg20970886,
+*          fill = diagnosis))
+```
+
+Then we declare the mappings of our variables to aesthetics
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-1-2-out-1.png" width="100%" height="100%" /&gt;
+]
+
+PE: diagnosed with preeclampsia
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis, 
+           y = cg20970886,
+           fill = diagnosis)) +
+* geom_boxplot()
+```
+
+To specify we want boxplots, we use `geom_boxplot`
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-1-3-out-1.png" width="100%" height="100%" /&gt;
+]
+
+PE: diagnosed with preeclampsia
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+* geom_point()
+```
+
+It can be informative to plot all individual data points over top of the boxplots.
+
+To add individual data points, we simply add another geometry, `geom_point`
+
+But it's a bit hard to see when the points overlap each other..
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-2-1-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+* geom_jitter()
+```
+
+`geom_jitter` adds "noise" so that the points are spread out horizontally.
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-2-2-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+layout: false
+class: inverse center middle text-white
+
+# Customizing your graphs
+# Scales and themes
+
+---
+
+# Scales
+
+`aes` determines which data variables are mapped to each component of the graph
+
+`scale_*_*` functions determine *how* this mapping is done
+
+`scale_&lt;aes&gt;_&lt;type&gt;` calls all start with "`scale_`" followed by the target aesthetic (e.g. x, y, color, fill), and finished by the type (e.g. discrete, continuous).
+
+For example,
+
+Want to change the limits on the y-axis? where the ticks appear? or maybe change to a log scale? Use 
+`scale_y_continuous(limits = c(0,1))` or
+`scale_y_log10()`
+
+Want to change colors? Use
+`scale_color_discrete()` for categorical variables
+`scale_color_continuous()` for continuous variables
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+* scale_fill_manual(values = c("orange", "#7ED7F2"))
+```
+
+Here I assign specific colors to the categories of the diagnosis variable.
+
+I supplied a vector of colors (can be in hex code) of same length of the number of categories of the variable `diagnosis`.
+
+]
+
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-3-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+* scale_x_discrete(labels = c("Controls",
+*                             "Cases"))
+```
+
+Here I change the labels of my x-axis.
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-4-1-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+* scale_x_discrete(labels = c("non-PE" = "Controls",
+*                             "PE" = "Cases"))
+```
+
+It's better to be explicit about which label corresponds to which category
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-4-2-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+* scale_y_continuous(limits = c(0, 1),
+*                    breaks = c(0, 0.5, 1))
+```
+
+Here I expand the y axis to 0 and 1, the natural range of methylation.
+
+I also change where I want the ticks (i.e. "breaks") to appear.
+
+Note that the y axis is a numeric variable and x axis is categorical, and how the respective scale calls reflect that.
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-5-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) + 
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+* theme(axis.text = element_text(colour = 'blue'))
+```
+
+The **`theme()`** function call allows for a customization of the non-data components of a plot. Things like the title, labels, font size, gridlines, etc.
+
+Pull up `?theme` to see a full description of all options
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-6-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+* theme(axis.text = element_text(colour = 'blue'),
+*       panel.grid.major= element_line(colour = 'black'),
+*       panel.grid.minor = element_blank())
+```
+
+Most `theme()` arguments will require an "`element_*`" as input.
+
+The type of element depends on the type of input (e.g. `element_text` for `axis.text`, `element_rect` for `panel.border`).
+
+`element_blank` to remove components.
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-7-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+* theme_bw(base_size = 20)
+```
+
+There are some predefined themes that look nice and easy to use.
+
+- `theme_gray` - default ggplot2 theme
+- `theme_classic` - minimal with no gridlines
+- `theme_bw` - clean look with white background
+
+[List of complete ggplot2 themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-8-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+  theme_bw(base_size = 20) +
+* theme(legend.position = 'top')
+```
+
+You can customize these complete themes by calling `theme()` after e.g. `theme_bw()`
+
+]
+
+.right-plot[
+&lt;img src="intro-to-gglot2_files/figure-html/fine-tune-9-out-1.png" width="100%" height="100%" /&gt;
+]
+
+---
+
+.left-code[
+
+
+```r
+*p &lt;- ggplot(data = geo_data,
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+  theme_bw(base_size = 20) +
+  theme(legend.position = 'top')
+```
+
+
+]
+
+.right-plot[
+
+There are a couple of options to save plots in R.
+
+Probably the simplest way is to use `ggsave` from `ggplot2`.
+
+First thing to do is to assign your plot into an object.
+
+I assigned our plot to the object named `p`
+
+]
+
+---
+
+.left-code[
+
+
+```r
+p &lt;- ggplot(data = geo_data, 
+       aes(x = diagnosis,
+           y = cg20970886,
+           fill = diagnosis)) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_manual(values = c("orange", "#7ED7F2")) + 
+  scale_x_discrete(labels = c("non-PE" = "Controls", 
+                              "PE" = "Cases")) +
+  scale_y_continuous(limits = c(0, 1), 
+                     breaks = c(0, 0.5, 1))  +
+  theme_bw(base_size = 20) +
+  theme(legend.position = 'top')
+
+*ggsave(plot = p,
+*      filename = "this-plot.png",
+*      device = 'png',
+*      dpi = 72,
+*      height = 5,
+*      width = 7)
+```
+
+]
+
+.right-plot[
+
+Then we can call `ggsave` on object `p`.
+
+I would recommend specifying the following options:
+
+- `filename`, the name and location where you want the plot to be saved
+-  `device`, the type of image file (e.g. "pdf", "png", "tiff", etc...)
+- `height`, `width` - determines the dimensions of your plot
+- `dpi`, resolution
+
+After you run the code, check your local directory for the png file.
+
+]
+---
+
+# Resources
+
+- Stack exchange for online help
+- TOG study group / slack
+- [ggplot2  extensions](https://exts.ggplot2.tidyverse.org/)
+- [ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+- [r 4 data science data visualization chapter](https://r4ds.had.co.nz/data-visualisation.html)
+- [Eva Maerey's ggplot2 grammar guide](https://evamaerey.github.io/ggplot2_grammar_guide/about)
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
