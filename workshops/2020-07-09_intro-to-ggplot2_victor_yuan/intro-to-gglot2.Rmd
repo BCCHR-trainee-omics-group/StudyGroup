@@ -1,5 +1,6 @@
 ---
 title: "Introduction to ggplot2"
+subtitle: "download @ bit.ly/2ZOShd4"
 author: "Victor Yuan"
 date: "2020-07-09"
 output:
@@ -709,6 +710,7 @@ After you run the code, check your local directory for the png file.
 
 - Stack exchange for online help
 - TOG study group / slack
+- [Past TOG workshops](https://github.com/BCCHR-trainee-omics-group/StudyGroup)
 - [ggplot2  extensions](https://exts.ggplot2.tidyverse.org/)
 - [ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 - [r 4 data science data visualization chapter](https://r4ds.had.co.nz/data-visualisation.html)
