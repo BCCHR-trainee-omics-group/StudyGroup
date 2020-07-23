@@ -35,7 +35,7 @@ When: July 23,2020
 ## Setup
 
 - Please have the latest version of R and Rstudio installed. 
-- Download the [r markdown file](workshops/2020-07-23_data_wrangling_ak/Participant_data_wrangle_workshop.Rmd) for this workshop and open it in Rstudio.
+- Download the [r markdown file](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/2020-07-23_data_wrangling_ak/Participant_data_wrangle_workshop.Rmd) for this workshop and open it in Rstudio.
 
 - Install the following R packages now, if you haven't already:
 
