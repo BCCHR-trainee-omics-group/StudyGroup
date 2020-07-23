@@ -2,8 +2,8 @@
 
 This is for the **Trainee Omics Group (TOG)** -ran bi-weekly study group. Details on scheduling, curriculum and engagement can be found in here.
 
-**Contact Us**
-For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/). 
+**Contact Us**   
+For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/).    
 Or write us an email at: tog (at) bcchr (dot) ca
 
 # Workshops
