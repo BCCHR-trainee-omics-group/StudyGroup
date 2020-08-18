@@ -5,7 +5,7 @@ author: "Victor Yuan"
 date: "2020-07-09"
 output:
   xaringan::moon_reader:
-    css: ["default", "middlebury-fonts", "custom.css"]
+    css: ["default", "middlebury-fonts", "custom1.css"]
     lib_dir: libs
     nature:
       ratio: 16:9
