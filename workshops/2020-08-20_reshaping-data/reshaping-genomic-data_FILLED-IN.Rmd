@@ -1,0 +1,334 @@
+---
+title: "Reshaping genomic data - FILLED IN"
+output:
+  html_document:
+    keep_md: true
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+    theme: spacelab
+    self_contained: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Setup
+
+First we need to install pacakges (if you haven't already) and load libraries and data
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse) # install.packages('tidyverse')
+
+pdat <- read_csv('https://raw.githubusercontent.com/BCCHR-trainee-omics-group/StudyGroup/master/workshops/2020-08-20_reshaping-data/pdat.csv')
+
+meth <- read_csv('https://raw.githubusercontent.com/BCCHR-trainee-omics-group/StudyGroup/master/workshops/2020-08-20_reshaping-data/meth.csv')
+
+expr <- read_csv('https://raw.githubusercontent.com/BCCHR-trainee-omics-group/StudyGroup/master/workshops/2020-08-20_reshaping-data/expr.csv')
+```
+
+# Introduction
+
+Data (especially genomic) can be orghanized in many ways
+
+However, functions in R (and in other software) will expect your data to be in organized in a very specific way
+
+Therefore, it's essential for anyone working with genomic data to be able to comfortably manipulate data into different organizations / shapes
+
+## Some conventions in genomic analysis
+
+In genomic data especially, because our data is so large, there are conventions on how data is usually "stored"
+
+Usually, genomic data is kept separate from phenotypic information
+
+In our case, we have a `pdat`, `meth`, and `expr` dataframes.
+
+1. `pdat` is our **phenotype data frame**
+
+It contains sample-level information: 
+
+expr_geo_id - the GEO id accession for the expression data
+meth_geo_id - the GEO id accession for the methylation data
+diagnosis - preeclampsia or non-preeclampsia pregnancy
+tissue - all placental
+maternal_age - mom's age
+...
+
+Take a look:
+
+```{r}
+pdat
+```
+
+2. `meth` 
+
+**Genomic data is usually stored where the variables, in this case the methylation cpg sites, are organized as rows, and samples are columns.**
+
+```{r}
+meth
+```
+
+3. `expr`
+
+The expression data is organized in the same manner, with transcripts organized in rows, samples in columns.
+```{r}
+expr
+```
+
+There are a number reasons why it is often easier to keep genomic data separate:
+
+- We can take advantage of more efficient ways of storing genomic data, if it's in it's own object (e.g. matrix, sparse matrix)
+
+- Often it is convenient to have ready access to the phenotypic data. If it was combined with genomic data, it might be more difficult/cumbersome to access often.
+
+**However,**
+
+There are situations where you will need to be flexible with how your data is organized
+
+## genomic data + ggplot2
+
+`ggplot2`, which is a very powerful plotting tool in r, requires all data to be used in a plot, to be in the same data frame. Not only that, but the data needs to be in a particular format
+
+We will go through a common situation where we will visualize the expression and methylation of several cpgs and transcripts, across different types of samples.
+
+**Some motivation**
+
+Your supervisor believes that the expression at a locus is controlled by a group of methylation sites. In particular we think two methylation sites are important, and in our data we have expression measured on two transcripts from this locus. The expression of these transcripts  has also been reported to be associated with preeclampsia pregnancies. We want to produce a single graphic that explores these relationships.
+
+To do this, we need to combine the specific transcripts and methylation sites with pdat into a single dataframe, in order to visualize with ggplot2.
+
+We're going to walk through this problem together.
+
+Let's start by filtering to the methylation sites, and then joining this data to our `pdat` dataframe.
+
+# Filtering methylation data
+
+The 2 CpGs we are interested in is "cg03730249" and "cg10440877"
+
+```{r}
+meth %>% 
+  filter(cpg %in% c("cg03730249", "cg10440877"))
+```
+
+Great, we got our two cpgs out. Now we have to add this data to the pdat, so that we can visualize this data with the `diagnosis` variable.
+
+But consider that our methylation data is organized as *features (cpgs) in rows* and *observations (samples) in columns*
+
+Whereas, our pdat is organized as *observations (samples) in rows* and *features (phenotype data) in columns*:
+
+```{r}
+pdat
+```
+
+We need to reshape one of these dataframes before we can join them together. We're going to reshape the methylation data frame because the pdata is actually in the correct organization for ggplot2 already.
+
+Introduce `pivot_longer`
+
+# pivot_longer
+
+This function will allow us to turn information that's in the columns (methylation geo IDs) and move that information into a column itself.
+
+Another way to think of this operation is that we are making our data "longer" (less columns, more rows)
+
+This is what the input of our `pivot_longer` operation looks like:
+
+```{r}
+meth %>%
+  filter(cpg %in% c("cg03730249", "cg10440877")) 
+```
+
+This is the output: 
+
+```{r}
+meth_long <- meth %>% 
+  filter(cpg %in% c("cg03730249", "cg10440877")) %>%
+  pivot_longer(cols = -cpg,
+               names_to = 'meth_geo_id',
+               values_to = 'beta')
+meth_long
+```
+
+
+It takes 3 necessary arguments:
+
+1. `cols` - which columns do you want to apply this function to. Can use select helpers
+
+2. `names_to` - what is the new variable name where the existing column names of 1. will go to
+
+3. `values_to` - what is the new variable name for the existing contents of 1. will go to
+
+*note* previous versions of `pivot_longer` and `pivot_wider` were called `gather` and `spread`. Previous to `dplyr`, there were equivalent base-r functions called `melt` and `cast`. I would suggest learning `pivot_longer` and `pivot_wider` as they have more functionality and are going to be maintained and improved on in the future.
+
+## expression data
+
+Let's do the same thing for expression data. 
+
+This is what the expression data looks like, after filtering to the specific two transcript of interest:
+
+```{r}
+expr %>%
+  filter(transcript %in% c("transcript_7927775", "transcript_8127692")) 
+```
+
+Your turn,
+
+```{r}
+expr_long <- expr %>%
+  filter(transcript %in% c("transcript_7927775", "transcript_8127692")) %>%
+  pivot_longer(cols = -transcript,
+               names_to = 'expr_geo_id',
+               values_to = 'expression')
+expr_long
+```
+
+
+
+Great, now that our expression and methylation data are in the same organization as our pdat, we can join this data together.
+
+
+# _join functions
+
+When we join data, it is common for beginners to simply "glue" two data frames together. This works, but only makes sense if the two pieces of data are ordered the same. 
+
+E.g. sample 1 is in row 1 in dataframe A and B, sample 2 is in row 2 in dataframe A and B, ... etc.
+
+This approach is prone to error, because it relies on the user to determine if the data frames are matching. 
+
+Instead, using "_join" operations ensure that the two data frames are always joined in the correct order.
+
+_join functions require that there is a common index column between two data frames. In our case, this is `expr_geo_id` for the expression data, and `meth_geo_id` for the methylation data. Both of these variables are in our `pdat` dataframe.
+
+```{r}
+pdat_join <- pdat %>%
+  
+  # we're going to only use the columns necessary for joining, and the diagnosis column
+  select(meth_geo_id, expr_geo_id, diagnosis) %>%
+  
+  # join methylation data
+  left_join(meth_long, by = 'meth_geo_id') %>%
+  
+  # join expression data
+  left_join(expr_long, by = 'expr_geo_id')
+
+pdat_join
+```
+
+Joining dataframes is a very common operation in any data analysis workflow. Learning the different types of possible joins is out of the scope of this tutorial but here are some resources that you can look at on your own:
+
+- [STAT 545 join chapter](https://stat545guidebook.netlify.app/tibble-joins.html)
+
+- [dplyr join vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html)
+
+- [fuzzyjoin for joining on genomic coordinates](https://github.com/dgrtwo/fuzzyjoin)
+
+# plotting the results
+
+
+```{r}
+pdat_join %>%
+  ggplot(aes(x = beta, y = expression)) +
+  geom_point(aes(color = diagnosis)) +
+  geom_smooth(method = 'lm') +
+  facet_grid(transcript~cpg, scales = 'free_y')
+```
+
+# pivot_wider
+
+We went from 48 rows to 192 rows. Why? Because our methylation data contained two cpgs and our expression data contained two transcripts. When we converted this data into "long" format, we produced four rows for each sample, one for each cpg and transcript (48 * 4 = 192). 
+
+For computation, this type of organization is going to be easier, which is why ggplot2 (and other packages) require it. However, for reporting / reading by hand, it is usually easier to read the data where each cpg and transcript is in it's separate column.
+
+So let's say you now want to share this data with your supervisor. We should try to make the data more "friendly" for reading. In other words, we're going to do the opposite of what we just did, and put the two cpgs and two transcripts into their own columns.
+
+Doing this, we will be going from "long" data to "wide" data. We will use the function `pivot_wider`
+
+Let's see it in action:
+
+```{r}
+# "long" data to be made wider
+pdat_join
+```
+
+First, we will expand the cpg data:
+
+```{r}
+pdat_join %>%
+  pivot_wider(id_cols = -c(cpg, beta),
+              names_from = cpg,
+              values_from = beta)
+```
+
+Notice we now have 96 rows, and that we have two new columns that are named after the two cpgs.
+
+Let's explain what's going on. There are three essential arguments to `pivot_wider`:
+
+- `id_cols`: refers to the columns that are not being made "wider" (which in this example, is our `cpg` and `beta` columns)
+
+- `names_from`: refers to the column that contains the new column names (e.g. cpg identifiers)
+
+- `values_from`: refers to the column that contains the values for the new columns (e.g. the beta values)
+
+Let's apply `pivot_wider` to expand the transcript data into their own columns. We'll just add on to our previous code:
+
+```{r}
+pdat_join %>%
+  
+  # methylation data
+  pivot_wider(id_cols = -c(cpg, beta),
+              names_from = cpg,
+              values_from = beta) %>%
+  
+  # expression data
+  pivot_wider(id_cols = -c(transcript, expression),
+              names_from = transcript,
+              values_from = expression)
+```
+
+Now we're back to 48 rows, one for each sample, and we have columns for each cpg and transcript. 
+
+# Extra exercise
+
+## plot list of differentially methylated cpgs
+
+You've finished a differential expression analysis and now have a list of differentially expressed transcripts between preeclampsia (PE) and non-preeclampsia (non-PE) placentas. You want to plot the top 10 of these to show you to your supervisor.
+
+```{r}
+# let's say these are your top 10 differentially expressed transcripts
+top10 <- meth$cpg[c(1,5,10,15,20,25,30,35,40,45)]
+
+# reshape 
+top10_long <- meth %>%
+  filter(cpg %in% top10) %>%
+  pivot_longer(
+    
+     # another way to select all sample name columns
+    cols = contains('GSM'),
+    
+    names_to = 'meth_geo_id',
+    values_to = 'beta')
+
+top10_long
+```
+
+Now join to pdat
+
+```{r}
+pdat_join_top10 <- pdat %>%
+  left_join(top10_long)
+pdat_join_top10
+```
+
+Now plot
+
+```{r}
+pdat_join_top10 %>%
+  ggplot(aes(x = diagnosis, y = beta, fill = diagnosis)) +
+  geom_boxplot() +
+  facet_wrap(~cpg, nrow = 2) +
+  theme_classic() +
+  theme(axis.ticks = element_blank(),
+        axis.text.x = element_blank()) +
+  labs(x = '')
+```
+ 
+ 
