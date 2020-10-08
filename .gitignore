@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 *.Rproj
+*series_matrix.txt.gz
