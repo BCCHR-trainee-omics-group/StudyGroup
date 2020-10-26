@@ -1,0 +1,212 @@
+---
+title: "EOPE EWAS Visualization"
+author: "William Casazza"
+date: "April 8, 2020"
+output: github_document
+---
+# Running an Epigenome Wide Association Study on Data from GEO
+## Introduction
+Welcome all to the first in a three part series on working with publicly available data from the 450K array! This worksheet will walk you through the oddities of downloading data from the Gene Expression Omnibus (GEO), all the way to running some linear models to detect sites that are differentially methylated between case and control groups! 
+
+### The data
+We will be repeating an analysis conducted on processed data from Illumina's 450k DNA methylation array from placentas collected from instances of different complications during birth, including early and late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth restriction (IUGR) . For more information on this study please refer to [Wilson et al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391).
+
+### R packages and set-up
+The following packages will be required for this tutorial, if you have not already done so you can install them by pasting the following commands into your R console:
+```r
+install.packages("BiocManager")
+BiocManager::install(c(
+  "GEOquery", # For loading data from GEO
+  "Biobase", # For changing the format of data from GEO
+  "limma", # For running differential methylation analysis
+  "ggplot2" # For making nice plots,
+  "reshape2" # For changing data formats
+))
+```
+Once these packages have been installed, you can run the code chunk below to load them for your current R session:
+```{r setup,echo=FALSE}
+library(GEOquery)
+library(Biobase)
+library(limma)
+library(ggplot2)
+library(reshape2)
+```
+
+## Step 1: Downloading and formatting the data
+The datasets on [(download the data here)](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE100nnn/GSE100197/matrix/GSE100197_series_matrix.txt.gz). For this tutorial, place this `GSE100197_series_matrix.txt.gz` file in the same folder as  `eope_ewas_workflow.Rmd`, and proceed by running code in the `eope_ewas_workflow.Rmd` file.
+
+Data from GEO is stored as a special `series_matrix.txt.gz` file. This file typically contains processed count or methylation data, *in addition to* phenotypic information like disease status, sex, and age.[^1].
+
+The `getGEO` function loads in this data as a special *object* and we can access phenotypes and methylation tables from this dataset using the `phenoData` and `exprs` function respectively:
+
+### Loading the GEO object:
+```{r load_data}
+eset <- getGEO(file="GSE100197_series_matrix.txt.gz")
+# alternatively uncomment and run the command below:
+# eset <- getGEO("GSE100197")
+eset
+```
+From the above printout, we can see that the object contains an "assay" stored under `assayData` and variables stored under `phenoData`. 
+### Formatting the metadata (all data that *isn't* DNA methylation):
+Let's access we can use `pData` to get the phenotypes of our subjects as a matrix:
+```{r format_data}
+metadata <- pData(eset)
+head(metadata)
+
+# Rename weird columns
+colnames(metadata) <- gsub(":ch1| ","",colnames(metadata))
+
+# Select just the variables we want to analyse
+metadata <- metadata[,c("pathologygroup","fetalsex","gestationalage")]
+head(metadata)
+
+```
+
+We can now do the following:
+1. Remove Replicate samples
+2. Make sure age is encoded as a NUMBER
+3. Make a variable for status, which encodes pre-term and term pregnancies as a CONTROL group
+```{r}
+# Step 1
+metadata <- metadata[!metadata$pathologygroup == "REPLICATE",] 
+
+# Step 2
+metadata$gestationalage <- as.numeric(metadata$gestationalage) 
+
+# Step 3
+metadata$status <- sapply(
+  metadata$pathologygroup,
+  function(x)
+    if(x== "Term" | x == "PreT"){
+      return("CONTROL")
+    } else{
+      return(x)
+    }
+)
+head(metadata)
+```
+
+### Re-ordering our methylation data
+Now that we've removed some samples based on our phenotype data, we should load in our methylation data using the `exprs` function, and then use the `match` function to match the samples in our `metadata` matrix to thos in our methylation matrix:
+```{r}
+methy <- exprs(eset)
+methy[1:5,1:5]
+dim(methy)
+matched <- match(rownames(metadata),colnames(methy))
+methy <- methy[,matched]
+dim(methy)
+all(colnames(methy) == rownames(metadata))
+```
+## Step 2: Data visualization
+Visualizing data can be a good way to make sure that we 1)understand the format of our data exactly and 2) haven't made any unexpected mistakes in processing. 
+
+For example, we can visualize DNA methylation for several samples to make sure that the distribution of $\beta$ values is what we expect.
+In placenta, we expect for most CpG sites that DNA methylation will be low or high. However, an interesting quirk of placental DNA methylation is that many sites will show intermediate levels of methylation as well, giving our density distribution a characteristic "three-hump" shape.
+
+Let's plot the distribution of all $\beta$ values for the first 5 subjects:
+```{r}
+# First reformat data for ggplot
+to_plot <- melt(
+  methy[,1:5],
+  value.name = "beta",
+  varnames = c("Probes","Subjects") # c(rownames,colnames)
+)
+
+head(to_plot)
+
+ggplot(to_plot,aes(x=beta,color=Subjects)) +
+  geom_density()
+
+```
+
+Lets also look at the phenotypic characteristics of our data:
+```{r}
+ggplot(metadata,aes(pathologygroup)) + geom_bar()
+ggplot(metadata,aes(x=pathologygroup, fill=fetalsex)) + 
+  geom_bar() 
+ggplot(metadata,aes(x=pathologygroup, fill=fetalsex)) + 
+  geom_bar(position="fill")
+ggplot(metadata,aes(x=pathologygroup, y=gestationalage)) + 
+  geom_boxplot() 
+```
+
+## Step 3: Fit linear model and relevant contrasts
+```{r run_fit}
+model <- model.matrix(~ 0+ pathologygroup + fetalsex, data=metadata)
+fit <- lmFit(methy, model)
+fit <- eBayes(fit)
+contrasts <- makeContrasts(
+preTEOPE=pathologygroupPreT-pathologygroupEOPE,
+preTLOPE=pathologygroupPreT-pathologygroupLOPE,
+preTIUGR=pathologygroupPreT-pathologygroupIUGR,
+termEOPE=pathologygroupTerm-pathologygroupEOPE,
+termLOPE=pathologygroupTerm-pathologygroupLOPE,
+termIUGR=pathologygroupTerm-pathologygroupIUGR,
+sex=fetalsexMALE,levels=model)
+fitCont <- contrasts.fit(fit,contrasts)
+fitCont <- eBayes(fitCont)
+colnames(contrasts)
+```
+## Extract stats from relevant comparisons
+```{r}
+eope_stats <- topTable(fitCont,coef = "preTEOPE", adjust.method = "BH", p.value = 0.05, lfc = 0.1, number = Inf)
+nrow(eope_stats)
+eope_sex <- topTable(fitCont,coef = "sex", adjust.method = "BH", p.value = 0.05, lfc = 0.1, number = Inf)
+nrow(eope_sex)
+```
+
+Published data
+```{r}
+pub_dme <- read.csv(
+  "ddx391_ST1_PersistentHits599_GeneInfo_2017.csv", 
+  stringsAsFactors = F)
+pub_dme <- pub_dme[pub_dme$Probe %in% rownames(eope_stats),]
+```
+
+## Step 4: Plotting results from our EWAS
+### Correlation
+```{r}
+shared_hits_df <- as.data.frame(cbind(pub_dme,eope_stats[pub_dme$Probe,]))
+corr <- cor.test(-log10(shared_hits_df$adj.P.Val),-log10(shared_hits_df$EOPE.vs.Pre.term.p.value..Discovery.Cohort),method="pearson")
+corr2 <-cor.test(shared_hits_df$EOPE.Δβ..Discovery.Cohort,shared_hits_df$logFC, method = "pearson")
+ggplot(shared_hits_df, aes(-log10(EOPE.vs.Pre.term.p.value..Discovery.Cohort),-log10(adj.P.Val))) + 
+  geom_point()+  
+  coord_cartesian(xlim=c(0,15),ylim=c(0,15))+
+  geom_abline(slope = 1,intercept = c(0,0))+
+  ggtitle(sprintf("R:%0.3f",corr$estimate))
+ggplot(shared_hits_df, aes(EOPE.Δβ..Discovery.Cohort,logFC)) + 
+  geom_point()+  
+  geom_abline(slope = 1,intercept = c(0,0))+
+  ggtitle(sprintf("R:%0.3f",corr2$estimate))
+```
+
+```{r}
+plot_stats <- function(cont){
+all_eope_stats <- topTable(fitCont,coef = cont, adjust.method = "BH",number = Inf)
+all_eope_stats$color <- ifelse(
+  all_eope_stats$adj.P.Val <0.05,
+  ifelse(
+    all_eope_stats$logFC > 0.1,
+    "DME_pos",
+    ifelse(all_eope_stats$logFC < -0.1,
+      "DME_neg",
+      "not DME"
+    )),
+  "not DME")
+p <- ggplot(all_eope_stats, aes(logFC,-log10(adj.P.Val),color=color)) + 
+  geom_point(size=1,alpha=0.3)+
+  scale_color_manual(values = c("DME_pos"="dark green","DME_neg"="red","not DME"="black"))+
+  coord_cartesian(xlim=c(-0.3,0.3),ylim=c(0,10))
+print(p)
+return(all_eope_stats)
+}
+eope_all_stat <-plot_stats("preTEOPE")
+lope_all_stat<- plot_stats("termLOPE")
+```
+```{r}
+sum(abs(eope_all_stat$logFC) >0.1& eope_all_stat$adj.P.Val <0.05)
+sum(abs(lope_all_stat$logFC) > 0.1 & lope_all_stat$adj.P.Val <0.05)
+```
+
+
+[^1]: If you instead need to work from *raw* data from a methylation array (in the form of an `.idat` file), please look into the package `minfi`. A nice tutorial on processing this type of data by the maintainer of `minfi` is available [here](https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html). 
