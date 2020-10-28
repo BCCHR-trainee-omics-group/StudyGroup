@@ -9,7 +9,7 @@ output: github_document
 Welcome all to the first in a three part series on working with publicly available data from the 450K array! This worksheet will walk you through the oddities of downloading data from the Gene Expression Omnibus (GEO), all the way to running some linear models to detect sites that are differentially methylated between case and control groups! 
 
 ### The data
-We will be repeating an analysis conducted on processed data from Illumina's 450k DNA methylation array from placentas collected from instances of different complications during birth, including early and late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth restriction (IUGR) . For more information on this study please refer to [Wilson et al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391).
+We will be repeating an analysis using processed data from Illumina's 450k DNA methylation array. The samples were taken from placenta, where subjects had different complications during birth, including early and late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth restriction (IUGR) . For more information on this study please refer to [Wilson et al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391).
 
 ### R packages and set-up
 The following packages will be required for this tutorial, if you have not already done so you can install them by pasting the following commands into your R console:
@@ -37,7 +37,7 @@ The datasets requried for this tutorial can be downloaded [here](https://ftp.ncb
 
 Data from GEO is stored as a special `series_matrix.txt.gz` file. This file typically contains processed count or methylation data, *in addition to* phenotypic information like disease status, sex, and age.[^1].
 
-The `getGEO` function loads in this data as a special *object* and we can access phenotypes and methylation tables from this dataset using the `phenoData` and `exprs` function respectively:
+The `getGEO` function loads in this data as a special *object* and we can access phenotypes and methylation tables from this dataset using the `pData` and `exprs` function respectively:
 
 ### Loading the GEO object:
 ```{r load_data}
@@ -46,11 +46,11 @@ eset <- getGEO(file="GSE100197_series_matrix.txt.gz")
 # eset <- getGEO("GSE100197")
 eset
 ```
-From the above printout, we can see that the object contains an "assay" stored under `assayData` and variables stored under `phenoData`. 
+From the above printout, we can see that the object contains an "assay" stored under `assayData` and variables stored under `phenoData`. These functions can be used for neatly viewing the data, but for our purposes we will need to get them as a `matrix`.
 
 ### Formatting the metadata (all data that *isn't* DNA methylation)
 
-Let's access we can use `pData` to get the phenotypes of our subjects as a matrix:
+We can use `pData` to get the phenotypes of our subjects as a matrix:
 ```{r format_data}
 metadata <- pData(eset)
 head(metadata)
@@ -69,8 +69,6 @@ We can now do the following:
 1. Remove Replicate samples
 
 2. Make sure age is encoded as a NUMBER
-
-3. Make a variable for status, which encodes pre-term and term pregnancies, as a CONTROL group
 ```{r clean_data}
 # Step 1
 metadata <- metadata[!metadata$pathologygroup == "REPLICATE",] 
@@ -78,21 +76,11 @@ metadata <- metadata[!metadata$pathologygroup == "REPLICATE",]
 # Step 2
 metadata$gestationalage <- as.numeric(metadata$gestationalage) 
 
-# Step 3
-metadata$status <- sapply(
-  metadata$pathologygroup,
-  function(x)
-    if(x== "Term" | x == "PreT"){
-      return("CONTROL")
-    } else{
-      return(x)
-    }
-)
 head(metadata)
 ```
 
 ### Re-ordering our methylation data
-Now that we've removed some samples based on our phenotype data, we should load in our methylation data using the `exprs` function, and then use the `match` function to match the samples in our `metadata` matrix to thos in our methylation matrix:
+Now that we've removed some samples based on our phenotype data, we should load in our methylation data using the `exprs` function, and then use the `match` function to match the samples in our `metadata` matrix to those in our methylation matrix:
 ```{r reorder}
 methy <- exprs(eset)
 methy[1:5,1:5]
