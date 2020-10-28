@@ -3,31 +3,21 @@ EOPE EWAS Visualization
 William Casazza
 April 8, 2020
 
-# Running an Epigenome Wide Association Study on Data from GEO
+Running an Epigenome Wide Association Study on Data from GEO
+============================================================
 
-## Introduction
+Introduction
+------------
 
-Welcome all to the first in a three part series on working with publicly
-available data from the 450K array\! This worksheet will walk you
-through the oddities of downloading data from the Gene Expression
-Omnibus (GEO), all the way to running some linear models to detect sites
-that are differentially methylated between case and control groups\!
+Welcome all to the first in a three part series on working with publicly available data from the 450K array! This worksheet will walk you through the oddities of downloading data from the Gene Expression Omnibus (GEO), all the way to running some linear models to detect sites that are differentially methylated between case and control groups!
 
 ### The data
 
-We will be repeating an analysis conducted on processed data from
-Illumina’s 450k DNA methylation array from placentas collected from
-instances of different complications during birth, including early and
-late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth
-restriction (IUGR) . For more information on this study please refer to
-[Wilson et
-al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391).
+We will be repeating an analysis conducted on processed data from Illumina's 450k DNA methylation array from placentas collected from instances of different complications during birth, including early and late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth restriction (IUGR) . For more information on this study please refer to [Wilson et al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391).
 
 ### R packages and set-up
 
-The following packages will be required for this tutorial, if you have
-not already done so you can install them by pasting the following
-commands into your R console:
+The following packages will be required for this tutorial, if you have not already done so you can install them by pasting the following commands into your R console:
 
 ``` r
 install.packages("BiocManager")
@@ -40,8 +30,7 @@ BiocManager::install(c(
 ))
 ```
 
-Once these packages have been installed, you can run the code chunk
-below to load them for your current R session:
+Once these packages have been installed, you can run the code chunk below to load them for your current R session:
 
     ## Loading required package: Biobase
 
@@ -88,22 +77,14 @@ below to load them for your current R session:
     ## 
     ##     plotMA
 
-## Step 1: Downloading and formatting the data
+Step 1: Downloading and formatting the data
+-------------------------------------------
 
-The datasets on [(download the data
-here)](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE100nnn/GSE100197/matrix/GSE100197_series_matrix.txt.gz).
-For this tutorial, place this `GSE100197_series_matrix.txt.gz` file in
-the same folder as `eope_ewas_workflow.Rmd`, and proceed by running code
-in the `eope_ewas_workflow.Rmd` file.
+The datasets requried for this tutorial can be downloaded [here](https://ftp.ncbi.nlm.nih.gov/geo/series/GSE100nnn/GSE100197/matrix/GSE100197_series_matrix.txt.gz). Place this `GSE100197_series_matrix.txt.gz` file in the same folder as `eope_ewas_workflow.Rmd`, and proceed by running code in the `eope_ewas_workflow.Rmd` file.
 
-Data from GEO is stored as a special `series_matrix.txt.gz` file. This
-file typically contains processed count or methylation data, *in
-addition to* phenotypic information like disease status, sex, and
-age.\[1\].
+Data from GEO is stored as a special `series_matrix.txt.gz` file. This file typically contains processed count or methylation data, *in addition to* phenotypic information like disease status, sex, and age.[1].
 
-The `getGEO` function loads in this data as a special *object* and we
-can access phenotypes and methylation tables from this dataset using the
-`phenoData` and `exprs` function respectively:
+The `getGEO` function loads in this data as a special *object* and we can access phenotypes and methylation tables from this dataset using the `phenoData` and `exprs` function respectively:
 
 ### Loading the GEO object:
 
@@ -121,7 +102,7 @@ eset <- getGEO(file="GSE100197_series_matrix.txt.gz")
 
     ## File stored at:
 
-    ## /tmp/RtmpTBnv8I/GPL13534.soft
+    ## /tmp/RtmpqmZjyn/GPL13534.soft
 
     ## Warning: 65 parsing failures.
     ##    row     col           expected     actual         file
@@ -155,11 +136,11 @@ eset
     ##   pubMedIds: 29092053 
     ## Annotation: GPL13534
 
-From the above printout, we can see that the object contains an “assay”
-stored under `assayData` and variables stored under `phenoData`. \#\#\#
-Formatting the metadata (all data that *isn’t* DNA methylation): Let’s
-access we can use `pData` to get the phenotypes of our subjects as a
-matrix:
+From the above printout, we can see that the object contains an "assay" stored under `assayData` and variables stored under `phenoData`.
+
+### Formatting the metadata (all data that *isn't* DNA methylation)
+
+Let's access we can use `pData` to get the phenotypes of our subjects as a matrix:
 
 ``` r
 metadata <- pData(eset)
@@ -338,9 +319,13 @@ head(metadata)
     ## GSM2674417           EOPE     MALE             37
     ## GSM2674418           EOPE     MALE             34
 
-We can now do the following: 1. Remove Replicate samples 2. Make sure
-age is encoded as a NUMBER 3. Make a variable for status, which encodes
-pre-term and term pregnancies as a CONTROL group
+We can now do the following:
+
+1.  Remove Replicate samples
+
+2.  Make sure age is encoded as a NUMBER
+
+3.  Make a variable for status, which encodes pre-term and term pregnancies, as a CONTROL group
 
 ``` r
 # Step 1
@@ -372,10 +357,7 @@ head(metadata)
 
 ### Re-ordering our methylation data
 
-Now that we’ve removed some samples based on our phenotype data, we
-should load in our methylation data using the `exprs` function, and then
-use the `match` function to match the samples in our `metadata` matrix
-to thos in our methylation matrix:
+Now that we've removed some samples based on our phenotype data, we should load in our methylation data using the `exprs` function, and then use the `match` function to match the samples in our `metadata` matrix to thos in our methylation matrix:
 
 ``` r
 methy <- exprs(eset)
@@ -409,21 +391,14 @@ all(colnames(methy) == rownames(metadata))
 
     ## [1] TRUE
 
-## Step 2: Data visualization
+Step 2: Data visualization
+--------------------------
 
-Visualizing data can be a good way to make sure that we 1)understand the
-format of our data exactly and 2) haven’t made any unexpected mistakes
-in processing.
+Visualizing data can be a good way to make sure that we 1) understand the format of our data exactly and 2) haven't made any unexpected mistakes in processing.
 
-For example, we can visualize DNA methylation for several samples to
-make sure that the distribution of \(\beta\) values is what we expect.
-In placenta, we expect for most CpG sites that DNA methylation will be
-low or high. However, an interesting quirk of placental DNA methylation
-is that many sites will show intermediate levels of methylation as well,
-giving our density distribution a characteristic “three-hump” shape.
+For example, we can visualize DNA methylation for several samples to make sure that the distribution of *β* values is what we expect. In placenta, we expect for most CpG sites that DNA methylation will be low or high. However, an interesting quirk of placental DNA methylation is that many sites will show intermediate levels of methylation as well, giving our density distribution a characteristic "three-hump" shape.
 
-Let’s plot the distribution of all \(\beta\) values for the first 5
-subjects:
+Let's plot the distribution of all *β* values for the first 5 subjects:
 
 ``` r
 # First reformat data for ggplot
@@ -449,7 +424,7 @@ ggplot(to_plot,aes(x=beta,color=Subjects)) +
   geom_density()
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/data_viz-1.png)
 
 Lets also look at the phenotypic characteristics of our data:
 
@@ -457,35 +432,88 @@ Lets also look at the phenotypic characteristics of our data:
 ggplot(metadata,aes(pathologygroup)) + geom_bar()
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/pheno-1.png)
 
 ``` r
 ggplot(metadata,aes(x=pathologygroup, fill=fetalsex)) + 
   geom_bar() 
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/pheno-2.png)
 
 ``` r
 ggplot(metadata,aes(x=pathologygroup, fill=fetalsex)) + 
   geom_bar(position="fill")
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/pheno-3.png)
 
 ``` r
 ggplot(metadata,aes(x=pathologygroup, y=gestationalage)) + 
   geom_boxplot() 
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-4-4.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/pheno-4.png)
 
-## Step 3: Fit linear model and relevant contrasts
+Step 3: Fit linear model and relevant contrasts
+-----------------------------------------------
+
+Now it's time to test whether there is differential DNA methylation between groups. Using *linear modeling*, we can examine this relationship at each CpG.
+
+You might remember learning the formula *y = mx + b* in math class, where "m" represents the slope, and "b" represents the intercept. We can model the relationship between CpG methylation and our variable of interest in the same way.
+
+We consider "y" to be the level of DNA methylation, or beta value, and we consider "x" to be our variable of interest, in this case the pathology group.
+
+![Linear Regression](https://www.dataquest.io/wp-content/uploads/2019/12/linear-modeling-in-r-course.jpg)
+
+However, each CpG site might have a different relationship between methylation and pathology group. For example, methylation levels at CpGs located in genes related to fetal growth might have a stronger relationship with pathology (a larger "m" value, or slope), whereas methylation levels at CpGs located outside of genes or in genes with totally unrelated functions could have no relationship with pathology (m=0).
+
+![Possible X-Y relationships in linear regression](https://3.bp.blogspot.com/-s7T8XRynMKI/VT43mN1qY5I/AAAAAAAAAcs/lgrgkOxB2wo/s1600/Screen%2BShot%2B2015-04-27%2Bat%2B9.19.53%2BAM.png)
+
+In differential DNA methylation analysis, we will *run a linear model across each CpG* to evaluate its relationship with with pathology. To accomplish this, we will use the R package *limma* (Smyth et al., 2002). Limma will fit the model across every CpG, and return statistics including the coeffificent (slope) for the association between DNAm and pathology, and p-values indiciating whether the association is statistically significant. Then, we can narrow down the list to our "hits", or only the CpG sites which are differentially methylated (p &lt; 0.05 for association between DNAm and pathology).
+
+### Designing your model
+
+In this study, there are multiple pathology groups, and data on other variables such as fetal sex and gestational age. It's important to *define your research question* before designing your model, so that we can compare the right groups to each other.
+
+For this example, we hypothesized that pathology group and fetal sex will each affect placental DNAm patterns. We can look at the effects of pathology group and fetal sex using one formula, with the function *model.matrix()* in limma.
 
 ``` r
 model <- model.matrix(~ 0+ pathologygroup + fetalsex, data=metadata)
+head(model)
+```
+
+    ##            pathologygroupEOPE pathologygroupIUGR pathologygroupLOPE
+    ## GSM2674413                  1                  0                  0
+    ## GSM2674414                  1                  0                  0
+    ## GSM2674415                  1                  0                  0
+    ## GSM2674416                  1                  0                  0
+    ## GSM2674417                  1                  0                  0
+    ## GSM2674418                  1                  0                  0
+    ##            pathologygroupPreT pathologygroupTerm fetalsexMALE
+    ## GSM2674413                  0                  0            1
+    ## GSM2674414                  0                  0            0
+    ## GSM2674415                  0                  0            1
+    ## GSM2674416                  0                  0            1
+    ## GSM2674417                  0                  0            1
+    ## GSM2674418                  0                  0            1
+
+The object "model" consists of a table detailing which samples belong to which pathology group as well as the fetal sex. Since there are only two sexes, there is one column for whether the fetal sex is male (yes/no). Since there are five pathology groups, each group has its own column, with a yes/no indiciating whether the sample is part of that group.
+
+Feeding this table into the *lmFit()* function, along with an object containing our DNAm data, will ask limma to examine the relationship between DNA methylation and each of the five pathology groups one by one, as well as the relationship between DNA methylation and fetal sex. *eBayes()* will derive statistics such as p-values from this fit.
+
+``` r
 fit <- lmFit(methy, model)
 fit <- eBayes(fit)
+```
+
+### Extracting comparisons of interest
+
+What if we want to compare DNAm between two different pathology groups instead of looking at them individually? To do this, we create a *contrast matrix*, which is a table that tells limma which two groups to compare to one another.
+
+Here, we will contrast placentas from mothers with preterm infants against placentas from mothers with early onset pre-eclampsia, late-onset pre-eclampsia, and intrauterine growth restriction. We'll do the same contrasts for term infants. We will leave sex alone, to look at the effect of sex across all the groups at the same time.
+
+``` r
 contrasts <- makeContrasts(
 preTEOPE=pathologygroupPreT-pathologygroupEOPE,
 preTLOPE=pathologygroupPreT-pathologygroupLOPE,
@@ -494,14 +522,37 @@ termEOPE=pathologygroupTerm-pathologygroupEOPE,
 termLOPE=pathologygroupTerm-pathologygroupLOPE,
 termIUGR=pathologygroupTerm-pathologygroupIUGR,
 sex=fetalsexMALE,levels=model)
-fitCont <- contrasts.fit(fit,contrasts)
-fitCont <- eBayes(fitCont)
-colnames(contrasts)
+head(contrasts)
 ```
 
-    ## [1] "preTEOPE" "preTLOPE" "preTIUGR" "termEOPE" "termLOPE" "termIUGR" "sex"
+    ##                     Contrasts
+    ## Levels               preTEOPE preTLOPE preTIUGR termEOPE termLOPE termIUGR sex
+    ##   pathologygroupEOPE       -1        0        0       -1        0        0   0
+    ##   pathologygroupIUGR        0        0       -1        0        0       -1   0
+    ##   pathologygroupLOPE        0       -1        0        0       -1        0   0
+    ##   pathologygroupPreT        1        1        1        0        0        0   0
+    ##   pathologygroupTerm        0        0        0        1        1        1   0
+    ##   fetalsexMALE              0        0        0        0        0        0   1
 
-## Extract stats from relevant comparisons
+Each comparison is indicated in a column of the contrast matrix, with "1" indicating the reference group, and "-1" indicating the group we are comparing against the reference. For example, the column "preTEOPE" compares preterm placentas against early onset pre-eclampsia placentas, where preterm placentas are the reference group. Looking at the rows, the "pathologygroupPreT" has a value of "1", whereas the "pathologygroupEOPE" has a value of "-1". The "0" in the other rows indicates those groups are not part of this comparison.
+
+Next, we use the function *contrasts.fit()* to fit our methylation data to these comparisons, and run *eBayes()* again to derive statistics:
+
+``` r
+fitCont <- contrasts.fit(fit,contrasts)
+fitCont <- eBayes(fitCont)
+```
+
+Extract stats from relevant comparisons
+---------------------------------------
+
+Let's take a closer look at the results from two of the above contrasts: "preTEOPE" and "sex". This is equivalent to asking the following research questions:
+
+1.  *Are there DNAm differences between placentas from mothers with preterm infants (PreT) and mothers with early onset pre-eclampsia (EOPE)?*
+
+2.  *Are there DNAm differences between placentas from mothers who gave birth to male versus female infants?*
+
+The function *topTable()* lets us extract detailed statistics information for a single contrast of interest. We can set cutoffs for significance and effect size such that only the information for significant CpG sites is returned. Here, we will use an adjusted p-value cutoff of &lt;0.05 and a log fold change cutoff of &gt;0.1.
 
 ``` r
 eope_stats <- topTable(fitCont,coef = "preTEOPE", adjust.method = "BH", p.value = 0.05, lfc = 0.1, number = Inf)
@@ -517,40 +568,14 @@ nrow(eope_sex)
 
     ## [1] 155
 
-Published data
+Step 4: Plotting results from our EWAS
+--------------------------------------
 
-``` r
-pub_dme <- read.csv(
-  "ddx391_ST1_PersistentHits599_GeneInfo_2017.csv", 
-  stringsAsFactors = F)
-pub_dme <- pub_dme[pub_dme$Probe %in% rownames(eope_stats),]
-```
+### Volcano plot
 
-## Step 4: Plotting results from our EWAS
+'Omics association study results are typically visualized using a *volcano plot*, where the effect size is on the x axis and the -log p-value is on the y-axis. This makes a "volcano" shape such that significant hits look like they are "erupting" out into the top corners of the plot.
 
-### Correlation
-
-``` r
-shared_hits_df <- as.data.frame(cbind(pub_dme,eope_stats[pub_dme$Probe,]))
-corr <- cor.test(-log10(shared_hits_df$adj.P.Val),-log10(shared_hits_df$EOPE.vs.Pre.term.p.value..Discovery.Cohort),method="pearson")
-corr2 <-cor.test(shared_hits_df$EOPE.Δβ..Discovery.Cohort,shared_hits_df$logFC, method = "pearson")
-ggplot(shared_hits_df, aes(-log10(EOPE.vs.Pre.term.p.value..Discovery.Cohort),-log10(adj.P.Val))) + 
-  geom_point()+  
-  coord_cartesian(xlim=c(0,15),ylim=c(0,15))+
-  geom_abline(slope = 1,intercept = c(0,0))+
-  ggtitle(sprintf("R:%0.3f",corr$estimate))
-```
-
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-``` r
-ggplot(shared_hits_df, aes(EOPE.Δβ..Discovery.Cohort,logFC)) + 
-  geom_point()+  
-  geom_abline(slope = 1,intercept = c(0,0))+
-  ggtitle(sprintf("R:%0.3f",corr2$estimate))
-```
-
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+The below code also categorizes hits by if they are significant with increased methylation (DME\_pos), significant with decreased methylation (DME\_neg), or non-significant (not DME). This allows us to colour these points by category for easier visualization of hits.
 
 ``` r
 plot_stats <- function(cont){
@@ -575,28 +600,12 @@ return(all_eope_stats)
 eope_all_stat <-plot_stats("preTEOPE")
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/volcano-1.png)
 
 ``` r
-lope_all_stat<- plot_stats("termLOPE")
+lope_all_stat<- plot_stats("sex")
 ```
 
-![](eope_ewas_workflow_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+![](eope_ewas_workflow_files/figure-markdown_github/volcano-2.png)
 
-``` r
-sum(abs(eope_all_stat$logFC) >0.1& eope_all_stat$adj.P.Val <0.05)
-```
-
-    ## [1] 1689
-
-``` r
-sum(abs(lope_all_stat$logFC) > 0.1 & lope_all_stat$adj.P.Val <0.05)
-```
-
-    ## [1] 6
-
-1.  If you instead need to work from *raw* data from a methylation array
-    (in the form of an `.idat` file), please look into the package
-    `minfi`. A nice tutorial on processing this type of data by the
-    maintainer of `minfi` is available
-    [here](https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html).
+[1] If you instead need to work from *raw* data from a methylation array (in the form of an `.idat` file), please look into the package `minfi`. A nice tutorial on processing this type of data by the maintainer of `minfi` is available [here](https://www.bioconductor.org/help/course-materials/2015/BioC2015/methylation450k.html).
