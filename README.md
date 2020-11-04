@@ -15,16 +15,15 @@ Or write us an email at: tog (at) bcchr (dot) ca
 - [Heatmaps and PCA](workshops/2020-05-26_Heatmaps_and_PCA)
 - [Intro to ggplot2 (v2)](workshops/2020-07-09_intro-to-ggplot2_victor_yuan)
 - [Data wrangling with dplyr](workshops/2020-07-23_data_wrangling_ak)
-
+- [Intro to EWAS: Part 1](workshops/2020-10-29_intro_to_ewas)
 
 # Upcoming Schedule
 | Date | Time | Where | What |
 | :-- |:---|:---| :-------|
-| 2020-05-26| Virtual | 12:00PM - 1:00PM| [Heatmaps and PCA](workshops/2020-05-26_Heatmaps_and_PCA) |
-| 2020-07-09 | Virtual | 12:00PM - 1:00PM| [Intro to ggplot2 (v2)](workshops/2020-07-09_intro-to-ggplot2_victor_yuan) |
-| 2020-07-23 | Virtual | 12:00PM - 1:00PM| [Data wrangling with dplyr](workshops/2020-07-23_data_wrangling_ak) |
-| 2020-08-06 | Virtual | 12:00PM - 1:00PM| Topic TBD! Open an issue and suggest one! |
-| 2020-08-17 | Virtual | 12:00PM - 1:00PM| Topic TBD! Open an issue and suggest one! |
+| 2020-11 (date TBD)| Virtual | 12:00PM - 1:00PM| Intro to EWAS: Part 2
+| 2020-12 (date TBD)| Virtual | 12:00PM - 1:00PM| Intro to EWAS: Part 3
+| 2021-01 (date TBD)| Virtual | 12:00PM - 1:00PM| Topic TBD! Open an issue and suggest one! |
+| 2021-02 (date TBD)| Virtual | 12:00PM - 1:00PM| Topic TBD! Open an issue and suggest one! |
 
 
 
