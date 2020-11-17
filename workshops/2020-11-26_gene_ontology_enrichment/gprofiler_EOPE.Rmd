@@ -1,0 +1,146 @@
+Performing Gene Ontology Enrichment on Epigenome-Wide Association Study Results
+================================
+
+##### Samantha Schaffner
+##### Nov 26, 2020
+
+Now that you have run an EWAS, what do the results mean? In this tutorial, we will show you how to perform gene ontology (GO) enrichment on your differentially methylated sites. GO enrichment can be used determine which pathways differentially methylated genes belong to, and start to draw conclusions about the functional implications of this.
+
+The GO consortium has created a resource where genes are annotated to functional pathways (see http://geneontology.org/). These are divided into three main categories: 
+1. Biological process, which tells you the overarching function of the genes in those pathways (e.g. "microglial cell activation", "positive regulation of receptor recycling")
+
+2. Cellular component, which tells you where in the cell the genes are found (e.g. "nucleus", "extracelluar space")
+
+3. Molecular function, which tells you about the physical interactions of the proteins (e.g. "actin binding", "protein kinase inhibitor activity".)
+
+Several R packages exist that can perform GO enrichment on your data; here, we will use the "gprofiler2" package. The gost() function in gprofiler2 provides a user-friendly way to run GO enrichment analysis on your data, while providing additional information such as protein-protein interaction data from Reactome. See the gprofiler2 vignette for more details: https://cran.r-project.org/web/packages/gprofiler2/vignettes/gprofiler2.html 
+
+#Libraries
+```{r libraries}
+#set your working directory to the location you have the files for this workshop stored:
+setwd("~/KoborLab/kobor_space/sschaffner/misc/TOG/")
+
+#if you have not installed gprofiler2, run the following code:
+install.packages("BiocManager")
+BiocManager::install("gprofiler2")
+
+#load gprofiler2 package
+library(gprofiler2)
+```
+
+#GO enrichment analysis
+
+In our previous EWAS workshop, we ran differential DNAm analysis on a dataset of placenta samples from mothers who experienced complications during birth, including early and late onset pre-eclampsia (EOPE and LOPE), as well as intrauterine growth
+restriction (IUGR) . For more information on this study please refer to
+[Wilson et al, 2016](https://doi-org.ezproxy.library.ubc.ca/10.1093/hmg/ddx391). To see our previous workshop, please refer to our [Github repository](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2020-10-29_intro_to_ewas).
+
+We performed two comparisons, generating (1) a list of sites that were differentially methylated between preterm and early-onset pre-eclampsia placentas and (2) a list of sites differentially methylated according to fetal sex. Next, we'll read in the results for fetal sex and perform gene ontology enrichment analysis on these sites.
+
+##Fetal sex
+
+###Retrieve input list of differentially methylated genes
+
+The topTable object has a list of CpG sites, but we need to annotate these sites to genes. To do so, we can use Illumina's manifest file for the EPIC array, which provides annotations for genes, genomic features, and SNPs associated with each CpG sites. 
+
+Manifest files for Illumina arrays can be downloaded here: https://support.illumina.com/array/downloads.html. The EPIC array manifests are under the "Infinium MethylationEPIC Product Files" heading. We downloaded version B5, which is the latest version as of November 2020.
+
+```{r toptable anno}
+#Your hit list of genes: topTable from limma differential methylation analysis
+sex <- read.csv("topTable_sex.csv", row.names=1)
+head(sex)
+
+#Annotation for EPIC array
+EPIC_anno <- read.csv("infinium-methylationepic-v-1-0-b5-manifest-file.csv", skip=7, header=TRUE)
+head(EPIC_anno)
+```
+
+The object "sex" contains statistics on significance and effect size for each CpG site, while "EPIC_anno" contains annotation information for the EPIC array. We'll use these objects to create two lists of genes: (1) All the genes on the EPIC array, which will server as background for the enrichment analysis, and (2) All genes that were differentially methylated by fetal sex.
+
+```{r all genes EPIC}
+#get a list of all genes on EPIC array
+all_genes <- as.character(EPIC_anno[,"UCSC_RefGene_Name"])
+head(all_genes)
+```
+
+Some genes are repeated with a semi-colon separator. This happens when a CpG site is annotated to multiple transcripts of a genes. We can get rid of the separator using the strsplit() function:
+
+```{r strsplit}
+all_genes <- strsplit(all_genes, split=";")
+head(all_genes)
+```
+
+Now, each gene is separated, but strsplit() returned a list. We can use the unlist() function to turn this back into a vector:
+
+```{r unlist}
+all_genes <- unlist(all_genes)
+head(all_genes)
+```
+
+Looks good, the genes are in a vector format with one gene per element!
+
+Next, we'll repeat this for the differentially methylated CpG sites. We have to do one additional step first, using the EPIC_anno data frame to map CpG sites to genes:
+```{r sex genes}
+sex_genes <- as.character(EPIC_anno[EPIC_anno$Name %in% rownames(sex),"UCSC_RefGene_Name"])
+sex_genes <- strsplit(sex_genes, split=";")
+sex_genes <- unlist(sex_genes)
+head(sex_genes)
+```
+
+###Perform enrichment analysis
+
+Now that we have our input lists, we can perform gene ontology enrichment using the function gost() from gprofiler2. This will examine which pathways are enriched in our list of differentially methylated genes as compared to the list of background genes, using a hypergeometric test.
+
+gost() has several parameters - see the help function (type ?gost in your R console) for details:
+
+"query" - your input list of differentially methylated genes
+
+"organism" 
+
+"ordered_query" - whether your list of genes is ranked (e.g. by p-values). We'll set this to FALSE to look at all genes that passed our thresholds.
+
+"multi_query" - this allows you to compare multiple sets of genes at once - for example, if you wanted to look at the results for multiple contrasts that you generated from limma. We'll also set this to FALSE, to just look at the fetal sex genes.
+
+"significant" - setting this to TRUE will return only the GO terms that were significantly enriched in your data, and setting to FALSE will return everything regardless of significance
+
+"exclude_iea" - when set to TRUE, excludes electronic GO annotations. We'll set it to FALSE so we include all GO annotations.
+
+"user_threshold" - the adjusted p-value threshold at which you will consider GO terms significant
+
+"correction_method" - multiple test correction method. We'll use "fdr" (False Discovery Rate)
+
+"domain_scope" - tells gost() what background to use for the enrichment. Setting this to "custom_annotated" lets us input our own background. It's recommended to use a custom background when possible; since the EPIC array doesn't cover all the genes in the human genome, it wouldn't be accurate for us to compare our differentially methylated genes against all the genes in the genome either.
+
+"custom_bg" - custom list of all genes in the background
+
+"sources" - allows you to pick which database gost() will draw the results from. For example, selecting "GO:BP" will return only Biological Process results, and "GO:MF" will return Molecular Function results. Setting this to NULL will return all types of results.
+
+The following code performs this query as outlined above:
+
+```{r gost}
+go_sex <- gost(query = sex_genes, organism = "hsapiens", ordered_query = FALSE, multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, user_threshold = 0.05, correction_method = "fdr", domain_scope = "custom_annotated", custom_bg=all_genes, sources = NULL)
+names(go_sex)
+```
+
+There are two subsets of the go_sex object, "results" and "meta." "Results" is the part we are interested in:
+
+```{r result}
+go_sex_result <- go_sex$result
+head(go_sex_result)
+```
+
+The top enriched term is "DLC1-DLGAP1-MYO5A complex", which is a protein complex annotation from the CORUM database (see "source" column). The second most enriched term is "regulation of nucleic acid-templated transcription," a GO biological process pathway.
+
+
+##Plotting results
+
+The gostplot() function allows you to visualize the signficance of the GO terms that came up, separated by the database:
+
+```{r plot}
+gostplot(go_sex, capped = FALSE, interactive = TRUE)
+```
+
+Hover over each dot to see the name of the GO term! The size of the dots indicate the size of the term, i.e. how many genes are included in it.
+
+The top GO:MF terms are related to DNA binding. The GO:CC terms are primarily related to the nucleus, which is expected. Many of GO:BP terms relate to transcription regulation; some are related to brain pathways, such as "hindbrain morphogenesis" and "positive regulation of neural cell precursor proliferation."
+
+This indicates that genes differentially methylated according to fetal sex encompass a variety of transcription factors, related to overall gene regulation as well as brain development.
