@@ -50,7 +50,7 @@ sex <- read.csv("topTable_sex.csv", row.names=1)
 head(sex)
 
 #Annotation for EPIC array
-EPIC_anno <- read.csv("EPIC_manifest_B5_subset.csv", row.names=1)
+EPIC_anno <- read.csv("EPIC_manifest_B5_subset.csv")
 head(EPIC_anno)
 ```
 
