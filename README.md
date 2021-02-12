@@ -1,6 +1,6 @@
 # Data Analysis Support Group
 
-This is for the **Trainee Omics Group (TOG)** -ran group for trainee-led tutorials and help sessions aimed at learning how to analyze biological data. Details on scheduling, curriculum and engagement can be found here.
+This is for the **Trainee Omics Group (TOG)** -ran group. We host trainee-led tutorials and help sessions focused on the analysis of biological data. Details on scheduling, curriculum and engagement can be found here.
 
 **Contact Us**   
 For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/).    
