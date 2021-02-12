@@ -19,6 +19,7 @@ Or write us an email at: tog (at) bcchr (dot) ca
 
 # Upcoming Schedule
 | Date | Time | Where | What |
+| --- | --- | --- | --- |
 | 2021-02-15| Virtual | 2:00PM - 3:00PM | Introduction to source control with GitHub |
 
 
