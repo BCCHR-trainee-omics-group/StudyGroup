@@ -5,13 +5,20 @@ author: Adapted by Jeremy Fan from STAT540
 
 # TOG: Introduction to Git and GitHub
 
+## Tutorial Goals 
+
+This tutorial is largely designed for two groups of people:
+
+* You've never heard of Github
+* You've heard of Github, but don't know exactly what it is
+
 ## Learning Objectives
 
 By the end of this seminar, you should
 
-* Have a conceptual understanding of what version control is and why it is important
+* Have a conceptual understanding of what version control is and why it is important (as scientists)
 * be able to describe the differences and relationships between Git, GitHub, and Git Client
-* Have some familiarity with the GitHub browser interface and be able to use some of its basic features such as navigating the contents of a repository and creating issues
+* Have some familiarity with the GitHub browser interface and be able to use some of its basic features such as navigating the contents of a repository
 * Have your environment set up for using Git and GitHub
 * Have practical experience with the routine Git workflow: Create, Clone, Stage, Commit, Push, and Pull
 
@@ -19,11 +26,13 @@ By the end of this seminar, you should
 
 All these terms might seem a little daunting at first, but don't worry, all these things were invented to make things easier for you. There is a bit of a learning curve if you have no previous experience, but rest assured, this seminar has been carefully designed to walk you through everythng you need to know. 
 
-### Git Basics
+### Version Control Basics
 
-Version control is one of the key tools in the software engineer's toolbox. According to [The Guardian](https://www.theguardian.com/technology/blog/2008/aug/19/howmanypeoplemakewindows7), >900 developers contributed to the development of Microsoft's Windows 7. When you have that many people working on a single project, imagine how many times the code base would be changed within a single day, or even a single hour? And by who? And for what? What happens if more than two developers change a single file at the same time? Or even a single line of code?
+Version control is one of the key tools in the software engineer's toolbox. Traditionally, software developers have to collaborate in large teams, but with this, inevitable conflicts began to occur. When you have that many people working on a single project, imagine how many times the code base would be changed within a single day, or even a single hour? And by who? And for what? What happens if more than two developers change a single file at the same time? Or even a single line of code?
 
-A version control system provides a structured way for maintaining a clean and easily accessible track record of how a directory of files (most commonly the source code of some software application) evolves through time. It also provides important mechanisms for resolving issues when they arise, such as when two developers try to make conflicting changes to a single file. 
+A version control system provides a structured way for maintaining a clean and easily accessible track record of how a directory of files (most commonly the source code of some software application) evolves through time. It also provides important mechanisms for resolving issues when they arise, such as when two developers try to make conflicting changes to a single file. For instance: 
+
+![Network Graph screenshot](network_graph.png)
 
 Git is just one of many version control systems out there, albeit a (very) popular one. Others include [Mercurial](https://www.mercurial-scm.org/), [Perforce](https://www.perforce.com/), [Subversion](https://subversion.apache.org/), etc. 
 
@@ -33,19 +42,23 @@ Watch this [video](https://git-scm.com/video/what-is-version-control) for some G
 
 Git is a version control system. Its original purpose was to help groups of developers work collaboratively on big software projects. Git manages the evolution of a set of files – called a repository – in a sane, highly structured way. If you have no idea what I’m talking about, think of it as the “Track Changes” features from Microsoft Word on steroids.
 
-Git has been re-purposed by the data science community. In addition to using it for source code, we use it to manage the motley collection of files that make up typical data analytical projects, which often consist of data, figures, reports, and, yes, source code.
+Git has been re-purposed by the data science community. In addition to using it for source code, we use it to manage the motley collection of files that make up typical data analytical projects, which often consist of data, figures, reports, and, yes, source code. Scientists should learn git because it enables:
 
+* rapid installation to softwares
+* code sharing 
+* commit history tracking 
+* post issues/bugs encountered in existing softwares
+* help fix issues in existing softwares
 
 ### Why GitHub? (excerpt from [section 1.2 of Happy Git and GitHub for the useR](http://happygitwithr.com/big-picture.html#why-github))
 
 This is where hosting services like GitHub, Bitbucket, and GitLab come in. They provide a home for your Git-based projects on the internet. If you have no idea what I’m talking about, think of it as DropBox but much, much better. The remote host acts as a distribution channel or clearinghouse for your Git-managed project. It allows other people to see your stuff, sync up with you, and perhaps even make changes. These hosting providers improve upon traditional Unix Git servers with well-designed web-based interfaces. 
 
-But be careful, while GitHub and many other services are great for tracking files, they may not always have the capacity to store large amounts of data. GiHhub recommends that repositories are under the size of 1GB (see this github [help](https://help.github.com/articles/what-is-my-disk-quota/) page). More importantly, GitHub doesn't allow for files larger than 100MB in size (see [Working with large files](https://help.github.com/articles/working-with-large-files/)).
+But be careful, while GitHub and many other services are great for tracking files, they may not always have the capacity to store large amounts of data. GiHhub recommends that repositories are under the size of 1GB (see this github [help](https://help.github.com/articles/what-is-my-disk-quota/) page) since any larger repositories will take significantly longer to clone. More importantly, GitHub doesn't allow for files larger than 100MB in size (see [Working with large files](https://help.github.com/articles/working-with-large-files/)).
 
 Even for private solo projects, it’s a good idea to push your work to a remote location for peace of mind. Why? Because it’s fairly easy to screw up your local Git repository, especially when you’re new at this. The good news is that often only the Git infrastructure is borked up. Your files are just fine! Which makes your Git pickle all the more frustrating. There are official Git solutions to these problems, but they might require expertise and patience you can’t access at 3a.m. If you’ve recently pushed your work to GitHub, it’s easy to grab a fresh copy, patch things up with the changes that only exist locally, and get on with your life.
 
 We target GitHub – not Bitbucket or GitLab – for the sake of specificity. However, all the big-picture principles and even some mechanics will carry over to these alternative hosting platforms.
-
 
 ### Wait, so what is what, exactly? 
 
@@ -57,10 +70,9 @@ We target GitHub – not Bitbucket or GitLab – for the sake of specificity. Ho
 
 **_Git Client_** is a piece of software that provides a graphical user interface that facilitates your interaction with Git. In our case, **we will be using RStudio's built-in Git Client**. Other options include [SourceTree](https://www.sourcetreeapp.com/) and [GitHub Desktop](https://desktop.github.com/). And of course, the terminal is the most powerful (also the most difficult) way to use Git. 
 
-
 ## Part 2: Set up your environment
 
-Before we can start using Git, your computer must be equipped with the appropriate softwares. In this section, we will walk you through: 1. Installing Git, 2. Registering for a GitHub account, 3. Setting up an SSH key, 4. Talking to Git via RStudio. 
+Before we can start using Git, your computer must be equipped with the appropriate softwares. In this section, we will walk you through: 1. Installing Git, 2. Registering for a GitHub account, 3. Setting up an SSH key, 4. Talking to Git via RStudio/Command line. 
 
 ### 1. Install Git (contains excerpts from [Ch. 7 of Happy Git and GitHub for the useR](http://happygitwithr.com/install-git.html))
 
@@ -150,7 +162,6 @@ You can change your username later, but better to get this right the first time.
 * [Changing your GitHub username](https://help.github.com/articles/changing-your-github-username/)
 * [What happens when I change my username?](https://help.github.com/articles/what-happens-when-i-change-my-username/)
 
-
 ### 3. Introduce yourself to Git and setup up an SSH key (contains excerpts from Chs. [8](http://happygitwithr.com/hello-git.html) and [12](http://happygitwithr.com/ssh-keys.html) of [Happy Git and GitHub for the useR](http://happygitwithr.com/))
 
 First, you want to introduce yourself to Git. The information you enter here will constitute the user stamp for each commit you make. That way, Git can trace back code changes to their authors. 
@@ -169,7 +180,6 @@ Next, we need to set up a SSH key so that you won't have to repeatedly type in y
 
 SSH keys provide a more secure way of logging into a server than using a password alone. While a password can eventually be cracked with a brute force attack, SSH keys are nearly impossible to decipher by brute force alone. Generating a key pair provides you with two long strings of characters: a public and a private key. You can place the public key on any server, and then unlock it by connecting to it with a client that already has the private key. When the two match up, the system unlocks without the need for a password. You can increase security even more by protecting the private key with a passphrase.
 
-
 #### Check for existing keys
 
 Go to the shell.
@@ -180,17 +190,26 @@ List existing keys (at least, those in the default location):
 ls -al ~/.ssh 
 ```
 
+`ls` means to show the files `-al` combines the `-a` and the `-l` flags. The `-a` flag shows all files (including hidden files that start with a period), and the `-l` flag prints everything in a line with additional information (long listing format). `~/.ssh` is the location of where keys will be stored in the root directory. 
+
 If you see a pair of files like id_rsa.pub and id_rsa, **you have a key pair already**. You can skip to the section about adding a key to the ssh-agent.
 
 If you are told .ssh doesn’t exist, you don’t have SSH keys! Keep reading to create them.
+
+If you have the folder, you can: 
+```{r eval = FALSE}
+cd ~/.ssh 
+```
 
 #### Create SSH key pair
 
 Create the key pair by entering this, but substitute the email address associated with your GitHub account:
 
 ```{r eval = FALSE}
-$ ssh-keygen -t rsa -b 4096 -C "jenny@stat.ubc.ca"
+ssh-keygen -t rsa -b 4096 -C "jenny@stat.ubc.ca"
 ```
+
+`-t rsa` refers to the algorithm used to generate the key, the `-t` flag allows us to specifcy an algorithm, of which we select `rsa`. `-b 4096` simply refers to the bits associated with the algorithm. The `-C "jenny@stat.ubc.ca"` provides a comment for the key. You might haven noticed some people have a `ed25519` key, this is a newer key generation process. 
 
 Accept the proposal to save the key in the default location, i.e., just press Enter here:
 
@@ -207,7 +226,7 @@ The process should complete now and should have looked like this:
 
 ```{r eval = FALSE}
 
-jenny@2015-mbp ~ $ ssh-keygen -t rsa -b 4096 -C "jenny@stat.ubc.ca"
+ssh-keygen -t rsa -b 4096 -C "jenny@stat.ubc.ca"
 Generating public/private rsa key pair.
 Enter file in which to save the key (/Users/jenny/.ssh/id_rsa):     
 Enter passphrase (empty for no passphrase): 
@@ -239,16 +258,18 @@ Make sure ssh-agent is enabled:
 
 ```{r eval = FALSE}
 
-jenny@2015-mbp ~ $ eval "$(ssh-agent -s)"
+eval "$(ssh-agent -s)"
 Agent pid 95727
 
 ```
+
+`eval` is simply used to execute a bash command `ssh-agent`. The ssh-agent is a helper program that keeps track of user's identity keys and their passphrases. The `-s` flag forces generation of output stdout. 
 
 Add your key. If you set a passphrase, you’ll be challenged for it here. Give it.
 
 ```{r eval = FALSE}
 
-jenny@2015-mbp ~ $ ssh-add ~/.ssh/id_rsa
+ssh-add ~/.ssh/id_rsa
 Enter passphrase for /Users/jenny/.ssh/id_rsa: 
 Identity added: /Users/jenny/.ssh/id_rsa (/Users/jenny/.ssh/id_rsa)
 
@@ -271,6 +292,8 @@ In the top right corner of any page on GitHub, click your profile photo, then cl
 
 In the user settings sidebar, click SSH and GPG keys.
 
+![Key screenshot](key.png)
+
 Click New SSH key.
 
 In the “Title” field, add a descriptive label for the new key. For example, if you’re using a personal Mac, you might call this key “Personal MacBook Air”.
@@ -282,19 +305,19 @@ Click Add SSH key.
 Confirm the action by entering your GitHub password.
 
 
-## part 3: Create, Clone, Stage, Commit, Push, Pull!
+## Part 3: Create, Clone, Stage, Commit, Push, Pull!
 
 Now, we're ready to start using Git.
 
 The six verbs in the title will likely encompass 90% of everything you will do with Git. We will now walk through each one to give a brief explanation and demo. 
 
-Note that everything that can be done using RStudio (or any other Git Client), can also be done via the shell. Here we provide instructions for RStudio environment for a more guided experience. 
+Note that everything that can be done using RStudio (or any other Git Client), can also be done via the shell. We'll be focusing on both - but with slight emphasis towards the shell version. 
 
 If you're interested, check out [this post](http://dont-be-afraid-to-commit.readthedocs.io/en/latest/git/commandlinegit.html) on using Git in the shell. It is definitely a worthwhile learning experience if you want to dive deeper into the Git world.
 
 ### Overview
 
-A repository is simply a directory for your project. It is no different from any other directories on your laptop, except that Git knows about it and keeps a complete historical record of every change that has been "committed". 
+The very first thing we will do is create a repository. A repository is simply a directory for your project. It is no different from any other directories on your laptop, except that Git knows about it and keeps a complete historical record of every change that has been "committed". 
 
 When a repository is stored on GitHub, it is called the "remote" repository. You can then "clone" this repository onto your laptop. The copy on your laptop is then called the "local" repository. "Pushing" and "pulling" are operations for keeping the local and remote repositories in sync with each other. 
 
@@ -303,8 +326,6 @@ For example, You can modify codes in your "local" repository and then, when read
 Don't worry if you don't understand every detail of the workflow just yet. Just get the overall picture for now. You'll gain a much deeper understanding once we start trying things out for real, starting now!
 
 ### Create 
-
-**Update 14 January 2021** *Skip the create step for this deliverable; instead use the private repo that was created for you (named `zz_Your-Name_STAT540_2021W2`) - refer back to these instructions in your future work when you'd like to create a new repo.* 
 
 To create a repository, go to [GitHub](https://github.com/). If you're logged in, you should see a "New repository" button on your home screen. Click it. 
 
@@ -324,14 +345,60 @@ Next, we want to clone this repository into your laptop so that you have a local
 
 Make sure you have the latest version of RStudio before you start. 
 
-```{bash, engine.opts='-l'}
+#### Shell Version
+
+You can obtain this URL from your GitHub repository website. See below. Make sure you copy the SSH option as we have setup the SSH keys for authentication. 
+
+![Repository URL screenshot](git_ssh_url.png)
+
+```{bash, engine.opts='-l', eval = FALSE}
+cd ~/your_directory_of_choice/... #move to the directory of your choice
 git clone https://github.com/BCCHR-trainee-omics-group/StudyGroup.git
 ```
+
+
+#### RStudio Version 
+In RStudio, start a new Project:
+
+* File > New Project > Version Control > Git. In the “repository URL” paste the URL of your new GitHub repository. It will be something like this git@github.com:echu113/testing-repository.git. 
+
+![Create new project screenshot](create_new_rstudio_project.png)
+
+Check "Open in new session" so that RStudio will open your new project in a new window. 
+
+Click “Create Project”.
+
+Confirm that a new directory has been created with the project directory name you specified. The directory now contains a .Rproj file. This is the RStudio project file. We will subsequently push this file to the remote repository. 
+
+There is also a .gitignore file. Ignore this for now, we will talk about it later (ignore .gitignore, ha! It's okay, you don't have to laugh). 
+
+![Project directory created screenshot](project_directory_created.png)
+
+Also note that a new RStudio window has been opened for you as a workspace. Notice the "Git" tab in your RStudio window. 
+
+![New RStudio window containing the new project](new_project_rstudio_window.png)
+
+Congratulations, again! You have cloned the Git repository onto your local machine. Well done!
+
+Notice that the project directory current contains nothing (except the automatically generated .Rproj and .gitignore file), which is not very exciting at all. So let's add something. 
+
+The first thing you should add to every directory you create is README.md, and you will soon see why. This is something that integrates very well into the GitHub user interface; GitHub always detects your README files automatically and displays it right on the repository web page, giving information about the repository. 
+
+Go ahead and create a new file in your project directory, and name it README.md. Open it inside RStudio. Add the line "This is a line from RStudio". Save your changes. 
+
+Next, we want to publish this change on GitHub so that it becomes a permanent change with a record and that your group members can access it. The process is a little awkward to start with so we'll take it one step at a time.
+
 
 ### Stage
 
 First, we need to stage the change. This is basically "telling" GitHub about this new change. Nothing can be committed without first being staged. 
 
+#### Shell Version
+```{bash, engine.opts='-l', eval = FALSE}
+git add . 
+```
+
+#### RStudio Version 
 Stage the README.md file by going to the "Git" tab on top right of the RStudio window and check "staged". Also stage the .Rproj file while you're at it. 
 
 Great, that was easy. Git now knows about these new changes you want to submit. 
@@ -340,17 +407,15 @@ Great, that was easy. Git now knows about these new changes you want to submit.
 
 Next, we want to commit these changes. By committing, you effectively create a new record to remember the current state of the directory. This is something you don't get from only staging the files. 
 
-```{bash, engine.opts='-l'}
-git add . 
-```
-
+#### Shell Version
 Enter a commit message to describe your change. 
 
-```{bash, engine.opts='-l'}
+```{bash, engine.opts='-l', eval = FALSE}
 git commit -m "choose commit message"  
 ```
 
-I put "Add README.md and the RStudio project file to repository" for mine. All your staged files will be included in this commit. 
+#### RStudio Version
+You can commit by clicking RStudio > Git > Commit. Enter a commit message to describe your change. I put "Add README.md and the RStudio project file to repository" for mine. All your staged files will be included in this commit. Click "Commit" and "Close". 
 
 Go to your repository page on [GitHub](https://github.com/). Notice that the new files are not yet on GitHub. Surprised? 
 
@@ -362,23 +427,64 @@ Push is the operation to bring the remote repository hosted on GitHub up to date
 
 Now we will push the one commit we made with the addition of the README.md and .Rproj files. 
 
-```{bash, engine.opts='-l'}
+#### Shell Version
+```{bash, engine.opts='-l', eval = FALSE}
 git push
 ```
 
+#### RStudio Version
+Do this by clicking RStudio > Git > Push. 
+
+You should see this pop-up in RStudio. 
+
+``` 
+>>> git push origin refs/heads/master
+To github.com:echu113/testing-repository.git
+ * [new branch]      master -> master
+```
+
+Now, go back to your repository page on [GitHub](https://github.com/). This is what you should see. 
+
+![Changes published](changes_pushed.png)
+
+
+### Brief aside - Repository Interface
+Notice that the content of README.md is displayed directly on the repository's home page. 
+
+Take a moment to browse through GitHub's user interface. You can navigate through the files and their contents. You can also look at the commit history by clicking on "commits". In addition, GitHub supports a range of project management features including issues, wiki pages, and contribution statistics. You will inevitably learn more and you gain more experience!
+
+Take note of the "Clone or download" green button on the upper right corner of the file list. This is where you can obtain the URL to this repository in case another group member needs to clone your repository. Keep in mind that the owner of this repository must first add the group member to the collaborators list in order for them to have access. See below. 
+
+![GitHub add collaborators](add_collaborators_screenshot.png)
+
+
 ### Pull
+
+
 
 Finally, we want to demo the pull operation. We will make a change directly on GitHub. This way we generate a file change that is absent from your local machine. This simulates the situation where your group member pushes a new change that you don't currently have. In order to sync up, you'll perform a "pull" from the remote repository into your local repository. 
 
 To make a change directly on GitHub, go to your repository page, click on the file README.md. On top right of the file, there should be a pencil icon. 
 
+![Edit file on GitHub directly](github_pencil_icon.png)
+
 Click on the pencil. Add this line to README.md: "This change was made directly on GitHub.". Put in a commit message and commit directly to the "master branch." Now you should see this. 
 
+![README.md changed directly on GitHub](readme_changed_on_github.png)
+
+#### Shell Version
 Then try a pull operation!
 
-```{bash, engine.opts='-l'}
+```{bash, engine.opts='-l', eval = FALSE}
 git pull
 ```
+
+
+#### RStudio Version
+
+Click RStudio > Git > Pull. And..... Voila!
+
+![Local version of README.md changed after pulling](local_readme_changed.png)
 
 ### About .gitignore
 
