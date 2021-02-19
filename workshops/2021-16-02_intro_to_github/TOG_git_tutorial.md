@@ -450,7 +450,7 @@ Click Add SSH key.
 
 Confirm the action by entering your GitHub password.
 
-## part 3: Create, Clone, Stage, Commit, Push, Pull\!
+## Part 3: Create, Clone, Stage, Commit, Push, Pull\!
 
 Now, we’re ready to start using Git.
 
@@ -469,10 +469,10 @@ experience if you want to dive deeper into the Git world.
 
 ### Overview
 
-A repository is simply a directory for your project. It is no different
-from any other directories on your laptop, except that Git knows about
-it and keeps a complete historical record of every change that has been
-“committed”.
+The very first thing we will do is create a repository. A repository is
+simply a directory for your project. It is no different from any other
+directories on your laptop, except that Git knows about it and keeps a
+complete historical record of every change that has been “committed”.
 
 When a repository is stored on GitHub, it is called the “remote”
 repository. You can then “clone” this repository onto your laptop. The
@@ -491,11 +491,6 @@ yet. Just get the overall picture for now. You’ll gain a much deeper
 understanding once we start trying things out for real, starting now\!
 
 ### Create
-
-**Update 14 January 2021** *Skip the create step for this deliverable;
-instead use the private repo that was created for you (named
-`zz_Your-Name_STAT540_2021W2`) - refer back to these instructions in
-your future work when you’d like to create a new repo.*
 
 To create a repository, go to [GitHub](https://github.com/). If you’re
 logged in, you should see a “New repository” button on your home screen.
@@ -526,15 +521,85 @@ repository on your machine.
 
 Make sure you have the latest version of RStudio before you start.
 
+#### Shell Version
+
+You can obtain this URL from your GitHub repository website. See below.
+Make sure you copy the SSH option as we have setup the SSH keys for
+authentication.
+
+![Repository URL screenshot](git_ssh_url.png)
+
 ``` bash
+cd ~/your_directory_of_choice/... #move to the directory of your choice
 git clone https://github.com/BCCHR-trainee-omics-group/StudyGroup.git
 ```
+
+#### RStudio Version
+
+In RStudio, start a new Project:
+
+  - File \> New Project \> Version Control \> Git. In the “repository
+    URL” paste the URL of your new GitHub repository. It will be
+    something like this <git@github.com>:echu113/testing-repository.git.
+
+![Create new project screenshot](create_new_rstudio_project.png)
+
+Check “Open in new session” so that RStudio will open your new project
+in a new window.
+
+Click “Create Project”.
+
+Confirm that a new directory has been created with the project directory
+name you specified. The directory now contains a .Rproj file. This is
+the RStudio project file. We will subsequently push this file to the
+remote repository.
+
+There is also a .gitignore file. Ignore this for now, we will talk about
+it later (ignore .gitignore, ha\! It’s okay, you don’t have to laugh).
+
+![Project directory created screenshot](project_directory_created.png)
+
+Also note that a new RStudio window has been opened for you as a
+workspace. Notice the “Git” tab in your RStudio window.
+
+![New RStudio window containing the new
+project](new_project_rstudio_window.png)
+
+Congratulations, again\! You have cloned the Git repository onto your
+local machine. Well done\!
+
+Notice that the project directory current contains nothing (except the
+automatically generated .Rproj and .gitignore file), which is not very
+exciting at all. So let’s add something.
+
+The first thing you should add to every directory you create is
+README.md, and you will soon see why. This is something that integrates
+very well into the GitHub user interface; GitHub always detects your
+README files automatically and displays it right on the repository web
+page, giving information about the repository.
+
+Go ahead and create a new file in your project directory, and name it
+README.md. Open it inside RStudio. Add the line “This is a line from
+RStudio”. Save your changes.
+
+Next, we want to publish this change on GitHub so that it becomes a
+permanent change with a record and that your group members can access
+it. The process is a little awkward to start with so we’ll take it one
+step at a time.
 
 ### Stage
 
 First, we need to stage the change. This is basically “telling” GitHub
 about this new change. Nothing can be committed without first being
 staged.
+
+#### Shell Version
+
+``` bash
+git add . 
+```
+
+#### RStudio Version
 
 Stage the README.md file by going to the “Git” tab on top right of the
 RStudio window and check “staged”. Also stage the .Rproj file while
@@ -549,9 +614,7 @@ Next, we want to commit these changes. By committing, you effectively
 create a new record to remember the current state of the directory. This
 is something you don’t get from only staging the files.
 
-``` bash
-git add . 
-```
+#### Shell Version
 
 Enter a commit message to describe your change.
 
@@ -559,8 +622,12 @@ Enter a commit message to describe your change.
 git commit -m "choose commit message"  
 ```
 
-I put “Add README.md and the RStudio project file to repository” for
-mine. All your staged files will be included in this commit.
+#### RStudio Version
+
+You can commit by clicking RStudio \> Git \> Commit. Enter a commit
+message to describe your change. I put “Add README.md and the RStudio
+project file to repository” for mine. All your staged files will be
+included in this commit. Click “Commit” and “Close”.
 
 Go to your repository page on [GitHub](https://github.com/). Notice that
 the new files are not yet on GitHub. Surprised?
@@ -584,9 +651,47 @@ Try it using:
 Now we will push the one commit we made with the addition of the
 README.md and .Rproj files.
 
+#### Shell Version
+
 ``` bash
 git push
 ```
+
+#### RStudio Version
+
+Do this by clicking RStudio \> Git \> Push.
+
+You should see this pop-up in RStudio.
+
+    >>> git push origin refs/heads/master
+    To github.com:echu113/testing-repository.git
+     * [new branch]      master -> master
+
+Now, go back to your repository page on [GitHub](https://github.com/).
+This is what you should see.
+
+![Changes published](changes_pushed.png)
+
+### Brief aside - Repository Interface
+
+Notice that the content of README.md is displayed directly on the
+repository’s home page.
+
+Take a moment to browse through GitHub’s user interface. You can
+navigate through the files and their contents. You can also look at the
+commit history by clicking on “commits”. In addition, GitHub supports a
+range of project management features including issues, wiki pages, and
+contribution statistics. You will inevitably learn more and you gain
+more experience\!
+
+Take note of the “Clone or download” green button on the upper right
+corner of the file list. This is where you can obtain the URL to this
+repository in case another group member needs to clone your repository.
+Keep in mind that the owner of this repository must first add the group
+member to the collaborators list in order for them to have access. See
+below.
+
+![GitHub add collaborators](add_collaborators_screenshot.png)
 
 ### Pull
 
@@ -601,15 +706,28 @@ To make a change directly on GitHub, go to your repository page, click
 on the file README.md. On top right of the file, there should be a
 pencil icon.
 
+![Edit file on GitHub directly](github_pencil_icon.png)
+
 Click on the pencil. Add this line to README.md: “This change was made
 directly on GitHub.”. Put in a commit message and commit directly to the
 “master branch.” Now you should see this.
+
+![README.md changed directly on GitHub](readme_changed_on_github.png)
+
+#### Shell Version
 
 Then try a pull operation\!
 
 ``` bash
 git pull
 ```
+
+#### RStudio Version
+
+Click RStudio \> Git \> Pull. And….. Voila\!
+
+![Local version of README.md changed after
+pulling](local_readme_changed.png)
 
 ### About .gitignore
 
