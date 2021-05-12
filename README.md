@@ -21,18 +21,16 @@ Or write us an email at: tog (at) bcchr (dot) ca
 # Upcoming Schedule
 | Date | Time | Where | What |
 | --- | --- | --- | --- |
-| 2021-02-15| Virtual | 2:00PM - 3:00PM | Introduction to source control with GitHub |
+| 2021-02-15| 2:00PM - 3:00PM | Virtual | Introduction to source control with GitHub |
 
 # Open help session schedule
 Keep an eye out for emails from our mailing list for zoom links to the following open help sessions:
 |Date	    |  Weekday |	Time
 | --- | --- | --- |
-|3/17/2021|	Wed     |	2:00 PM
-|4/16/2021|	Fri     |	2:00 PM
-|5/17/2021|	Mon     |	2:00 PM
-|6/17/2021|	Thu     |	2:00 PM
-|7/16/2021|	Fri     |	2:00 PM
-|8/17/2021|	Tue     |	2:00 PM
+|5/17/2021|	Mon     |	2:00PM - 3:00PM
+|6/17/2021|	Thu     |	2:00PM - 3:00PM
+|7/16/2021|	Fri     |	2:00PM - 3:00PM
+|8/17/2021|	Tue     |	2:00PM - 3:00PM
 
 
 
