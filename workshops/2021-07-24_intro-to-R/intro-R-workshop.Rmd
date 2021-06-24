@@ -1,0 +1,851 @@
+---
+title: "Introduction to R and R Studio Workshop"
+author: "Amy Inkster & William Casazza </br> BCCHR Trainee Omics Group </br> Code based on UBC [ECOSCOPE](http://ecoscope.ubc.ca/) Introduction to R Tutorial "
+date: "June 26th 2021"
+output: 
+  html_document:
+    code_folding: show
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(readr)
+```
+
+
+## 1.0 Introduction
+
+Welcome to the BCCHR Trainee Omics Group's Introduction to R and R Studio workshop. In this tutorial we are going to cover the basics of these software tools, teach you how to interact with them on your local system, walk you through the basics of coding in the R language, and go through important aspects of using R Studio such as reading in data, making cool graphs, and saving your code. The code and structure for this workshop is based on UBC ECOSCOPE's Intro to R Workshop, check them out for more great workshops and resources [here](http://ecoscope.ubc.ca/).
+
+Our goals at the end of today are (1) for you to feel comfortable performing basics operations in R, and (2) to give you the ability to self-guide online tutorials or attend future workshops.
+
+Etherpad link for asking questions: https://etherpad.opendev.org/p/TOG_IntroR_June24 
+
+
+### 1.1  What is R?
+You've probably heard people talking about R before, but what really is it? R is a *programming language and environment for statistical computing and graphics*. The R language was originally designed for statistics, and is now also frequently used for data analysis and visualization. R is free and open source, and the scientific community has designed many great freely available R tools that are useful for biological and genomic analyses.
+
+### 1.2 What about R Studio?
+So R is a *programming language*, which means it is a language you can use to give instructions to your computer. R can be used in its own *graphical user interface*, but it is easier to use the R language in the R Studio application, which is an *integrated development environment* that you can use to write code, run it line-by-line, view your figures, and save code for later use. 
+**For anything longer than simple, single-line calculations (like 2+2 or calculating a mean), it's easier to use R Studio. In almost all cases people who use "R" actually work in R Studio 100% of the time.**
+
+Notice that when you open R Studio, it is divided into different "panes". For now we will focus on the *console* (left side). 
+
+
+### 1.3 The R console
+The console is your view into the R engine. You can use it to give commands to R and immediately see the output. 
+
+The `>` symbol in the console is called the *prompt*. It is inviting you to type R commands, such as `2 * 2` or `mean(x)`. When you press Return, you can see the output printed by R. Try this out in your own console.
+
+Sometimes, you may accidentally press <kbd>Return</kbd> before finishing a complete command. This often happens because you forgot to close parentheses. For example, you may have written: `mean(c(1,2,3)`; this command is incomplete because it is missing one `)` at the end. When you give the console an incomplete command, R expects you to complete it. Therefore, the prompt (`>`) is replaced by a plus sign (`+`). This is R's way of telling you to continue writting. When this happens, you have two alternatives. Either you complete the command (e.g., write the missing `)`) and then press <kbd>Return</kbd> *or* you can press <kbd>Esc</kbd>, to cancel the command and show the prompt.
+
+*A word of caution: auto-saving of the R environment*
+
+By default, when you save your work, RStudio also auto-saves your environment (in an `.RData` file). This means that when you close RStudio and then re-open it, all of the variables will be created for you immediately. 
+
+This may seem practical, because it means that you can start right where you left off without re-importing any data or re-calculating any intermediate steps. In practice, however, this is not a good idea. For example, when you reload a saved environment, you may inadvertently use variables from an older version of your R code. Or, if you are working with extremely large datasets (like genomic data) saving all of that information in your environment will make R very slow to open and work with.
+
+It will save you many headaches if you learn to avoid thinking of the variables in your environment as "real" files that are saved somewhere in your computer (the way your R scripts and data files are). Instead, if you want to ensure that you can work across multiple sessions, and that your work remains reproducible when you revisit it a long time in the future, you should focus on keeping a good script. You should be able to re-create your environment from your script every session.
+
+It is a best practice to disable RStudio's environment auto-saving option. Do the following:
+
+  - Click Tools > Global Options.
+  - Where it says "Save workspace to .RData on exit", select the option "Never".
+  - Click "OK" and close the dialog.
+
+Now R will never save or prompt you to save your environment from RStudio.
+
+
+### 1.4 R as a calculator
+
+The window below is called the *console*, it is a small interactive environment. You can write R code in it, and then, when you click the Run button, the code is executed by the computer and you receive an *output*. 
+
+We can use it to perform simple calculator-style operations, such as addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), or exponentiation (`^`).
+
+The following code computes the answer to $1 + 1$. Change it so that it computes the answer to $3^2$, then run it.
+
+```{r one-plus-one}
+# run in the console first, then the script
+# go over inserting chunks,
+# running single lines of code and the whole chunk
+1 + 1
+```
+
+Just like when you use a calculator, you can use parentheses `( )` to define the order of operations. The following code calculates the answer to $1+\frac{1}{4}$. Change it so that it computes the answer to $\frac{1+1}{4}$:
+
+```{r parentheses exercise}
+1 + 1 / 4
+(1+1)/4 # R follows BEDMAS/order of operations logic as you would have learned
+```
+
+For the most part, in R, spaces between symbols are optional. `1+1` or `1 + 1` mean the same thing, as does `(3*2)` or `(3 * 2)`.
+
+R also knows common constants, for example $\pi$ can be accessed with `pi`. Write `pi` in the box below and run the code. Examine the output. Then, write code to divide $\pi$ by zero. What happens?
+
+```{r div-zero}
+pi
+pi/0
+
+# exp(1) is euler's constant
+# log() is the natural logarithm (ln)
+# log10() is base 10
+# log(3, base=3) any other log base can be specified with base=
+
+```
+
+
+
+### 1.5 Assigning variables
+A variable is like a box that can contain any value inside of it. You can name your variables anything you want, provided that it doesn't start with a number and it does not include any spaces or special characters other than `.` and `_`. For example, a variable could be called `x`, `my_variable`, or `height`.
+
+To create a variable, we need to assign a value to it, using the assignment operator `<-`. For example, the code below creates a variable called `x` and assigns the value `5` to it. Think of the assignment operator as an arrow, "putting" the value 5 into a "box" labeled `x`.
+
+```{r create_variable}
+# create a variable in the following way
+# variableName <- value
+
+# Alt dash to create assignment operator
+x <- 5
+```
+
+Run the code above. As you can see, assigning variables does not return any output.
+
+Once a variable is created, it becomes part of your *working environment* (see top right), which means that it is stored in the memory of this R Studio session, and you can use this variable to perform calculations. Go back to the box above and, in a new line, calculate `x + 3`, then run the code.
+
+### 1.6 The R Environment 
+
+Using your own console, create a new variable, e.g., `my_variable <- 3`. (Note that RStudio has a shortcut for the assignment operator: <kbd>Alt</kbd>+<kbd>-</kbd> in Windows or <kbd>Option</kbd>+<kbd>-</kbd> in a Mac.) 
+
+This variable now "exists" for the remainder of the R session. Whenever you type `my_variable`, it will be like typing the value 3. The set of all variables that have been created in a particular R session is called the *environment* (also known as the *workspace*). 
+
+In RStudio, you can see all currently-existing variables in the *Environment* pane (tabbed in the upper right). If you open this pane, you will find your newly-created variable. This is helpful to keep track of the currently existing variables and their current values.
+
+```{r}
+x+3
+```
+
+
+When you perform an operation with a variable (like `x + 3` above), R will merely *print* the result, but it won't *change the variable*. To see this, return to the box above, and, in a third line, calculate `x^2`. When you run the code, the output calculates the square of the current value of `x`. Because no new value has been assigned to `x`, its current value is still 5.
+
+```{r}
+x
+x^2
+```
+
+
+If we write down a variable that does not yet exist, R doesn't know what it means. To demonstrate this, write in the box below the name of any variable that does not exist (e.g. `y` or `does_not_exist`) and run it:
+
+```{r variable, eval=F}
+y
+```
+
+
+## 2.0 Scripts
+So far, we have been typing commands into the console directly. This simple process lets you "talk" with R one command at a time, and get immediate output. However, this approach is not very practical. Each time you want to execute a set of commands, you have to re-enter them manually, one by one. 
+
+Alternatively, you can save your code in something called a *script*. A script is a document containing interactive boxes with multiple lines of code, when you press Run, the script will send *part* or the *entire* set of instructions to the console, all at once.
+
+### 2.1 Scripts vs. Markdown
+
+R scripts are simply text files that contain all the code to load your raw data, clean it, perform the analyses, and create and save visualizations. You can save a script in your computer as a file, so that you can run it again in the future, and if you need to, edit the script at any point.
+
+The advantage of R scripts is that they maintain a record of everything that is done to the raw data to reach the final result:
+
+- It is very easy to write up and communicate your methods because you have a document listing the precise steps you used to conduct your analyses. This is one of R's primary advantages compared to traditional tools like Excel, where it may be unclear how to reproduce results. 
+- If you get new or different data, you can re-run your analysis in a single click by simply running the script again! (Compare to Excel where you would need to re-do all of the analysis again.)
+
+While R Scripts are straightforward text files for running code, another type of document that you can write code in with R Studio is the R Markdown format. A Markdown is a formatted document that is often preferred for projects in which you will have a lot of text going along with your code, for example, I use Markdown files in all of my analysis because as I go I write notes to myself to keep a record of what I am doing with the data and why, and most of the notes are longer than a short comment.
+
+Think of an R Script like the Notepad application, and an R Markdown like a Word document. They can contain the same information but R Markdown is more powerful for formatting and organizing your information. (Credit for this analogy: https://www.reddit.com/r/Rlanguage/comments/lkqfjy/r_notebook_vs_r_script/).
+
+
+### 2.2 Scripts/Markdown vs. console?
+Generally, if you are *testing* a *simple* operation (e.g., what would my data look like if I applied a log-transformation to it?), it's fine do it in the console. But if you are committing a step to your analysis (e.g., I want to apply a log-transformation to my data and then conduct the rest of my analyses on the log-transformed data) or writing a more complex operation, you should add it to your R script so that it is saved for future use and can be interactively edited. 
+
+### 2.3 How to create a Markdown?
+To create a script, go to File > New File > R Markdown and save it in a convenient directory. If you open the directory on your computer, you will see the script is now saved there. 
+
+When you first open up a new Markdown file, it has examples of things that you can do with it. We are going to delete everything except the header, and replace it with our own code.
+
+First, create a code chunk. Now, remember how we had previously created that X variable. What if we wanted to perform multiple operations on x?
+
+If you want to perform a sequence of calculations, you will need to assign intermediate results to variables. For example, say you set `x` to `2`, which you want to square and then add `1` to the result. To do this, create a new line of code in which you assign to the variable `x` the value `x^2`. On the third line, calculate `x + 1`. Before you press Run, try to guess what the output will be.
+
+```{r scripts}
+
+x <- 2
+x^2 + 1 # easy to perform a sequence of calculations 
+
+```
+
+In the example above, you start with some initial data (the value of `x`) and then perform a series of operations with those data (square it, then add one). If you ever get different data, you can easily re-do the entire calculation: replace the initial value of `x` (in line 1) by some other number and press Run. If you had a long list of operations, it would be tedious to re-do the whole analysis from scratch, but because you are using R, all it takes is one click.
+
+```{r}
+
+# advantage of scripts is:
+# if you change the value of x, it is easy to recalculate the entire above sequence with just a single click
+x <- 3
+x^2 +1 
+
+```
+
+
+### 2.4 Comments
+It is best practice to annotate your R instructions with comments. In each line of code, any text preceded by the `#` symbol will not execute. Comments can be useful to remind yourself and to tell other readers what a specific chunk of code does. In the box below, the first line has a comment. Add similar comments explaining the second and third lines, then press Run.
+
+```{r comments}
+
+# learn how to comment code
+x <- 2 # create a variable called x, assign the value 2
+x <- x + 5 # add 5 to x and save the output as variable x
+x * 2 # multiply x by 2
+
+# result is 14
+
+```
+
+Go back to the box above and add the `#` symbol at the beginning of the second line before `x <- x + 5`. The entire line is now a comment. Before you press Run, try to predict what the output will be.
+
+```{r comment out code changes result}
+
+# learn how to comment code
+x <- 2 
+# x <- x + 5 
+x * 2 
+
+# result is 4
+```
+
+
+
+## 3.0 Functions
+
+### 3.1 Function basics
+
+Functions are one of the basic units in programming. Generally speaking, a function takes some input (one or more "arguments") and generates some output. 
+
+In R, function argument(s) always go inside parentheses `()`. Some built-in functions include the natural logarithm (`log()`), the base-10 logarithm (`log10()`), the exponential function (`exp()`), and the square root (`sqrt()`). 
+
+For example, the code below creates a variable called `x` and assigns it the value of the natural logarithm of 5. In a new line of code, calculate `exp(x)`. Before you press run, think about what you think the outcome will be.
+
+```{r log_natural}
+x <- log(5)
+exp(x)
+```
+
+### 3.2 The 'help' function
+
+You can get information about a specific function by running the command `?<function>` or `help(<function>)` (replace `<function>` by the name of the function you are interested in). This command opens the help page, where you can find all information about a function's purpose and its arguments. For beginners, it is useful to concentrate on the "Examples" and "Arguments" section to understand the typical usage of the function better.
+
+Run the code below to read the documentation for the logarithm function. Don't worry if you don't understand everything. When you are done, change to code to return the base-3 logarithm of 8. (The answer should be about 1.89.) If you need, use the button on the exercise header to get hints.
+
+```{r log_help}
+?log
+
+
+# return the base 3 log of 8
+log(x=8, base=3)
+
+# functions have defaults as well, for example:
+# default base of e
+log(8) # without specifying base
+log(8, base=exp(1)) # gives same value because without specifying above the default base is e
+
+# function arguments also don't need to be named if you specify them in the order shown on the help page
+# log(x, base)
+log(3,8) # same as:
+log(3, base=8)
+
+```
+
+
+As you can see from the example above, some functions take multiple arguments. When that is the case, some or all of the arguments may be *named*. For example, the 'log' function has an argument named `base`. Writing the argument names is optional as long as you provide the arguments in the same sequence as given in the "Usage" section of the help page. For example, `log(3, 8)` is the same as `log(3, base = 8)`.
+
+Furthermore, as you can see with the logarithm example, it is often the case that some of the arguments are *optional*, i.e. the argument has a default value: `argument = default_value`. You already learned that you could just call `log(3)`, without specifying the `base` argument. Whenever this argument is not specified, it is assumed to be base $e$ by default. When reading the help page of a function, the sheer number of arguments can often be overwhelming. It is often helpful to first concentrate on the mandatory arguments (i.e. arguments without a default value) to get a grasp on the usage of a function.
+
+
+## 4.0 Data types
+So far, we've been manipulating numbers. Any variable that holds a number is of type *numeric*. But R can also handle other types of data. We can find a variable's data type with the function `class()`. Complete the code below by calling the function `class()` to confirm that the variable `x` is numeric:
+
+```{r class}
+
+# check what class x is 
+x <- 3
+class(x)
+# this is a numeric, what if we stored another type of data in x?
+
+```
+
+
+A completely different data type consists of alphanumeric strings, like words. In the box below, find the name of this data type using the function `class()`:
+
+```{r class_char}
+
+# character class
+x <- "Hello world"
+class(x)
+# note - important to put the character in quotation marks otherwise R thinks it is a variable name!
+
+```
+
+
+Note how we surrounded the character string by quotation marks. If we don't do this, R will think you are referring to a variable name.
+
+A third data type is used for *logical* variables. Logical variables can only have two values: `TRUE` or `FALSE`. You can create a logical variable by assigning one of these values directly. In the box below, assign the value `TRUE` to the variable `x` and then confirm its data type:
+
+```{r class_logical}
+
+x <- TRUE
+class(x)
+
+```
+
+
+But logical variables are most useful when they describe *logical statements* such as the ones in the box below. Each of these statements has a logical value: they are either `TRUE` or `FALSE`. Run the code below to find out the logical value of each statement.
+
+```{r class_logical_2}
+
+# logical variables most useful when they describe statements that you present to R for evaluation
+# for example: 
+
+0 < 1 # smaller than
+0 >= 0 # larger-or-equal to
+5 == 7.1 # equal to. Note TWO equal symbols.
+5 != pi # not equal to
+
+```
+
+Chose one of the statements above and assign the *entire statement* to variable `x`. Then, use the function `class()` to check the variable's data type, you will see that this too is a logical variable.
+
+```{r class_logical_statement}
+
+# assign an expression that results in a logical, class of x will be logical
+x <- 0<1
+class(x)
+
+```
+
+
+
+## 5.0 Structures
+So far, all of the objects we encountered consist of a single element: a single number, character string, or logical value. But R objects can also contain several elements. Examples of R object that contain multiple elements are *vectors* (one-dimensional) and *data frames* (two-dimensional).
+
+### 5.1 Vectors
+This is a set of elements of the same type. Vectors are constructed with the function `c()`, which stands for **c**ombine.
+
+```{r create vectors}
+
+# vector = set of elements of the same time, created with the c() (concatenate) function
+
+# Vector of numbers
+x <- c(4, 5, 6)
+
+# Vector of characters
+y <- c("Hello", "Goodbye")
+
+# Vector of logical
+z <- c(TRUE, FALSE, TRUE)
+
+```
+
+Many common descriptive statistics functions, like the mean (`mean()`), variance (`var()`), median (`median()`),  standard deviation (`sd()`),  maximum (`max()`), and minimum (`min()`), take numeric vectors as arguments, i.e you have the heights of 5 people and want to know the mean value. 
+
+In the box below, we are going to create ab object called `vector` and then compute the mean of that vector using the function `mean()`. 
+
+```{r vector_mean}
+
+?mean # takes numeric/logical VECTORS
+vector <- c(3, 5.1, 7, 1.23)
+mean(vector)
+
+```
+
+Common mathematical operators, such as `+`, `-`, `*`, `/`, and `^` can also be used to operate on vectors. The code in the box below shows taking the product of two vectors of the same length (multiplying all of the corresponding elements), you can also multiple the vector by a scalar value of `x` (a single number).
+
+```{r product_vectors}
+
+# can multiply a vector by a scalar
+x <- c(2,3,4)
+2 * x 
+
+# can also multiply vectors of the same length, all elements
+c(1, 2, 3) * x # multiply two vectors
+
+```
+
+As you can see, when you multiply two vectors with the same length, R multiplies all of the corresponding elements. The same holds for other operations, such as addition or division. This is called an element-wise operation. When you multiply a vector by a scalar, R multiplies every element of the vector by the scalar.
+
+
+
+### 5.2 Data frames
+Whereas a vector is a one-dimensional structure, *data frames* are two-dimensional. You can think of a data frame as a collection of vectors, like a table in excel. Data frames are one of R's most essential data structures. They organise data into a tabular format with rows and columns. 
+
+If you have some data from an experiment or study, you will typically save it as a table in a format such as `.csv`, `.txt`, or `.xlsx`. When you load those files into R, you will create a data frame object. At the end of this tutorial (section *Using R in your own computer*) you will learn how to load a data file stored in your computer into R.
+
+Instead of loading data from your computer, you can also use an online data set: we will use [this one](https://raw.githubusercontent.com/EDUCE-UBC/educer/main/data-raw/data_intro_ws.csv), which is a `.csv` file hosted on our [GitHub](https://github.com/EDUCE-UBC/workshops_access). Click on the link and examine the format of the data. Notice that the first row consists of column names, that each column corresponds to a data variable, and that each row corresponds to one observation.
+
+These data contain information on oxygen concentrations sampled at [Saanich Inlet, British Columbia](https://en.wikipedia.org/wiki/Saanich_Inlet) at several depths and during various seasons. It contains:
+
+- `Season` - season in which measurement was obtained; Fall or Summer
+- `Depth_m` - depth in meters (m) at which measurement as obtained
+- `O2_uM` - oxygen (O~2~) concentration in micromolar (µM)
+- `Add_data` - whether additional microbiological data was collected; `TRUE` or `FALSE`
+
+For a brief introduction to the data used in our workshops, see [Hallam SJ *et al*. 2017. Sci Data 4: 170158](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5663219/) "Monitoring microbial responses to ocean deoxygenation in a model oxygen minimum zone". More detailed information on the environmental context and time series data can be found in [Torres-Beltrán M *et al*. 2017. Sci Data 4: 170159.](https://www.nature.com/articles/sdata2017159) "A compendium of geochemical information from the Saanich Inlet water column".
+
+You can import `.csv` data files into R using `read.csv()`. Since our file is hosted online, the function's argument should be a character string containing the link to the data set. (What if the file is saved in your computer? Wait until section *Using R in your own computer* to learn more.) 
+
+In the code box below, import the data file using `read.csv()` and assign it to the variable `dat`. 
+
+```{r read_data}
+
+link <- "https://raw.githubusercontent.com/EDUCE-UBC/educer/main/data-raw/data_intro_ws.csv"
+dat <- read.csv(link)
+
+# now examine the first few rows of the dat object using the head() function
+head(dat)
+
+```
+
+You can examine the first few rows of `dat` using the `head()` function. Do this in the code box above.
+
+- The first row, containing the column names, is called *header*. 
+- Each column can be thought of as a vector corresponding to a single data variable. 
+  - For example, the second row is like a numeric vector, describing the data variable "Depth". 
+  - All elements of a column must be of the same data type (just like a vector)
+- Each row corresponds to a single data observation: in this case, each row is a single study site. 
+
+Data frames are integral to data analysis in R. We will learn how to manipulate data frames later in this tutorial.
+
+
+## 6.0 Installing and loading packages
+
+Now, let's discuss packages. *Packages* are *sets of functions* that extend R's capabilities. Certain functions like "mean" and "sd" are built into what is called *base R* functionality. More specialized functions that you will use for plotting or specific types of data analysis come in packages that are groups of functions to facilitate and enhance analyses. Anyone can make a package and share it with others. 
+
+However, because those functions are not part of base R, they do not come pre-installed. You need to install any package you use in your computer. To make plots in the next section, we will use the `quickplot()` function, from the popular data visualization package *ggplot2*.
+
+Let's install ggplot2 in your computer. Packages are typically installed from [CRAN](https://www.r-project.org/) (The Comprehensive R Archive Network), which is a database containing R itself as well as many R packages. Any package can be installed from CRAN using the `install.packages()` function. 
+
+When you install a package, it is saved into your computer, and once a package is installed, you won't need to reinstall it again. Copy the following code into your own RStudio console and run it to install ggplot2.
+
+install.packages("ggplot2")
+
+After installing a package, and *every time* you open a new RStudio session, the packages you have previously installed that you want to use need to be loaded into the R workspace with the `library()` function (see the code box below). This tells R to access the package's functions and prevents RStudio from lags that would occur if it automatically loaded every downloaded package every time you opened it. It is a good idea to load all of the packages you need for a particular analysis at the top of that analysis' script.
+
+```{r }
+library("ggplot2") # Load ggplot2 package.
+```
+
+Now we can use functions from the ggplot2 package for some data visualization exercises.
+
+
+### 6.1 Quick plots
+There are many data visualization options in R. Some data visualization functions are part of R by default, much like other functions you already encountered, such as `log()` or `mean()`. Functions that are part of R by default are called *base R*.
+
+However, the most popular way to create publication-quality figures is to use the package *ggplot2*. 
+
+Here, we will use the ggplot2 function `quickplot()` to make a scatterplot with Oxygen level on the X axis and Depth on the Y axis. 
+
+```{r quickplot}
+
+# Plot data -- needs ggplot2
+quickplot(data = dat,
+          x = O2_uM,
+          y = Depth_m,
+          colour = Season,
+          main = "Saanich Inlet: Seasonal oxygen depth profile")
+
+```
+
+
+## 7.0  Accessing and subsetting data
+
+### 7.1  Accessing vector elements 
+Every vector has a length, which is the number of elements in the vector. In the code box below, we created a vector called `x`. Use the function `length()` to determine the number of elements in the vector:
+
+```{r length}
+
+x <- c(4, 5, 6, 7)
+length(x)
+
+# as a note, if you are creating a vector like this that is a series of consecutive integers,
+# you can use the colon integer. let's try creating a vector y that ranges from 4-7 and confirm it's the same as x
+y <- 4:7
+y==x # this function, two equals signs means "is exactly equal to", R tells you whether this is true or not
+
+```
+
+Since vectors are one-dimensional and have a defined length, you can retrieve their individual values using vector indices. R uses 1-based indexing, meaning the first value in an R vector corresponds to index 1, the second value to index 2, and so on. The index of the final element of the vector is equal to the vector's length. (*This is important because some languages use 0-based indexing so the first value in a vector in certain languages would be the 0th element*).
+
+We can extract the value of the 2nd element of a vector using the square bracket operator `[]`, like in the code box below. Run it and examine the output. It is a single number (or, identically, a vector of length 1).
+
+```{r subsetting}
+
+x <- c(4, 5, 6, 7)
+x[2]
+
+# can also subset multiple elements of a vector, like the 2nd AND 3rd values using a vector of indices inside the square brackets
+x[c(2,3)]
+
+# note that when we view particular elements of X, because we are not saving these elements to a variable,
+# the value of the variable x itself does not change
+x
+length(x)
+
+```
+
+However, because the value of x doesn't change, you can't do anything with that output. *If you want to us the subsetted vector later* in your code, it needs to be saved into a variable using the assignment operator.
+
+```{r length_word_vector}
+
+# can save the output of subsetting operations to use later, either over-write original variable or save as new
+
+# save just the first element of the vector, in this case we are overwriting the original "word_vector"
+word_vector <- c("Hello", "World")
+word_vector <- word_vector[1]
+length(word_vector)
+word_vector
+
+# now maybe save the 2nd and 3rd elements of x in a new variable so that we keep both x and the subsetted vector
+x
+x_sub <- x[c(2,3)]
+x_sub
+
+```
+
+
+
+### 7.2 Accessing data frame elements
+Since vectors are one-dimensional objects, their elements can be accessed using a single index, like we did before. To access data frames, which are 2D objects, you need to specify two indices: the row number and the column number. Run the code chunk below, that subsets the element located on the 4th row, 3th column. Then, using what you learned in the previous section, modify the code so that it outputs the 5th, 6th, and 7th elements of the third column.
+
+```{r index_df}
+
+# using square brackets we can specify which element we want to extract from a dataframe
+# syntax for square brackets with a dataframe is always [rows, columns]
+
+dat[4, 3] # 4th row, 3rd column
+
+# can also used what we learned earlier to select multiple rows or columns
+dat[5:7, 3] 
+dat[c(5,7), 3]
+
+```
+
+It is often more useful to refer to data frame columns by name rather than number. The easiest way to do this is using the `$` symbol, which subsets an entire column from the data frame. 
+
+Run the code chunk below and examine the output. Note that the output (which is the entire `O2_uM` column) is simply an R vector. We can manipulate the `dat$O2_uM` object just like we would manipulate any other vector. Modify the code so that it outputs only the 5th, 6th, and 7th elements of the `O2_uM` column. Use the vector subsetting notation `[]` that you learned in the previous section. If you need help, use the Hint button.
+
+```{r column_name}
+
+# access the column with its name instead of its numerical index
+dat$O2_uM # third column is called Depth_m
+
+# note that if we check the structure of this, it is a vector (numeric) that we can further operate on
+str(dat$O2_uM)
+dat$O2_uM[5:7]
+
+```
+
+
+### 7.3 Conditional subsetting
+Sometimes, we want to access only those observations (rows) of a data frame that obey certain conditions. We can do this with the `subset()` function, which takes two arguments: (1) the full data frame, and (2) the condition.
+
+For example, imagine that, from our data frame, we were only interested in those observations that were measured in the Fall. Then, we could subset the data like so: `subset(dat, Season == "Fall")`.
+
+In the *Quick plots* section, we plotted our data's oxygen concentration as a function of depth. In that plot, four points had an oxygen concentration equal to zero. Complete the code below (replace the words surrounded by angular brackets `< >` by the appropriate code) to make a plot that includes only those observations where oxygen concentration is larger than zero:
+
+```{r plot_subset}
+
+# first, plot the depth of water versus the season
+quickplot(data = dat, 
+          x = Season,
+          y = Depth_m,
+          colour = Season,
+          main = "Saanich Inlet: Seasonal depth profile")
+
+# subset data to only observations taken in the fall
+reduced_data <- subset(dat, Season == "Fall")
+head(reduced_data)
+
+table(reduced_data$Season)
+quickplot(data = reduced_data, 
+          x = Season,
+          y = Depth_m,
+          colour = Season,
+          main = "Saanich Inlet: Seasonal depth profile")
+
+```
+
+## 8.0 Tidyverse subsetting
+
+### 8.1 Filter and select
+
+Subsetting is extremely useful when working with large data. You can learn more complex subsets in our [Tidyverse](https://github.com/EDUCE-UBC/workshops_access/tree/main/intro_tidyverse) workshop using the tidyverse packages, which are a popular and widely used suite of R package for working with and visualizing data. 
+
+Let's practice subsetting rows (using tidyverse::filter()) and columns (using tidyverse::select()) with tidyverse functions so that you can see the similarities and differences between subsetting with the base R square brackets.
+
+```{r}
+
+# first we need to install the tidyverse package
+# this is temporary so we are going to code it in the console
+
+# once installed, load the package
+library(tidyverse)
+
+# look at our data object again
+head(dat)
+
+# how many depth measurements are there?
+table(dat$Depth_m) # 2 entries (summer + fall) for each water depth
+
+# subset to only observations collected in the fall again
+# recall with base R we did it this way:
+reduced_data <- subset(dat, Season == "Fall")
+
+# with tidyverse, we want to use the filter function since we are subsetting ROWS
+reduced_tidyverse <- dat %>% filter(Season == "Fall")
+
+# does this give us the same result as the base R method?
+reduced_data == reduced_tidyverse # yes!
+
+
+# now what if we wanted to take the data from these Fall measurements and keep only the last 3 columns (i.e. get rid of "Season")
+# base R 
+reduced_data <- reduced_data[,2:4]
+
+# tidyverse, we are subetting columns so want to use "select" function
+reduced_tidyverse <- reduced_tidyverse %>% select(2:4)
+
+# again, check that they give you the same result
+reduced_data == reduced_tidyverse # yes!
+
+```
+
+### 8.2 Tidyverse mutate
+
+Beyond just subsetting your data, often you will need to operate on or manipulate the data itself. Tidyverse functions again come in very handy in these situations, specifically the tidyverse::mutate() function, which you can use to either manipulate columns in place, or to create new columns entirely.
+
+For example, right now we have oxygen concentration measured in micro moles per litre. Let's convert this to moles per litre. Remember, micro = 1x10^-6
+
+```{r}
+
+head(dat)
+
+# okay, let's convert the O2_uM column to M
+dat <- dat %>% mutate(O2_M = O2_uM * 10^6)
+dat
+
+# notice that the way we phrased that created a new column.
+# if we had used the same name in the first argument, that would have replaced the data in the O2_uM column:
+dat %>% mutate(O2_uM = O2_uM * 10^6) # be careful with this if your column names have units like this dataframe does! :) 
+
+```
+
+
+
+## 9.0 Working with your own data in R
+
+### 9.1 Paths and the working directory
+
+In all operating systems, files "live" inside a directory (or "folder"). This directory, in turn, is nested within its own directory, which itself is nested within a larger directory, and so on, following a hierarchical structure. The top-most directory in such a filesystem is called the *root* directory. In Windows, the root directory is usually called `C:\Windows`; in Mac OS and Linux it is simply called `/`.
+
+To tell your computer about a given file, it is often not enough to provide just the filename. Many different files with the same filename could exist in a given computer. Instead, you often have to provide the file's *absolute path*, which describes the file's unique location in the directory tree hierarchy. For example, in Mac OS or Linux a file's absolute path could look like this:
+
+```
+/home/user/docs/Letter.txt
+```
+
+and in Windows, it could look like this:
+
+```
+C:\user\docs\Letter.txt
+```
+
+Whenever you open R, there is some directory in your environment associated with your current R session. This is called the *working directory*. It is not always obvious what the current working directory is. You can learn what the current working directory is by typing the following in your console:
+
+```{r }
+getwd() # Which stands for "get working directory"
+```
+
+This prints out the path of your current working directory. In RStudio, you can also open the *Files* pane (on the bottom-right) which shows all the files in the current working directory. Knowing the current working directory is important because whenever you want to load data from your computer (or save data or figures into your computer) R will look for it (or save it) in your current working directory. We will learn more about loading data later on. But first, we will learn about *projects*, a nice tool that simplifies our interactions with the working directory.
+
+### 9.2 RStudio Projects
+
+Working with absolute paths is very complicated, and can cause a lot of problems. For example, if you move the directory that contains your project, all of the absolute paths will change, and any script that relies on them will not work any more. Similarly, if you send your script to a colleague, it won't work because the absolute paths will be different in their computer.
+
+To solve this problem, you should always work with RStudio *projects*. A project is essentially a directory (folder) in your computer that contains all of the files and outputs that you are working on. 
+
+When you create a project, RStudio creates a directory containing an `.Rproj` file. This file ensures that, when you are working on the project, the R working directory is set to its project directory, no matter where in your computer that directory is located.
+
+*Advantages:*
+
+- When you import data, R automatically looks for the file in the working directory (i.e., the project directory) instead of you having to specify an absolute file path on your computer like `/Users/username/Desktop/`. We will learn more about this soon.
+- If you decide to save any plots or data files, R will also automatically save any of them in the project directory. 
+
+### 9.3 Creating an RStudio project
+RStudio has a simple interface to create and switch between projects, accessed from the button in the top-right corner of the RStudio window (labeled "Project: (None)", initially). Start by clicking the Project button in the upper right or going to the File menu. Select New Project and the following will appear.
+
+You can either create a project in an existing directory or make a new directory on your computer. Create a new project on your desktop. After your project is created, navigate to its directory using your Finder/File explorer. You will see the `.RProj` file has been created. 
+
+To access this project in the future, simply double-click the `.RProj` file and RStudio will open the project. Alternatively, open RStudio and choose File > Open Project.
+
+Whenever you open a project, the working directory is immediately set to the project's directory. Make sure to save all scripts and data files associated with your project in that project's directory.
+
+### 9.4 Load data from working directory
+In the section *Quick plots*, you learned how to load a `.csv` data file from a web link: 
+
+```{r get data from web link}
+# Link to data in csv format
+path <- "https://raw.githubusercontent.com/EDUCE-UBC/educer/main/data-raw/data_intro_ws.csv" 
+# Read csv file
+dat <- read.csv(path) 
+```
+
+But how do you load data from your own computer? Theoretically, you *could* assign the your data file's absolute path to the variable `path` and then follow the same steps. However, as we discussed above, it is often a bad idea to use absolute paths.
+
+It is best practice to save your data file in your project directory. Recall that R always looks for files in the working directory, and if you are using an RStudio project, the working directory will automatically be set to the project directory. 
+
+Create a folder named `data_folder` (or any name you prefer) inside your project directory. Then, use the code below to download our Saanich Inlet data file and save it inside `data_folder`. 
+
+```{r download dat object to local path}
+
+# Apply download.file function in R, using shortened path because we are in a project 
+download.file("https://raw.githubusercontent.com/EDUCE-UBC/educer/main/data-raw/data_intro_ws.csv" , "data_folder/data_intro_ws.csv")
+
+```
+
+If you open up that folder now, you will be able to see the data_folder with your.csv file saved. You can open it up in Excel or another text editor if you'd like to see what it looks like. This .csv file represents data that you will likely collect from an experiment that you will want to load into R for data manipulation or plotting purposes.
+
+You can load your data file like this:
+
+```{r read in csv from local, eval=F}
+
+# Path of data in csv format, any typos in path or file name will lead to error
+path <- "data_folder/data_intro_ws.csv" 
+
+# Read csv file
+dat <- read.csv(path) 
+
+```
+
+Note that we did not need to specify the full absolute path. Instead, we specify only the parts of the path that are inside the working directory. This is called a *relative path*. If you send your project to a collaborator, or move it to a different location in your computer, the script will still work, because the relative path will still be the same. That is the advantage of using R Projects!
+
+
+## 10.0  Plotting with ggplot2
+
+In the last part of this workshop we are going to go over some plotting techniques. So far we have used the quickplot() function from the ggplot2 package. That's great and very powerful, but to customize your plots it's even better to use the ggplot() function.
+
+The code in the next part of this workshop is based on a tutorial written by Victor Yuan from the Trainee Omics Group.
+
+What are the essential components of a ggplot graph? Every ggplot has at least 3 components:
+
+1. **Data**. A dataframe of variables to be visualized. Where your *variables are in columns* and *observations are in the rows*
+
+2. **Aesthetics**. "Aesthetic mappings" are how we tell which variables in our data correspond to each component of the resulting graphic (e.g. x-axis, y-axis, color, shape, etc.)
+
+3. **Geoms**. "Geometries" or geoms refer to the specific **geom**etric objects that are going to represent the data. For example, `geom_boxplot` creates a box plot, `geom_point` creates points on the graph, `geom_bar` creates bar plots, ..., etc. 
+
+We will explore these components first, and then later we will look at other components of the ggplot2  system that allow for more complex graphs and finer customization.
+ 
+
+```{r}
+
+# maybe open up the help menu to see what options a ggplot function requires?
+# lets try to recreate the plot we made using quickplot with ggplot.
+quickplot(data = dat,
+          x = O2_uM,
+          y = Depth_m,
+          colour = Season,
+          main = "Saanich Inlet: Seasonal oxygen depth profile")
+
+# first, just adding the data to a ggplot produces a blank page
+ggplot(data = dat)
+
+# if we ax aesthetics, axes appear
+ggplot(data = dat, aes(x=O2_uM, y=Depth_m))
+
+# add a "geometry", in this case we cant a scatter plot so we will use geom_point
+ggplot(data = dat, aes(x=O2_uM, y=Depth_m)) +
+  geom_point()
+
+# change the default color of the points to reflect the season!, now the plot is identical!
+ggplot(data = dat, aes(x=O2_uM, y=Depth_m, color = Season)) +
+  geom_point()
+
+# we can also add addiotional geometries to this same plot, what about a line of best fit through the points for each season?
+ggplot(data = dat, aes(x=O2_uM, y=Depth_m, color = Season)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+# what about different types of plots? maybe we want boxplots of the oxygen concentration by season
+ggplot(data = dat, aes(x=Season, y=O2_uM)) +
+  geom_boxplot()
+
+# can change the color of everything with a fill or a color option outside of the aesthetics call
+ggplot(data = dat, aes(x=Season, y=O2_uM)) +
+  geom_boxplot(color="blue")
+
+# notice this is different than using the aes(color=Season) or aes(fill=Season)
+ggplot(data = dat, aes(x=Season, y=O2_uM, fill=Season)) +
+  geom_boxplot()
+
+# aesthetics map variables in your data (Season, oxygen concentration) to features on your plot like color, axes etc. 
+# adding a color outside the aesthetic call does so without mapping back to your data. i.e. it will just make everything blue without coding it by season!
+
+```
+
+
+
+## 11.0 Final exercises
+
+Let's return to our data set on oxygen concentrations in Saanich Inlet. If you haven't done so yet, download the data file into your project directory (see the section *Using R in your own computer*, subsection *Loading data from your working directory*).
+
+Then, load this file as a data frame and:
+
+1. Using an R function, determine what data type the `Depth_m` variable is.
+2. Using indexing and the square bracket operator `[]`:
+    - determine what depth value occurs in the 20th row
+    - return the observation (row) where oxygen equals 91.115. *Hint*: Use the `subset()` or `filter()` functions.
+3. Subset the data to observations where depth is deeper than 100 m. *Hint*: Use the `subset()` or `filter()` functions.
+4. Create a scatterplot of oxygen concentrations within the two different seasons, colored by whether or not additional microbial data (Add_data) are available.
+
+```{r answers,  class.source = 'fold-hide', results='hold'}
+
+# 1. what data type is Depth_m variable?
+class(dat$Depth_m)
+
+
+# 2. 
+## determine what depth value occurs in the 20th row?
+dat[20, "Depth_m"] # base R
+dat %>% filter(row_number() == 20) %>% select("Depth_m") # tidyverse, bulky code for this purpose
+
+## return the observation where oxygen equals 91.115
+dat[dat$O2_uM == 91.115, ] # base R
+subset(dat, O2_uM == 91.115) # subset
+dat %>% filter(O2_uM == 91.115) # tidyverse
+
+
+# 3. subset the data to depth deeper than 100m
+dat_100m <- dat[dat$Depth_m > 100, ] # base R
+dat_100m <- subset(dat, Depth_m > 100) # subset
+dat_100m <- dat %>% filter(Depth_m > 100) # tidyverse
+
+# 4. create scatterplot of oxygen concentrations within the two different seasons, colored by whether or not additional microbial data (Add_data) are available
+# ggplot solution
+ggplot(dat, aes(x=Season, y=O2_uM, color=Add_data)) +
+  geom_point()
+
+# quickplot solution  
+quickplot(data = dat,
+     x = Season, 
+     y = O2_uM, 
+     colour = Add_data, 
+     main = "Saanich Inlet: Oxygen in Fall vs. Summer")
+
+```
+
