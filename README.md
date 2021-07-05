@@ -23,8 +23,8 @@ Or write us an email at: tog (at) bcchr (dot) ca
 | --- | --- | --- | --- |
 | 2021-02-15| 2:00PM - 3:00PM | Virtual | Introduction to source control with GitHub |
 | 2021-06-24| 9:30AM - 11:30AM | Virtual | Introduction to R and R Studio |
-| 2021-07-07| 1:00PM - 2:30PM | Virtual | RNA-seq Analysis Part I: Raw to Processed Data [(Registration required)](https://forms.gle/dKkfoQPe9KAGXExK8)|
-| 2021-07-15| 1:00PM - 2:00PM | Virtual | RNA-seq Analysis Part II: Differential Expression and Beyond [(Registration required)](https://forms.gle/dKkfoQPe9KAGXExK8)|
+| 2021-07-07| 1:00PM - 3:00PM | Virtual | RNA-seq Analysis Part I: Raw to Processed Data [(Registration required)](https://forms.gle/dKkfoQPe9KAGXExK8)|
+| 2021-07-15| 1:00PM - 3:00PM | Virtual | RNA-seq Analysis Part II: Differential Expression and Beyond [(Registration required)](https://forms.gle/dKkfoQPe9KAGXExK8)|
 
 # Open help session schedule
 Keep an eye out for emails from our mailing list for zoom links to the following open help sessions:
