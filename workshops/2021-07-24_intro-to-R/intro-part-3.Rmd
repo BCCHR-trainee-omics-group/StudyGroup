@@ -1,0 +1,28 @@
+---
+title: "Intro part III"
+author: "William Casazza"
+date: "24/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+path <- "https://raw.githubusercontent.com/EDUCE-UBC/educer/main/data-raw/data_intro_ws.csv" 
+download.file(path,"intro_data.csv")
+
+getwd()
+path <- "intro_data.csv"
+dat <- read.csv(path)
+```
+
+```{r}
+library(tidyverse)
+
+ggplot(data = dat, aes(x=O2_uM,y=Depth_m)) +
+  geom_point()
+```
+

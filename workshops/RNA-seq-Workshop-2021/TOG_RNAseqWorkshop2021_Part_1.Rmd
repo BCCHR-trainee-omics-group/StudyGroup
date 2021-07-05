@@ -1,0 +1,568 @@
+---
+title: "TOG RNA-seq Workshop 2021: Part 1" 
+author: Nikita Telkar 
+date: July 2021
+output: 
+  html_document: 
+    keep_md: yes 
+    toc: true  
+    toc_depth: 4
+    toc_float: 
+      collapsed: false 
+      smooth_scroll: true
+    theme: flatly  
+    highlight: pygments 
+---  
+
+### 0.0 Introduction  
+
+In this 2-part workshop, we're going to work through the steps of RNA-seq data analysis. We'll start with visualizing our raw data and doing some exploratory analysis, then move on to some basic quality control steps to produce cleaned expression counts, finally ending with enrichment analyses.    
+
+For Part 1, we're going perform some exploratory analysis with our data and perform quality control steps, resulting in a processed expression matrix.  
+
+***  
+
+> Start of Part 1 
+
+### 1.0 Loading Packages and Data  
+
+```{r, echo = F}
+library(formatR)
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE)
+```  
+
+These are the base level packages we will be needing to view and manipulate our data. Along with a dew formatting packages. I'll load the rest of the packages at the time of using the relevant functions required.  
+
+```{r libraries, warning = FALSE, error = FALSE, message = FALSE}
+
+library(tidyverse)
+library(here) 
+library(rmarkdown)
+library(knitr)
+
+#formatting packages
+library(kableExtra)
+library(janitor)
+library(scales)
+library(ggpubr)
+
+``` 
+
+***  
+
+### 2.0 FASTQ to BAM  
+
+The raw sequence data that you get directly output from the sequencing machine is in the format of a FASTQ file. These are *unmapped* sequencing reads containing the information for each read generated, and is present in the following formatting:  
+
+1. A sequence identifier with information about the sequencing run and the cluster. The exact contents of this line vary by based on the BCL to FASTQ conversion software used.  
+2. The sequence (the base calls; A, C, T, G and N).  
+3. A separator, which is simply a plus (+) sign.  
+4. The base call quality scores. These are Phred +33 encoded, using ASCII characters to represent the numerical quality scores.  
+
+![img](static/fastqPic.png)  
+https://compgenomr.github.io/book/fasta-and-fastq-formats.html  
+
+
+These sequence-read files now need to be mapped to the genome. The process of mapping or alignment results in *mapped* SAM or BAM files.  
+
+SAM: human-readable  
+BAM: binary format of a SAM file (computer-readable)  
+
+In order to generate your expression counts file, we need a BAM file. Usually, when you sned samples for sequencing, the centre will send you back the raw FASTQ files as well as aligned BAM files. 
+
+The steps of FASTQ alignment / BAM generation generally include:  
+
+1. Trimming of adaptors / indexes / UMIs from the sequencing reads  
+2. Downloading the genome reference file (in FASTA format .fa) to which you want to align your FASTQ file (can be downloaded from ENCODE, UCSC)  
+3. Generating index files from the reference genome (this step basically segments the genome into smaller separate 'indexes', which are then used to align short read sequences. Given that genomes are many billion bp long, this indexing allows mapping at a faster rate using the smaller sized index files)  
+4. Aligning your trimmed reads to the reference genome using the index files.  
+
+There are several software available for performing the above steps in a Linux environment, each having it's own features which might be better suited for different data types:    
+
+1. Trimming: Trimmomatic, CutAdapt 
+2. TopHat, Burrow-Wheeler Alignment (BWA), Bowtie2, STAR  
+
+There are many tutorials available online that work through the steps of alignment: https://bioinformatics-core-shared-training.github.io/cruk-summer-school-2019/Introduction/SS_DB/Materials/Practicals/Practical2_alignment_JK.html  
+
+The FASTQ_to_BAM HTML file I made briefly describes the general steps for genome alignment.  
+*Note: You will need access to a high performance computing HPC cluster for this step - it works exclusively in Linux and MACOS, as well several GBs of storage space for the index and BAM files.*  
+
+***  
+
+### 3.0 BAM to Expression Count Files
+
+Okay, once you have your BAM files, extracting the counts for your reads (i.e. how many times was a particular transcript sequenced) is pretty easy and straightforward, and you can do it in R itself!  
+
+```{r bam files}
+
+library(Rsubread)
+
+#check the available arguments and options available for the featureCounts functions by running ?featureCounts in your console)
+counts <- featureCounts(here::here("data", "HG00097.mapped.ILLUMINA.bwa.GBR.exome.20130415.bam"), annot.inbuilt = "hg19", isPairedEnd = TRUE)
+
+expression_counts <- counts$counts
+
+```
+
+```{r loading data}
+
+here::here()
+
+eDat <- read.delim(here::here("data", "GSE157103_formatted_eDat.txt"), sep = "\t")
+pDat <- read.delim(here::here("data", "GSE157103_formatted_pDat.txt"), sep = "\t")
+
+```
+
+### 4.0 Exploratory Data Analysis  
+
+```{r view data}
+
+#several methods to view dataframes
+
+as_tibble(pDat)
+
+# pDat %>% 
+#   kable() %>% 
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, fixed_thead = T)
+# 
+# str(pDat)
+# 
+# as.tibble((eDat[1:10, 1:10]))
+
+#converting our column with all the gene names to assigned row names -- we require certain identifiers (such as gene/sample names) as column and row names and not as a separate column or row for a few analyses downstream
+eDat <- eDat %>%  
+  column_to_rownames(var = "gene")
+
+#Do the column names of our expression dataframe (our samples names) match the order of the rows in the ID column of the phenotype dataframe
+all(colnames(eDat) == pDat$ID)
+
+```  
+
+*Pause for questions*  
+
+```{r pdat exploration}
+
+#column names of pDat
+names(pDat)
+
+#what's the separation of patients by sex?
+pDat %>% 
+  dplyr::count(COVID, Sex)
+
+#what's the ICU status by COVID status?
+pDat %>% 
+  dplyr::count(COVID, ICU)
+
+#Now, we can't do that for age, as it a continuous variable.
+
+# ASSIGNMENT 1: Make a new variable called Age_bracket from age as a categorical variable and check spread of age of patients [5 min]
+
+#making a new categorical variable from a continuous
+pDat <- pDat %>% 
+  mutate(Age_bracket = case_when(
+    Age < 20 ~ "below_20",
+    between(Age, 21, 40) ~ "21-40",
+    between(Age, 41, 60) ~ "41-60",
+    Age > 60 ~ "above_60"
+  ))
+
+pDat$Age_bracket <- as.factor(pDat$Age_bracket)
+
+#This only works because age is present as integers, and does not contain decimals. If so, we would have had to adjust the upper limit of each condition (e.g., between(Age, 21.01, 40))
+
+pDat %>% 
+  count(COVID, Age_bracket)
+
+pDat %>% 
+  ggplot(aes(x = Age_bracket, fill = Age_bracket)) +
+  geom_bar(stat = "count") +
+  facet_grid(~COVID)
+
+pDat$Age_bracket <- fct_relevel(pDat$Age_bracket, c("below_20", "21-40", "41-60", "above_60"))  
+
+#Let's now plot this distribution of our COVID patients by their age bracket
+
+pDat %>% 
+  ggplot(aes(x = Age_bracket, fill = Age_bracket)) +
+  geom_bar(stat = "count") +
+  theme_minimal() +
+  facet_grid(~COVID) +
+  labs(title = "Distribution of COVID Patients by Age Bracket")
+
+### PAUSE FOR QUESTIONS
+
+#Now, let's check how protein levels vary by COVID status
+
+#Making a new variable that only includes protein measurements
+#'
+
+names(pDat)
+
+proteins <- pDat %>% 
+  dplyr::select(COVID, Ferritin_ng.ml, CRP_mg.l, Procalcitonin_ng.ml, Lactate_mmol.l, Fibrinogen_mg.dL)
+
+#We're now going to collape this `wide` dataframe  into a `longer` one
+
+proteins <- proteins %>% 
+  pivot_longer(cols = 2:6, names_to = "protein", values_to = "measurement")
+
+#plotting the spread of each of the proteins by COVID status:
+
+proteins %>% 
+  ggplot(aes(x = COVID, y = measurement, fill = COVID)) +
+  geom_boxplot() +
+  #geom_jitter(shape = 16, colour = "grey", alpha = 0.5, width = 0.2) +
+  scale_fill_manual(values = c("orange", "grey")) +
+  facet_wrap(~protein, scales = "free") + #scales = free allows the y-axis of each plot to have variable limits
+  theme_minimal()
+
+#how about mechanical ventilation? what percentage of COVID patients needed mechanical ventilation?
+
+# pDat %>% 
+#   filter(COVID == "yes") %>% #1
+#   # count(Mechanical_Ventilation) %>% #1
+#   ## mutate(perc = n*100/nrow(pDat)) %>% #2
+#   # mutate(perc = round(perc, digits = 0)) %>% 
+#   ggplot(aes(x = Mechanical_Ventilation, fill = Mechanical_Ventilation)) +
+#   # ggplot(aes(x = Mechanical_Ventilation, y = perc, fill = Mechanical_Ventilation)) +
+#   geom_bar(stat = "count", width = 0.6) +
+#   # geom_bar(stat = "identity", width = 0.6) +
+#   ## geom_text(aes(label = perc), vjust = -0.8, colour = "#333333") + #2
+#   ## scale_fill_manual(values = c("orange", "grey")) +
+#   theme_minimal() +
+#   labs(y = "Percentage of patients", title = "COVID Patients")
+  
+```  
+
+Let's now look at the distribution of our data 
+
+```{r spread of data}
+
+dim(eDat)
+#19372 126
+
+library(reshape2) #similar functioning to pivot_longer
+e_melt <- melt(eDat)
+
+head(e_melt)
+
+colnames(e_melt)[1:2] <- c("sample", "expression")
+
+e_melt %>% 
+  ggplot(aes(x = log2(expression), color = sample, fill = sample)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Raw Counts\n")
+
+# we get this error - Removed 544485 rows containing non-finite values (stat_density). That's because we have some genes which have an expression value of 0, which when transformed to log2 give infinity as the output as log2(0) does not exist. Hence, we will apply a log2+1 transformation which adds a unit of 1 to all log2 counts, hence converting our log2(0) expression values to 0.
+
+e_melt <- e_melt %>% 
+  mutate(log_x_1 = log2(expression + 1))
+#melt is a function that condenses all of your data into only two rows - one with the character value and one with it's correspoinding numerical value
+
+#We'll store this plot in a variable
+g1 <- e_melt %>% 
+  ggplot(aes(log_x_1, color = sample, fill = sample)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2(x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Raw Counts\n")
+
+g1
+
+## PAUSE FOR QUESTIONS
+
+#Okay, now we have an idea about how our expression data looks. Let's now take a look at our samples. How do they correlate with each other?
+samp_cor <- cor(eDat)
+
+head(samp_cor)
+dim(samp_cor)
+
+#to visualize our correlations, we'll make a heatmap of the sample correlation values
+
+library(pheatmap)
+
+#dfs have to have col names and row names, where the colnames of eDat match rownames of pDat
+pDat <- pDat %>%  
+  column_to_rownames(var = "ID")
+
+h1 <- samp_cor %>% 
+  pheatmap(clustering_distance_cols = "euclidean", clustering_method = "complete", cluster_rows = TRUE,
+           show_colnames = FALSE, show_rownames = FALSE, 
+           annotation_row = pDat[c("COVID", "Sex")], annotation_col = pDat[c("COVID", "Sex")], 
+           main = "Sample Correlations"
+  )
+
+#let's add some custom colours
+annot_cols <- list(COVID = c(`yes` = "grey", `no` = "orange"), 
+                   Sex = c(`male` = "sea green", `female` = "purple", `unknown` = "yellow")) 
+
+h1 <- samp_cor %>% 
+  pheatmap(clustering_distance_cols = "euclidean", clustering_method = "complete", cluster_rows = TRUE,
+           show_colnames = FALSE, show_rownames = FALSE, 
+           annotation_row = pDat[c("COVID", "Sex")], annotation_col = pDat[c("COVID", "Sex")], 
+           annotation_colors = annot_cols,
+           main = "Sample Correlations"
+  )
+
+#What do we make of this heatmap?
+
+```
+
+### 5.0 Quality Control  
+
+We'll explore a few different criteria of filtering now and decide on one, and finally and normalizise our data.  
+
+```{r filtering}
+
+dim(eDat)
+
+#removing sequences with RPM of 0 in all samples / keeping only sequences with RPM > 0 in at least 1 sample
+e_fil1 <- eDat %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter_at(vars(-gene), any_vars(. != 0)) %>% 
+  column_to_rownames(var = "gene")
+
+dim(e_fil1)
+19472 - 18340 
+# 1132 sequences/genes removed
+
+melt_fil1 <- melt(e_fil1) 
+
+melt_fil1 <- melt_fil1 %>% 
+  mutate(log_x_1 = log2(value + 1))
+
+g_fil1 <- melt_fil1 %>% 
+  ggplot(aes(log_x_1, color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2(x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Removing Sequences with RPM of 0 in all samples", caption = "Raw counts")
+
+g_fil1
+
+#keeping only sequences with RPM >= 1 in all samples
+e_fil2 <- eDat %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter_at(vars(-gene), all_vars(. >= 1))  %>% 
+  column_to_rownames(var = "gene")
+
+dim(e_fil2)
+19472 - 11860
+#7612 sequences removed
+
+melt_fil2 <- melt(e_fil2) 
+
+g_fil2 <- melt_fil2 %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2(x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Sequences with RPM >= 1 in in all samples", caption = "Raw counts")
+
+g_fil2
+
+#keeping only sequences with RPM >= 2 in all samples
+e_fil3 <- eDat %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter_at(vars(-gene), all_vars(. >= 2))  %>% 
+  column_to_rownames(var = "gene")
+
+dim(e_fil3)
+19472 - 11384
+#8088 sequences removed
+
+#how many sequences are removed between e_fil2 (RPM >=1 ) and e_fil3 (RPM >= 2)
+11860 - 11384
+#476 sequences
+
+melt_fil3 <- melt(e_fil3) 
+
+#now here because we already eliminated sequences with an RPM of >=1, that means we don't have any sequences having an RPM of 0. Hence, we don't need to transform it to x+1
+
+g_fil3 <- melt_fil3 %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Sequences with RPM >= 2 in in all samples", caption = "Raw counts")
+
+g_fil3
+
+#keeping only sequences with RPM >= 1 in 30% of samples --> depends on groups in data
+(30*126)/100
+
+# e_fil4 <- eDat %>%
+#   filter(rowSums(across(where(is.numeric)) >= 1) > 38)
+
+
+RPM_morethan1 <- eDat >= 1
+#This gives you a matrix with boolean values. Now to get the sum of all the TRUEs in each sample
+
+table(rowSums(RPM_morethan1))
+#this shows that there are 1172 sequences where all samples have a RPM of less than 1. And there are 11860 sequences which have a RPM pf >= 1 in all 126 samples --> the same number we got for e_fil2. 
+#'This matching of the results/numbers is called a sanity-check, which you should be doing often i.e., making sure that the results that you are getting are indeed correct and are cross-checked by someother method.
+
+e_fil4 <- as.data.frame(rowSums(RPM_morethan1) >= 38)
+#keeping only sequences which have a total of 38 TRUE (i.e. an RPM of >= 1) values or more 
+
+e_fil4 <- e_fil4 %>% 
+  filter(.[1] == "TRUE")
+
+e_fil4 <- eDat %>% 
+  filter(rownames(eDat) %in% rownames(e_fil4))
+
+dim(e_fil4)
+19472 - 15754
+#3718 sequences removed
+
+melt_fil4 <- melt(e_fil4) 
+
+g_fil4 <- melt_fil4 %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Sequences with RPM >= 1 in 30% of samples", caption = "Raw counts")
+
+g_fil4
+
+nrow(e_fil1)
+nrow(e_fil2)
+nrow(e_fil3)
+nrow(e_fil4)
+
+#let's now put the total number of sequences retained after each of the filtering steps into a separate dataframe  
+# seq_counts <- data.frame(nrow(eDat))
+# seq_counts$fil_1 <- nrow(e_fil1)
+# seq_counts$fil_2 <- nrow(e_fil2)
+# seq_counts$fil_3 <- nrow(e_fil3)
+# seq_counts$fil_4 <- nrow(e_fil4)
+# colnames(seq_counts) <- c("All sequences", "Sequences with RPM > 0 in at least 1 sample", "Sequences with RPM >= 1 in all samples", "Sequences with RPM >= 2 in all samples", "Sequences with RPM >= 1 in 30% of samples")
+# seq_counts <- as.data.frame(t(seq_counts))
+# seq_counts <- seq_counts %>% 
+#   rownames_to_column() 
+# colnames(seq_counts)[1:2] <- c("filtering_criteria", "sequences")
+# seq_counts %>% 
+#   ggplot(aes(x = filtering_criteria, y = sequences, fill = filtering_criteria)) +
+#   geom_bar(stat = "identity") +
+#   theme_minimal()
+# 
+# seq_counts$filtering_criteria <- c("All sequences", "Sequences with\nRPM > 0 in atleast\n1 sample", "Sequences with\nRPM >= 1 in\nall samples", "Sequences with\nRPM >= 2 in\nall samples", "Sequences with\nRPM >= 1 in\n30% of samples")
+# 
+# seq_counts %>% 
+#   ggplot(aes(x = filtering_criteria, y = sequences, fill = filtering_criteria)) +
+#   geom_bar(stat = "identity", width = 0.6) +
+#   # scale_fill_viridis_d() +
+#   # geom_text(aes(label = sequences), vjust = -0.8, colour = "#333333", position = position_dodge(0.65)) +
+#   # scale_y_continuous(expand = expansion(mult = c(0, .09))) +
+#   theme_minimal() +
+#   # theme(legend.position = "none") +
+#   labs(x = "Filtering Criteria", y = "No. of Sequences", title = "No. of sequences by filtering criteria")
+
+ggarrange(g_fil1, g_fil2, g_fil3, g_fil4)
+
+```  
+
+The filtering step you choose depends upon the question you're asking of your data:  
+
+- Do you want to check only highly-expressed, high-confidence genes? You would then use a more stringent filtering criteria    
+- Do you want to profile all possibly expressed genes? The filtering criteria would be more inclusive  
+
+We're now going to apply the Relative-Log Expression method to normalize our data - an essential step to make sure that we curb any outliers in our data as to not overestimate highly-expressed genes and have the expression distributed normally.  
+RLE accounts for between-sample variation, after which we'll scale by RPM to account for within-sample variation  
+
+```{r normalization}
+
+library(edgeR)
+
+genes <- as.data.frame(row.names(e_fil2))
+norm <- DGEList(counts = e_fil2, samples = pDat, genes = genes, group = pDat$COVID)
+eNorm <- calcNormFactors(norm, method = "RLE") 
+eNorm <- cpm(eNorm)
+eNorm <- as.data.frame(eNorm)
+
+melt_norm <- melt(eNorm) 
+
+melt_norm %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2 RPM", y = "Density", title = "Sample Distribution - Density Plot: RLE Normalized Counts", subtitle = "Sequences with RPM >= 1 in all samples")
+
+#however, now that we normalized our data, that means that some of the expression counts might have been changed to 0, as we can very well see. We'll perform the same x+1 transformation again
+
+melt_norm <- melt_norm %>% 
+  mutate(log_x_1 = log2(value + 1))
+
+g2 <- melt_norm %>% 
+  ggplot(aes(log_x_1, color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2 (x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot: RLE Normalized Counts", subtitle = "Sequences with RPM >= 1 in all samples")
+
+g2
+
+#Raw versus normalized counts
+ggarrange(g1, g2)
+
+```  
+
+Let's now plot the raw and normalized expression counts of a random gene  
+
+```{r norm view and homework1}
+
+#'I'm going to select the gene TRIM62, however, you can get a random gene by the following
+
+#set.seed(20)
+
+random_sample <- eDat %>% 
+  sample_n(1)
+row.names(random_sample)
+
+sample_from_eNorm <- eNorm %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter(gene == "TRIM62") %>% 
+  column_to_rownames(var = "gene")
+
+row.names(random_sample)[1] <- "TRIM62_raw"    
+row.names(sample_from_eNorm)[1] <- "TRIM62_norm" 
+
+TRIM62 <- rbind(random_sample, sample_from_eNorm)
+
+TRIM62 <- TRIM62 %>% 
+  rownames_to_column(var = "TRIM62_value")
+
+TRIM62 <- TRIM62 %>% 
+  pivot_longer(cols = -c(TRIM62_value), names_to = "sample", values_to = "RPM")
+
+TRIM62 %>% 
+  ggplot(aes(x = sample, y = RPM, colour = TRIM62_value)) +
+  geom_point(size = 2) +
+  scale_colour_manual(values = c("forest green", "orange")) +
+  theme_classic() + 
+  theme(legend.position = "bottom") +
+  labs(x = "Sample", y = "RPM", title = "Change in TRIM62 expression value before and after normalization", subtitle = "raw vs. RLE Normalized Counts")
+
+# HOMEWORK 1: Compare the raw vs normalized counts for the methods 1.TMM, 2.Quantile, and 3.only CPM  - compare the expression count for the same random gene you got for all 4 methods. Do they differ? By how much?
+
+```  
+
+We'll now save our processed expression dataframe as a tab-delimited text file which we can load in for Part 2.  
+
+```{r saving data}
+
+eNorm <- eNorm %>% 
+  rownames_to_column(var = "gene")
+write_delim(eNorm, file = here::here("data", "eNorm.txt"), delim = "\t")
+
+```
+
+
+> End of Part 1  
+
+***  

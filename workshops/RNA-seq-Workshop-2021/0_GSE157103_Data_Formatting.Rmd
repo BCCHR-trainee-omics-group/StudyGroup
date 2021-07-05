@@ -1,0 +1,176 @@
+---
+title: "TOG RNA-seq Workshop" 
+author: Nikita Telkar 
+date: July 2021
+output: 
+  html_document: 
+    keep_md: yes 
+    theme: flatly  
+    highlight: pygments 
+---  
+
+***  
+
+### Raw data formatting  
+
+
+Here are the steps which I used to make the _*formatted.txt* expression count and clinical/phenotype information tab-delimited files. I've added detailed annotation for all the functions/commands I've used.    
+
+> The raw files can be downloaded from [GEO Accession GSE157103](https://www-ncbi-nlm-nih-gov.ezproxy.library.ubc.ca/geo/query/acc.cgi?acc=GSE157103).  
+
+
+```{r, echo = F}
+library(formatR)
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE)
+```
+
+```{r, warning=FALSE, error=FALSE, message=FALSE}
+
+#required packages
+library(tidyverse)
+library(here) 
+
+#importing the count matrix (gene expression) and clinical data file
+eDat <- read.delim(here::here("data", "GSE157103_genes.ec.tsv"))
+cDat <- read.delim(here::here("data", "GSE157103_series_matrix.txt"), sep = "\t")
+
+
+#FORMATTING THE CLINCAL INFORMATION FILE
+
+#removing the ! character at the start of every value in the X.Sample_title column of the cDat dataframe
+cDat$Sample_title <- str_sub(cDat$Sample_title, 2)
+
+#transposing rows to columns
+cDat <- as.data.frame(t(cDat))
+
+#setting the column names of cDat to be the values in the first row 
+colnames(cDat) <- cDat[1,]
+
+#removing first row of cDat
+cDat <- cDat[-1,]
+
+#converting the rownames to a column called Sample
+cDat <- cDat %>% 
+  rownames_to_column(var = "Sample")
+
+#displaying the cDat dataframe as a tibble 
+as_tibble(cDat)
+
+#displaying the column names of cDat
+names(cDat)
+
+#making a new dataframe that contains only the clinical variables of our interest called pDat
+pDat <- cDat %>% 
+  dplyr::select(Sample, Sample_characteristics_ch1.1, Sample_characteristics_ch1.2, Sample_characteristics_ch1.3, Sample_characteristics_ch1.4, Sample_characteristics_ch1.5, Sample_characteristics_ch1.6, Sample_characteristics_ch1.7, Sample_characteristics_ch1.9, Sample_characteristics_ch1.10, Sample_characteristics_ch1.11, Sample_characteristics_ch1.13, Sample_characteristics_ch1.14, Sample_characteristics_ch1.15)
+
+#dimensions (no.of rows and columns) in our new pDat dataframe
+dim(pDat)
+
+#renaming columns 2 to 4 of our new pDat dataframe
+colnames(pDat) [2:14] <- c("Age", "Sex", "ICU", "APACHEII_Score", "Charlson_Score", "Mechanical_Ventilation", "Ventilator_free_days", "Hospital_free_days_post_45_days", "Ferritin_ng.ml", "CRP_mg.l", "Procalcitonin_ng.ml", "Lactate_mmol.l", "Fibrinogen_mg.dL")
+
+#displaying first 6 rows of pDat
+head(pDat)
+
+#only keeping the last two characters of all values in the Age column which is the age of the patients and removing all alphabetical charaters (age (years): )
+pDat$Age <- str_sub(pDat$Age, -2)
+
+#removing first 6 characters of all values in the Sex column (sex: ), to keep only keep male or female
+pDat$Sex <- str_sub(pDat$Sex, 6)
+
+#removing first 6 characters of all values in the ICU column (icu: ), to keep only yes or no
+pDat$ICU <- str_sub(pDat$ICU, 6)
+
+#removing first 11 characters of all values in the APACHEII_Score column (apacheii: ), to keep only the score
+pDat$APACHEII_Score <- str_sub(pDat$APACHEII_Score, 11)
+
+#removing the first 17 characters of all values in the Charlson_Score(charlson score: ), to only keep the score
+pDat$Charlson_Score <- str_sub(pDat$Charlson_Score, 17)
+
+#removing the first 25 characters of all values in the Mechanical_Ventilation(mechanical ventilation: ), to only keep yes or no
+pDat$Mechanical_Ventilation <- str_sub(pDat$Mechanical_Ventilation, 25)
+
+#removing the first 23 characters of all values in the Ventilator_free_days(ventilator-free days: ), to only keep number
+pDat$Ventilator_free_days <- str_sub(pDat$Ventilator_free_days, 23)
+
+#finding out length of string (i.e. characters present) in hospital-free days post 45 day followup (days): in the  Hospital_free_days_post_45_days variables as it is too many to count
+#make new value capturing the 1st value int the Hospital_free_days_post_45_days column
+value <- pDat$Hospital_free_days_post_45_days[1]
+#find number of characters
+nchar(value)
+#removing to keep only the number
+pDat$Hospital_free_days_post_45_days <- str_sub(pDat$Hospital_free_days_post_45_days, 49)
+
+#removing the first 19 characters of all values in the Ferritin_ng.ml to only keep value
+value <- pDat$Ferritin_ng.ml[1]
+nchar(value)
+pDat$Ferritin_ng.ml <- str_sub(pDat$Ferritin_ng.ml, 19)
+
+#removing the first 13 characters of all values in the CRP_mg.l to only keep value
+value <- pDat$CRP_mg.l[1]
+nchar(value)
+pDat$CRP_mg.l <- str_sub(pDat$CRP_mg.l, 13)
+
+#removing the first 24 characters of all values in the Procalcitonin_ng.ml to only keep value
+value <- pDat$Procalcitonin_ng.ml[1]
+nchar(value)
+pDat$Procalcitonin_ng.ml <- str_sub(pDat$Procalcitonin_ng.ml, 24)
+
+#removing the first 19 characters of all values in the Lactate_mmol.l to only keep value
+value <- pDat$Lactate_mmol.l[1]
+nchar(value)
+pDat$Lactate_mmol.l <- str_sub(pDat$Lactate_mmol.l, 19)
+
+#removing the first 13 characters of all values in the Fibrinogen_mg.dL to only keep value
+value <- pDat$Fibrinogen_mg.dL[1]
+nchar(value)
+pDat$Fibrinogen_mg.dL <- str_sub(pDat$Fibrinogen_mg.dL, 13)
+
+str(pDat)
+
+#converting all measurement values to numeric 
+pDat <- pDat %>% 
+  mutate_at(vars(-Sample, -Sex, -ICU, -Mechanical_Ventilation), as.numeric)
+
+str(pDat)
+
+#converting all NA values to 0
+pDat <- pDat %>% 
+  replace(is.na(.), 0)
+
+#changing the name of column 1 to gene
+colnames(eDat)[1] <- "gene"
+
+#converting the column titled gene to rownames of the eDat dataframe
+eDat <- eDat %>%  
+  column_to_rownames(var = "gene")
+
+#making a new column called ID in the pDat dataframe and adding the column names as sample IDs (columns are in order of row)
+pDat$ID <- colnames(eDat)
+
+#making ID as column 1
+pDat <- pDat %>% 
+  dplyr::select(ID, everything())
+
+#making a new column called COVID by coopying the first letter of the ID column
+pDat <- pDat %>% 
+  mutate(COVID = substr(ID,1L,1L))
+
+#recoding the COVID column: if C, change value to yes; if N, change value to no
+pDat <- pDat %>%
+   mutate(COVID = recode(COVID, C = "yes", N = "no"))
+
+#making COVID as column 5
+pDat <- pDat %>% 
+  dplyr::select(ID, Sample, Age, Sex, COVID, everything())
+
+#converting the rownames to a column titled gene - we will be saving this as a delimited tab file, and so saving the rownames is not an available option.
+eDat <- eDat %>%  
+  rownames_to_column(var = "gene")
+
+#saving both eDat and pDat as tab delimted text files
+write_delim(pDat, file = "GSE157103_formatted_pDat.txt", delim = "\t")
+write_delim(eDat, file = "GSE157103_formatted_eDat.txt", delim = "\t")
+
+```
