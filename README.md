@@ -17,6 +17,7 @@ Or write us an email at: tog (at) bcchr (dot) ca
 - [Data wrangling with dplyr](workshops/2020-07-23_data_wrangling_ak)
 - [Intro to EWAS](workshops/2020-10-29_intro_to_ewas)
 - [Gene Ontology Enrichment](workshops/2020-11-26_gene_ontology_enrichment)
+- [RNAseq Analysis](workshops/RNA-seq-Workshop-2021)
 
 # Upcoming Schedule
 | Date | Time | Where | What |
