@@ -110,7 +110,7 @@ If you'd rather not download the file for this step, you can always note down th
 
 ### **4.0 Skim through Journal Article**
 
-Download the associated journal article for this data titled *Large-Scale Multi-omic Analysis of COVID-19 Severity* from the [GitHub repo](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/RNA-seq-Workshop-2021).  
+Download the associated journal article for this data titled *Overmyer_2021.pdf* from the [GitHub repo](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/RNA-seq-Workshop-2021).  
 
 ***  
   
