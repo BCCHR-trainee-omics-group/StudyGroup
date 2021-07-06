@@ -69,7 +69,7 @@ Create a new project in RStudio with the following folders:
 
 #### **1.4 Download Expression and Phenotype files**  
 
-Navigate to the [workshop repo]() on our GitHub, and download the following two files we'll be using to your `data` folder:    
+Navigate to the [data folder at our workshop repo](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/RNA-seq-Workshop-2021/data) on our GitHub, and download the following two files we'll be using to your `data` folder:    
 
 1. `GSE157103_formatted_eDat.txt`  
 2. `GSE157103_formatted_pDat.txt`  
@@ -110,7 +110,7 @@ If you'd rather not download the file for this step, you can always note down th
 
 ### **4.0 Skim through Journal Article**
 
-Download the associated journal article for this data titled *Large-Scale Multi-omic Analysis of COVID-19 Severity* from the [GitHub repo]().  
+Download the associated journal article for this data titled *Large-Scale Multi-omic Analysis of COVID-19 Severity* from the [GitHub repo](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/RNA-seq-Workshop-2021).  
 
 ***  
   
