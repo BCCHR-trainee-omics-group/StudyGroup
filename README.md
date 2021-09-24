@@ -23,7 +23,7 @@ Or write us an email at: tog (at) bcchr (dot) ca
 # Upcoming Schedule
 | Date | Time | Where | What |
 | --- | --- | --- | --- |
-| 2021-09-28| 1:00PM - 2:00PM | Virtual | Introduction to source control with GitHub |
+| 2021-09-28| 1:00PM - 2:00PM | Virtual | DNA methylation and expression integration and network analysis with SMITE |
 
 # Open help session schedule
 Keep an eye out for emails from our mailing list for zoom links to the following open help sessions:
