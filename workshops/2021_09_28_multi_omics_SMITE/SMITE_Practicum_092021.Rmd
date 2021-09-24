@@ -1,0 +1,308 @@
+DNA Methylation and Expression Network Analysis with SMITE
+================================
+
+##### Author: Samantha Schaffner
+##### Date: Sept 16, 2021
+
+## Overview of SMITE
+
+The Significance-based Modules Integrating the Transcriptome and Epigenome (SMITE) package ( [Wijetunga et al. 2017](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1477-3) ) can be used to integrate multiple types of 'omics data (primarily focused on DNA methylation and expression) with gene scoring and network analysis. The objectives of SMITE are to determine which genes have changes to DNA methylation and/or expression between experimental groups, and then examine with network analysis how the encoded proteins interact with one another. The full SMITE workflow will return protein-protein interaction "modules" containing genes which have altered DNA methylation and/or expression, i.e. genes that are hypothesized to be co-regulated by multiple 'omics. 
+
+SMITE builds upon a previous method called Functional Epigenetic Modules (FEM; [Jiao et al. 2014](https://academic.oup.com/bioinformatics/article/30/16/2360/2748243) ) by introducing a much wider array of customization in terms of which gene features you are interested in, how important each feature is, and whether or not you want to specify a directional relationship between DNA methylation and expression.
+
+
+## Main steps in workflow
+
+![Summary of steps in SMITE (Fig. 1, Wijetunga et al. 2017)](/home/BCRICWH.LAN/sschaffner/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/Wijetunga et al. 2017 SMITE figure.png)
+
+**1. Gather DNA methylation and expression information**
+
+The first step is to create a "PvalueAnnotation" object which can store the p-values from different 'omics analyses and genome annotation information.
+
+**2. Combine site-specific DNA methylation p-values to obtain gene-level p-values**
+
+The second step performs data reduction on the CpG-level DNA methylation data, with the goal of obtaining a unit that is meaningful to combine with expression. SMITE will combine DNA methylation p-values across gene features (default promoter and gene body).
+
+**3. Score genes**
+
+At this stage, DNA methylation and expression p-values are combined to create a single gene-level score for each gene. The DNA methylation data can be weighted by gene feature, and the directional relationship between DNA methylation at each feature and expression can be optionally specificied.
+
+**4. Find regulatory modules**
+
+The next stage annotates gene scores onto pre-existing protein-protein interaction networks, which can be retrived from a database like REACTOME or STRING. Each gene represents a node in the network, and connections between genes are edges. A spin-glass algorithm is applied to find sub-networks of highly scoring genes.
+
+**5. Module interpretation**
+
+Modules can be plotted, and optionally you can perform pathway enrichment on the modules.
+
+
+## Data for tutorial
+
+We will be using DNA methylation and gene expression data from Lund human mesencephalic (LUHMES) cells, a fetal midbrain cell line that is commonly differentiated to dopaminergic neurons to model Parkinson's disease in vitro. We'll be looking at the effect of overexpressing alpha-synuclein, a gene implicated in Parkinson's disease. DNA methylation data was generated with the Illumina EPIC BeadChip microarray (Kobor lab), and gene expression data was generated with RNA-seq (Dr. Tiago Outeiro, University of Goettingen). For more information, see [Paiva et al., 2017](https://academic.oup.com/hmg/article/26/12/2231/3084502) and [Schaffner et al., 2021](https://www.biorxiv.org/content/10.1101/2021.06.12.448150v1) (preprint).
+
+Although additional 'omics (DNA hydroxymethylation and ChIP-seq) exist for these cells, we'll focus on two for the sake of the tutorial. See the [code for Schaffner et al., 2021](https://github.com/samschaf/LUHMES) for a more detailed example of integrating several 'omics with SMITE.
+
+
+## Libraries and functions
+```{r libraries, results="hide", message=FALSE}
+setwd("~/")
+
+options(stringsAsFactors = FALSE)
+library(SMITE)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+
+source("~/KoborLab/kobor_space/shared_coding_resource/SMITE/plotModule2.R") 
+#I altered the plotModule function included in the SMITE package ("plotModule2.R") after I noticed the original function was a bit misleading. It was set to plot any DNAm value of 1 as "high", anything significant other than 1 as "low", and anything non-significant as "medium." So I tweaked some parameters to plot any delta beta < 0 as "Hypo" for hypomethylated, and any delta beta > 0 as "Hyper" for hypermethylated. I also renamed the "medium" to "NS" for non-significant in both the DNAm and expression categories.
+source("~/KoborLab/kobor_space/shared_coding_resource/SMITE/annotateModification2.R") #This fixes a bracket typo in a conditional loop (line 106) where if there is only one CpG sites per methylation feature, the effect for that feature should be returned (instead of attempting to weight the effect, which returns NA). Also added a condition where if all the p-values for a feature are 1, they will be replaced with 0.9999999999. Otherwise if all p-values are 1, all weights will be 0, resulting in NA for the weighted effect.
+```
+
+## Load and curate DNA methylation data
+DNA methylation data should be formatted as a data frame with each row representing one CpG site, and columns containing chromosome, start, stop, effect size (delta beta), and adjusted p-value (FDR) in that order. Row names do not matter since SMITE will be using genome coordinates and not Illumina probe IDs for downstream analyses.
+
+*For site-specific data, start/stop are the same (CpG position).
+
+We'll be using a subsetted data frame containing 1000 CpG sites for the sake of the tutorial.
+```{r DNAm data}
+#Load DNA methylation data - data frame containing chr, start, stop, effect size (delta beta), and adjusted p-value (FDR)
+methylation <- read.csv("~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_DNAm.csv")
+head(methylation)
+
+#checking for any p-values that are NA or zero
+summary(methylation$adj.P.Val) #no NAs
+min(methylation$adj.P.Val) #smallest is non-zero
+```
+
+## Load and curate RNA-seq data
+Gene expression data should be formatted as a data frame with gene names as row names, effect size (log2FC) in the first column, and p-value in the second column.
+
+Similar to above, we'll be using a subset of 1000 genes for the tutorial.
+```{r RNAseq}
+expression <- read.csv("~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_expr.csv", row.names=1)
+head(expression)
+
+#checking for any p-values that are NA or zero
+summary(expression$padj) #no NAs
+min(expression$padj) #smallest is zero!
+
+#replace zero p-values with minimum
+expression$padj[expression$padj==0] <- min(expression$padj[expression$padj>0])
+min(expression$padj) #0.01
+```
+
+## Load bed file for genome annotation
+SMITE requires a bed file that stores annotation information for genes according to their coordinates. This will be used to score the p-values according to their genes and features.
+
+Since the RNA-seq is annotated with Ensembl, here I used Ensembl gene annotations from hg19. The BED file was exported from the UCSC genome table browser (http://genome.ucsc.edu/cgi-bin/hgTables) and saved previously.
+
+```{r bed file}
+load("~/KoborLab/kobor_space/shared_coding_resource/SMITE/hg19_bed.RData")
+head(hg19_bed)
+```
+
+# Integrate data
+
+## Making PvalueAnnotation object
+
+To create the PvalueAnnotation, we will load in the bed file, DNA methylation, and expression data sequentially using separate functions in SMITE.
+
+### Bed file (genome and gene features annotation)
+
+When adding the bed file with makePvalueAnnotation(), we can specify the distance around the TSS which will be considered a "promoter." Here I am using +/-1kb.
+
+```{r makeannotation}
+LUHMES_annotation <- makePvalueAnnotation(data = hg19_bed, gene_name_col = 4, promoter_upstream_distance = 1000, promoter_downstream_distance = 1000)
+```
+
+### Adding expression data
+
+Specify the columns in the expression data frame that contain p-value and effect sizes.
+
+```{r annotateexpr}
+LUHMES_annotation <- annotateExpression(pvalue_annotation = LUHMES_annotation, expr_data = expression, effect_col = 1, pval_col = 2)
+
+#View loaded expression data
+head(extractExpression(LUHMES_annotation))
+```
+
+### Adding DNA methylation data
+
+DNA methylation data is added to the PvalueAnnotation object and scored across gene features simultaneously, which will generate a feature-level score to be stored in the object. Inputs to the annotateModification() function here include:
+
+**weight_by**: Specifies how DNAm p-values will be weighted within each gene feature. Can be one of "distance" (distance to TSS, p-values closer to TSS are weighted higher) or "pval" (significance level).
+
+**weight_by_method**: Specifices statistical approach used to combine p-values. Can be one of "Stouffer", "Fisher", "Sidak", or "binomial."  Here we'll use Stouffer's Z-score (default). See help for annotateModification() and supplementary material from Wijetunga et al., 2017 for more details.
+
+**mod_corr**: Whether a correlation matrix will be estimated. Since DNA methylation values are spatially correlated, this is generally a good idea. However, it's computationally intesive so we'll skip this step for the tutorial.
+
+**mod_type**: Give a name to the modification you are currently loading into the PvalueAnnotation object.
+
+```{r annotatemod, warning=F}
+LUHMES_annotation <- annotateModification2(LUHMES_annotation, methylation, weight_by_method = "Stouffer", weight_by = c(promoter = "pval", body = "pval"), verbose = TRUE, mod_corr = FALSE, mod_type = "methylation")
+
+#View loaded DNAm data (GRanges)
+head(extractModification(LUHMES_annotation, mod_type = "methylation"))
+
+#View all loaded data
+head(extractModSummary(LUHMES_annotation))
+```
+Note some genes have NAs for methylation at certain features, meaning that no EPIC probes covered those areas.
+
+## Adjusting values and scoring
+
+The next stage is to create a "PvalueObject", which will combine the DNA methylation and expression data to create scores across genes. This involves multiple steps including normalizing DNAm and expression data, specifying effect directions and weights, and finally combining p-values from each 'omic.
+
+### Create PvalueObject
+
+When initializing the PvalueObject, the expected correlation of DNA methylation at each feature with expression should be specified. Genes with the opposite direction of correlation to what you specify will be penalized during scoring. There is also the option to specify "bidirectional," which will be agonistic to direction. Here I used "bidirectional" to represent a more exploratory approach, and so as not to introduce further assumptions about the relationship between DNA methylation and expression since this can vary.
+
+```{r adjust and score}
+LUHMES_annotation <- makePvalueObject(pvalue_annotation= LUHMES_annotation, effect_directions = c(methylation_promoter = "bidirectional", methylation_body = "bidirectional"))
+```
+
+### Plotting p-value distributions and (optional) normalization
+
+SMITE includes built-in functions to assess p-value distributions of expression and DNA methylation at each gene feature, and if desired, normalize these p-values from different 'omics before combining them to obtain one score on the gene level. This is important to check because sometimes the p-values from different 'omics can have very different distributions. Applying a normalization procedure ensures that p-values for each modification have a similar range to each other, so as not to bias which types of modification-context pairings emerge in the modules later on. 
+
+There are two normalization methods available: "rescale" and "boxcox." The "rescale" method first applies a logit transformation, then shifts the p-values within an approximately normal distribution, without affected the relative order of p-values within each modification-context pairing. The "boxcox" method iterates through different power transformations of the DNA methylation data and compares each to the expression data in order to identify the most appropriate transformation. In practice I typically use "rescale" because it performs better in matching the distributions of DNA methylation p-values to the range of expression p-values.
+
+```{r normalize}
+#Plot density of p-values
+#Note: plot directly to an image file to obtain proper dimensions/readable legend
+plotDensityPval(pvalue_annotation = LUHMES_annotation, ref = "expression_pvalue")
+
+LUHMES_rescaled <- normalizePval(LUHMES_annotation, ref="expression", method="rescale")
+LUHMES_boxcox <- normalizePval(LUHMES_annotation, ref="expression", method="boxcox")
+```
+![P-value distributions before and after "rescaled" normalization](/home/BCRICWH.LAN/sschaffner/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/rescaled_norm.png)
+
+![P-value distributions before and after "boxcox" normalization](/home/BCRICWH.LAN/sschaffner/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/boxcox_norm.png)
+
+Normalizing the DNA methylation p-values in this case pushed them toward extremes. The DNA methylation and expression p-value distributions weren't too different to begin with, so I'll skip the normalization procedure for this data and move onto the gene-level scoring.
+
+### Weighting 'omics and re-scoring
+The contribution of each 'omic (expression and DNA methylation at each feature) to the overall gene score can be weighted at this stage. Weights are specified a priori according to experimental context and research questions. Here, promoter DNA methylation and expression will be weighted higher, and body DNA methylation will be weighted lower.
+```{r weighting}
+LUHMES_annotation_scored_bidirectional <- scorePval(LUHMES_annotation, weights = c(methylation_promoter=0.3, methylation_body=0.2, expression=0.5))
+
+#Looking at gene score information
+scores <- LUHMES_annotation_scored_bidirectional@score_data
+scores
+str(scores)
+
+save(LUHMES_annotation_scored_bidirectional, file="~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_annotation_scored_bidirectional.RData")
+```
+
+**OPTIONAL STOPPING POINT**
+
+Now, each gene has a score; if you like, you can retrieve these genes and overall scores and/or feature-level scores for further interpretation (e.g. gene ontology enrichment). It is also a good idea to save the object at this stage. For a sanity check, feel free to check high-scoring genes against your original data (differential methylation/expression analysis) to ensure the results match with what you expect.
+
+# Network analysis
+
+## Annotate scores to reference network and find high-scoring sub-networks
+
+For this next step we'll need a reference protein-protein interaction network for your organism, formatted as an igraph object. SMITE already includes a REACTOME igraph for the human genome that we can load in.
+
+runSpinglass() is then applied to annotate gene scores to the network and discover sub-networks (modules) of genes with high scores (changes to DNA methylation and expression). The outcome you will get here depends on how you scored and weighted each modification in the previous steps: for example, if you weighted gene expression highly, most of your modules should have altered gene expression.
+
+NOTE: The runSpinglass function has caused my RStudio session on the koborlab-hpc servers to freeze in the past. I recommend running that function in Terminal where it won't crash, saving the object, then loading the object back into RStudio for plotting.
+
+### Spinglass function (run in Terminal)
+
+```{r spinglass, eval=F}
+#################To run in Terminal
+library(SMITE)
+load("~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_annotation_scored_bidirectional.RData")
+
+#load REACTOME interactome
+load(system.file("data", "Reactome.Symbol.Igraph.rda", package = "SMITE"))
+
+#Run spin-glass algorithm to determine best modules
+LUHMES_spinglass <- runSpinglass(LUHMES_annotation_scored_bidirectional, network = REACTOME, maxsize = 50, num_iterations = 1000, random_alpha=0.05, node_alpha=0.05)
+save(LUHMES_spinglass, file="~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_spinglass.RData")
+#################
+```
+
+### Loading spinglass results into RStudio
+```{r load spinglass}
+load("~/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/LUHMES_spinglass.RData")
+modules <- extractModules(LUHMES_spinglass)
+modules
+```
+
+## Plotting modules
+Change the "which_network" argument to plot each of the different networks generated.
+```{r plotmodule, warning=F}
+#Simplified
+plotModule2(LUHMES_spinglass, which_network=1, layout = "circle", label_scale = TRUE, compare_plot = FALSE, suppress_details = TRUE)
+
+#Detailed
+plotModule2(LUHMES_spinglass, which_network=1, layout = "circle", label_scale = TRUE, compare_plot = FALSE, suppress_details = FALSE)
+```
+![Simplified module plot](/home/BCRICWH.LAN/sschaffner/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/module_simple.png)
+
+![Detailed module plot](/home/BCRICWH.LAN/sschaffner/KoborLab/kobor_space/SWAG/Practicums/09_16_2021_SMITE_SS/module_detailed.png)
+
+# Optional exploratory analyses on networks
+
+## How many genes have changes to each 'omic?
+
+Using the below code, you can extract p-values for each feature and plot a summary of the number of genes with significant changes to promoter DNA methylation, body DNA methylation, and expression.
+
+```{r sig genes plot categorical}
+#extracting p-value and effect size information from the PvalueObject
+pval_df <- LUHMES_spinglass@score_data@pval_data
+genes <- LUHMES_spinglass@score_data@genes
+rownames(pval_df) <- genes
+
+effect_df <- LUHMES_spinglass@score_data@effect_data
+rownames(effect_df) <- genes
+
+#getting only genes from significant modules
+modules <- LUHMES_spinglass@score_data@module_output$modules
+length(sig_genes <- unique(unlist(modules)))
+pval_df_sub <- pval_df[rownames(pval_df) %in% sig_genes,]
+effect_df_sub <- effect_df[rownames(effect_df) %in% sig_genes,]
+
+#annotating modules
+pval_df_sub$gene <- rownames(pval_df_sub)
+pval_df_sub$module <- NA
+pval_df_sub$module <- sapply(1:nrow(pval_df_sub), function(x) names(modules[grep(pval_df_sub$gene[x],modules)]))
+
+#categorical variable summarizing sig/non-sig categories
+pval_df_summary <- pval_df_sub[,1:4]
+
+pval_df_summary$DNAm_promoter[complete.cases(pval_df_summary$methylation_promoter_pvalue)] <- ">0.05"
+pval_df_summary[pval_df_summary$methylation_promoter_pvalue<=0.05 & complete.cases(pval_df_summary$methylation_promoter_pvalue),"DNAm_promoter"] <- "<=0.05"
+pval_df_summary$DNAm_body[complete.cases(pval_df_summary$methylation_body_pvalue)] <- ">0.05"
+pval_df_summary[pval_df_summary$methylation_body_pvalue<=0.05 & complete.cases(pval_df_summary$methylation_body_pvalue),"DNAm_body"] <- "<=0.05"
+
+pval_df_summary$Expression[complete.cases(pval_df_summary$expression_pvalue)] <- ">0.05"
+pval_df_summary[pval_df_summary$expression_pvalue<=0.05 & complete.cases(pval_df_summary$expression_pvalue),"Expression"] <- "<=0.05"
+
+#getting the number of genes with significant/non-significant p-values for each feature/'omic
+unlist(apply(pval_df_summary[,5:7], 2, function(x) summary(as.factor(x))))
+
+sig_genes <- unique(unlist(apply(pval_df_summary[,5:7], 2, function(x) grep("<=0.05",x))))
+nrow(pval_df_summary_sig <- pval_df_summary[sig_genes,])
+pval_df_summary_sig$gene
+
+pval_df_melt <- melt(pval_df_summary_sig[,4:7], id.vars="gene")
+ggplot(pval_df_melt, aes(x=value, fill=value)) + geom_bar(stat="count", show.legend=FALSE, col="black") + facet_wrap(~variable) + theme_classic() + ylab("Number of Genes") + xlab("P-value") + scale_fill_manual(values=c("blue","white")) + geom_text(stat="count", aes(label = after_stat(count)), vjust=-0.5, size=3.5)
+```
+
+## Gene ontology enrichment with GOseq
+
+GOseq is a gene ontology enrichment method built for RNA-seq data ( [Young et al., 2010](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-2-r14) ). It reduces bias based on long and highly expressed transcripts. 
+
+runGOseq() requires a bed file that specifies gene names, gene coordinates, and bias data (number of probes annotated to the gene, gene length, etc). By default, the function returns terms signficant at FDR < 0.05 (this is tunable).
+
+Below is an example of GOseq code.
+
+```{r goseq, eval=F}
+LUHMES_spinglass <- runGOseq(LUHMES_spinglass, coverage = read.table(system.file("extdata", "hg19_symbol_hpaii.sites.inbodyand2kbupstream.bed.gz", package = "SMITE")), type = "reactome")
+GO_results <- extractGOseq(LUHMES_spinglass)
+```
+
+Although GOseq is built into SMITE, you can also use different gene/pathway enrichment tools on your data as desired!
