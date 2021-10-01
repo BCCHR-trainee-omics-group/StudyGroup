@@ -74,6 +74,8 @@ Navigate to the [data folder at our workshop repo](https://github.com/BCCHR-trai
 1. `GSE157103_formatted_eDat.txt`  
 2. `GSE157103_formatted_pDat.txt`  
 
+To download, click on the file name, and it will diaplay a message saying *Sorry about that, but we can’t show files that are this big right now* with a **View Raw** link. Click on the link, wait for the browser to stop loading, and `right click + Save As...`. For the `.Rmd` files, make sure to remove the *.txt* suffix at the end.  
+
 For ease of usage, I've edited the raw files released on GEO to a [tidier](https://r4ds.had.co.nz/tidy-data.html) format, specifically for this workshop. To find out how I formatted these two files, you can download the `.Rmd` file titled `0_GSE157103_Data_Formatting.Rmd`.
 
 ***  
