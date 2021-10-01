@@ -7,7 +7,6 @@
 <br>
 
 **Part 1 - RNA-seq: From Raw to Processed Data**  
-Date and Time: 7 July 2021 (Wednesday) from 1pm - 2:30pm
  
 Part 1 of the workshop will introduce what RNA-seq data looks like and how to clean the data. Starting with a raw expression count matrix (pre-formatted for participants’ convenience), we will go through steps to visualize, filter, and normalize the data. At the end of Part 1, our processed data will be ready to perform differential gene analysis and gene-pathway enrichment on.
  
@@ -16,7 +15,6 @@ Part 1 of the workshop will introduce what RNA-seq data looks like and how to cl
 <br>
 
 **Part 2 - RNA-seq: From Differential Expression and Beyond**  
-Date and Time: 15 July 2021 (Thursday) from 1pm - 2pm
  
 Part 2 of the workshop will start with processed counts data and run through how to conduct principle component analysis, differential expression, as well as introduce tools for gene and pathway analysis.
 
