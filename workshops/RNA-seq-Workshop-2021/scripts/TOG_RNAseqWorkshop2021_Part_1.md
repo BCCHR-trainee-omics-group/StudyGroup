@@ -55,10 +55,7 @@ The raw sequence data that you get directly output from the sequencing machine i
 3. A separator, which is simply a plus (+) sign.  
 4. The base call quality scores. These are Phred +33 encoded, using ASCII characters to represent the numerical quality scores.  
 
-<div class="figure">
-<img src="/Users/nikitatelkar/Github/TOG_RNAseq_Workshop_2021/static/fastq_raw.png" alt="from https://compgenomr.github.io/book/fasta-and-fastq-formats.html" width="100%" />
-<p class="caption">from https://compgenomr.github.io/book/fasta-and-fastq-formats.html</p>
-</div>
+![](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/RNA-seq-Workshop-2021/static/fastq_raw.png)
 
 
 
@@ -105,10 +102,7 @@ library(Rsubread)
 aligned <- featureCounts(here::here("data", "HG00097.mapped.ILLUMINA.bwa.GBR.exome.20130415.bam"), annot.inbuilt = "hg19", isPairedEnd = TRUE)  
 ```
 
-<div class="figure">
-<img src="/Users/nikitatelkar/Github/TOG_RNAseq_Workshop_2021/static/featurecounts_output.png" alt="Output from running Command #1" width="100%" />
-<p class="caption">Output from running Command #1</p>
-</div>
+![](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/RNA-seq-Workshop-2021/static/featurecounts_output.png)
 
 
 ```r
