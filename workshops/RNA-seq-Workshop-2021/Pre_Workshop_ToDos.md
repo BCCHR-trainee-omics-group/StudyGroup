@@ -44,6 +44,8 @@ Here's the list of all the packages you will need for this workshop. You can sim
 ```r
 install.packages(c("tidyverse", "here", "rmarkdown", "knitr", "kableExtra", "janitor", "scales", "ggpubr",
     "pheatmap", "reshape2"))
+    
+install.packages("BiocManager")
 
 BiocManager::install(c("clusterProfiler", "biomaRt", "edgeR", "limma", "Rsubread"))
 
