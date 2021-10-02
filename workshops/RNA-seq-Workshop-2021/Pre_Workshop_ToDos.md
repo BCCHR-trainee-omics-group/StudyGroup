@@ -103,7 +103,7 @@ Here are a few resources that you might want to go through joining the workshop:
 
 One of the steps we'll look at is converting BAM files to an expression count matrix.  
 
-However, because the conversion form FASTQ (raw sequencing files) to BAM (aligned sequence files) requires time, as well as substantial computer memory and storage, I'll be directly demonstrating how to extract sequence/gene counts from an already generated BAM file.  
+However, because the conversion form FASTQ (raw sequencing files) to BAM (aligned sequence files) requires time, as well as substantial computer memory and storage, I'll be directly demonstrating how to extract sequence/gene counts from an already generated BAM file. However, you can find the genral steps of converting a FASTQ file to a BAM file within the [FASTQ-BAM_BAM-FASTQ.pdf](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/RNA-seq-Workshop-2021/data/BAM-FASTQ_FASTQ-BAM.pdf) file in the `data` folder.
 
 We'll be using the BAM file of a participant from Phase 3 of the Human Genome Project.  
 
