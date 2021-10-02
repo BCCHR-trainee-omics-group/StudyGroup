@@ -75,6 +75,7 @@ Navigate to the [data folder at our workshop repo](https://github.com/BCCHR-trai
 
 1. `GSE157103_formatted_eDat.txt`  
 2. `GSE157103_formatted_pDat.txt`  
+3. `BAM_R_obj.RDS`  
 
 To download, click on the file name, and it will diaplay a message saying *Sorry about that, but we can’t show files that are this big right now* with a **View Raw** link. Click on the link, wait for the browser to stop loading, and `right click + Save As...`. For the `.Rmd` files, make sure to remove the *.txt* suffix at the end.  
 
@@ -98,15 +99,15 @@ Here are a few resources that you might want to go through joining the workshop:
 
 ***  
 
-### **3.0 Download BAM file**  
+### **3.0 Download BAM file or the corresponding R object**  
 
 One of the steps we'll look at is converting BAM files to an expression count matrix.  
 
 However, because the conversion form FASTQ (raw sequencing files) to BAM (aligned sequence files) requires time, as well as substantial computer memory and storage, I'll be directly demonstrating how to extract sequence/gene counts from an already generated BAM file.  
 
 We'll be using the BAM file of a participant from Phase 3 of the Human Genome Project.  
-If you want to conduct this step in real-time during the workshop (and your computer has enough storage space), download the file (557 Mb) [here](https://www.internationalgenome.org/data-portal/sample/HG00097), and save it to your `data` folder.     
-If you'd rather not download the file for this step, you can always note down the functions for this step during the workshop.    
+
+If you want to conduct this step in real-time during the workshop (and your computer has enough storage space), download the file (557 Mb) [here](https://www.internationalgenome.org/data-portal/sample/HG00097), and save it to your `data` folder. If low on space, download the `BAM_R_obj.RDS` which is essentially the output we get after loadin in the BAM file (don't worry, we'll go through the command required to load in BAM files reagrdless!) 
 
 ![](static/1000_genomes.png)  
   
