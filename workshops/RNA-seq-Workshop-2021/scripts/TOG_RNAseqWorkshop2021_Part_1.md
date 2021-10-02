@@ -120,7 +120,13 @@ here::here()
 
 ```
 ## [1] "/Users/nikitatelkar/Github/TOG_RNAseq_Workshop_2021"
-```
+```  
+
+The above was an example for converting the FASTQ file of one sample to it's corresponding aligned BAM file. For your own data, you'll have to do so for each raw (FASTQ) file.  
+
+***   
+
+GEO requires you to submit your data in raw counts already. Now, we'll load in the formatted version of the expression and phenotype files found in the `data` folder for this [GEO accession](https://www-ncbi-nlm-nih-gov.ezproxy.library.ubc.ca/geo/query/acc.cgi?acc=GSE157103)
 
 ```r
 eDat <- read.delim(here::here("data", "GSE157103_formatted_eDat.txt"), sep = "\t")
