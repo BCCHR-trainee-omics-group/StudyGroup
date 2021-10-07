@@ -540,8 +540,13 @@ Let's now plot the raw and normalized expression counts of a random gene
 
 #set.seed(20)
 
+eDat <- eDat %>% 
+  rownames_to_column(var = "gene")
+
 random_sample <- eDat %>% 
-  sample_n(1)
+  sample_n(1) %>%
+  column_to_rownames(var = "gene")
+  
 row.names(random_sample)
 
 sample_from_eNorm <- eNorm %>% 
