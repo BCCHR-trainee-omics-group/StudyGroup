@@ -1,0 +1,185 @@
+---
+title: "TOG RNA-seq Workshop 2021: Part 1 Worksheet" 
+author: Nikita Telkar 
+date: July 2021
+output: 
+  html_document: 
+    keep_md: yes 
+    toc: true  
+    toc_depth: 4
+    toc_float: 
+      collapsed: false 
+      smooth_scroll: true
+    theme: flatly  
+    highlight: pygments 
+--- 
+
+### 1.0 Loading Packages and Data  
+
+```{r libraries, warning = FALSE, error = FALSE, message = FALSE}
+
+```  
+
+### 2.0 FASTQ to BAM  
+
+### 3.0 BAM to Expression Count Files
+
+```{r bam-to-counts}
+
+#command 1: directly loading in the original BAM file
+aligned <- featureCounts(here::here("data", "HG00097.mapped.ILLUMINA.bwa.GBR.exome.20130415.bam"), annot.inbuilt = "hg19", isPairedEnd = TRUE)  
+
+#command 2: loading in the R object (in the form of the .RDS extension) which contains the output produced by command 1
+aligned <- readRDS(here::here("data", "BAM_R_obj.RDS"))
+
+expression_counts <- aligned$counts
+
+```
+
+
+```{r loading-data}
+
+```
+
+### 4.0 Exploratory Data Analysis  
+
+```{r view-data}
+
+```
+
+
+```{r pdat-exploration}
+
+
+proteins <- pDat %>% 
+  dplyr::select(COVID, Ferritin_ng.ml, CRP_mg.l, Procalcitonin_ng.ml, Lactate_mmol.l, Fibrinogen_mg.dL)
+
+```
+
+
+```{r spread-of-data}
+
+
+e_melt %>% 
+  ggplot(aes(x = log2(expression), color = sample, fill = sample)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Raw Counts\n")
+
+
+
+
+annot_cols <- list(COVID = c(`yes` = "grey", `no` = "orange"), 
+                   Sex = c(`male` = "sea green", `female` = "purple", `unknown` = "yellow")) 
+
+h1 <- samp_cor %>% 
+  pheatmap(clustering_distance_cols = "euclidean", clustering_method = "complete", cluster_rows = TRUE,
+           show_colnames = FALSE, show_rownames = FALSE, 
+           annotation_row = pDat[c("COVID", "Sex")], annotation_col = pDat[c("COVID", "Sex")], 
+           annotation_colors = annot_cols,
+           main = "Sample Correlations")
+
+```
+
+### 5.0 Quality Control  
+
+```{r filtering}
+
+#removing sequences with RPM of 0 in all samples / keeping only sequences with RPM > 0 in at least 1 sample
+
+
+
+g_fil1 <- melt_fil1 %>% 
+  ggplot(aes(log_x_1, color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2(x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Removing Sequences with RPM of 0 in all samples", caption = "Raw counts")
+
+
+#keeping only sequences with RPM >= 1 in all samples
+
+
+
+g_fil2 <- melt_fil2 %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2(x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Sequences with RPM >= 1 in in all samples", caption = "Raw counts")
+
+
+#keeping only sequences with RPM >= 1 in 30% of samples --> depends on groups in data
+
+
+
+g_fil4 <- melt_fil4 %>% 
+  ggplot(aes(log2(value), color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2RPM", y = "Density", title = "Sample Distribution - Density Plot", subtitle = "Sequences with RPM >= 1 in 30% of samples", caption = "Raw counts")
+
+```
+
+
+```{r normalization}
+
+
+
+melt_norm %>% 
+  ggplot(aes(log_x_1, color = variable, fill = variable)) +
+  geom_density(alpha = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") + #has to come after specifying theme
+  labs(x = "log2 (x+1) RPM", y = "Density", title = "Sample Distribution - Density Plot: RLE Normalized Counts", subtitle = "Sequences with RPM >= 1 in all samples")
+
+```
+
+```{r norm-view}
+
+random_sample <- eDat %>% 
+  sample_n(1)
+row.names(random_sample)
+
+sample_from_eNorm <- eNorm %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter(gene == "x") %>% 
+  column_to_rownames(var = "gene")
+
+row.names(random_sample)[1] <- "x_raw"    
+row.names(sample_from_eNorm)[1] <- "x_norm" 
+
+x <- rbind(random_sample, sample_from_eNorm)
+
+x <- x %>% 
+  rownames_to_column(var = "x_value")
+
+x <- x %>% 
+  pivot_longer(cols = -c(x_value), names_to = "sample", values_to = "RPM")
+
+x %>% 
+  ggplot(aes(x = sample, y = RPM, colour = x_value)) +
+  geom_point(size = 2) +
+  scale_colour_manual(values = c("forest green", "orange")) +
+  theme_classic() + 
+  theme(legend.position = "bottom") +
+  labs(x = "Sample", y = "RPM", title = "Change in x expression value before and after normalization", subtitle = "raw vs. RLE Normalized Counts")
+
+```
+
+```{r saving-data}
+
+eNorm <- eNorm %>% 
+  rownames_to_column(var = "gene")
+
+write_delim(eNorm, file = here::here("data", "eNorm.txt"), delim = "\t")
+
+```
+
+### 6.0 Knit your file!  
+
+
+
+
