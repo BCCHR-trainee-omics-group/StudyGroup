@@ -1,7 +1,7 @@
 ---
 title: "TOG RNA-seq Workshop 2021: Part 2" 
 author: Nikita Telkar 
-date: July 2021
+date: October 2021
 output: 
   html_document: 
     keep_md: yes 
@@ -130,7 +130,9 @@ Now that we have our PC scores, we'll estimate which of our variables are the on
 
 ```{r PCA-correaltion}
 
-#remotes::install_github("wvictor14/plomics")
+# install.packages("remotes")
+# library(remotes)
+# remotes::install_github("wvictor14/plomics")
 library(plomics)
 
 #here, we'll select the Pvalue metric
@@ -594,6 +596,8 @@ mart = useMart("ensembl", dataset="hsapiens_gene_ensembl")
 genes <- topTable(efit_lactate, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, n = Inf, sort.by = "logFC")
 genes <- rownames(genes)
 
+#We'll only use the top 200 genes as the maximum number of queries biomaRt can take is 500
+genes <- genes[1:200]
 head(genes)
 
 filters <- listFilters(mart) #filters are the parameters you search by
@@ -604,7 +608,7 @@ hgnc_to_entrez <- getBM(attributes = c("hgnc_symbol", "entrezgene_id"), filters 
 
 head(hgnc_to_entrez)
 
-#selecting attributes as the GO id, the GO term, the GO term definition, and the cell comparatment that GO term belongs to, searching by the filter/parameter HGNC symbol
+#selecting attributes as the GO id, the GO term, the GO term definition, and the cell compartment that GO term belongs to, searching by the filter/parameter HGNC symbol
 go_terms <- getBM(attributes = c("hgnc_symbol", "go_id", "name_1006", "definition_1006", "namespace_1003"), filters = "hgnc_symbol", values = genes, mart = mart)
 
 head(go_terms)
@@ -619,9 +623,9 @@ go_plot <- go_terms %>%
   dplyr::count(name_1006) %>% 
   dplyr::arrange(desc(n))
 
-#we know that the total DEGs were 5134, so let's get the percentage of how many of the genes were associated with a particular  GO Term
+#we know that the total DEGs we selected were 200, so let's get the percentage of how many of the genes were associated with a particular  GO Term
 head(go_plot)
-go_plot$total <- 5134
+go_plot$total <- 200
 go_plot <- go_plot[-1,]
 go_plot <- go_plot %>% 
   mutate(perc = (n/total)*100) %>% 
@@ -656,7 +660,7 @@ head(go_plot)
 
 ```
 
-```{r GOplot, fig.height=7}
+```{r GOplot, fig.height=4, width = 4}
 
 go_plot[1:20,] %>% 
   ggplot(aes(x = reorder(name_1006, -perc), y = perc, fill = namespace_1003)) +

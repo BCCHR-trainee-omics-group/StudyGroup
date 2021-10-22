@@ -1,0 +1,472 @@
+---
+title: "TOG RNA-seq Workshop 2021: Part 2 Worksheet" 
+author: Nikita Telkar 
+date: October 2021
+output: 
+  html_document: 
+    keep_md: yes 
+    toc: true  
+    toc_depth: 4
+    toc_float: 
+      collapsed: false 
+      smooth_scroll: true
+    theme: flatly  
+    highlight: pygments 
+--- 
+
+***  
+
+### 0.0 Loading packages
+
+```{r libraries, warning = FALSE, error = FALSE, message = FALSE}
+
+library(tidyverse)
+library(here) 
+library(rmarkdown)
+library(knitr)
+
+#formatting packages
+library(kableExtra)
+library(janitor)
+library(scales)
+library(ggpubr)
+
+#BiocManager::install(c("clusterProfiler", "biomaRt", "edgeR", "limma", "Rsubread"))
+
+``` 
+
+Loading our processed data from Part 1:  
+
+```{r loading-eNorm}
+
+eNorm <- read.delim(here::here("data", "eNorm.txt"), sep = "\t")
+eNorm <- eNorm %>% 
+  column_to_rownames(var = "gene")
+
+pDat <- read.delim(here::here("data", "GSE157103_formatted_pDat.txt"), sep = "\t")
+pDat <- pDat %>% 
+  column_to_rownames(var = "ID")
+
+```
+
+
+### 6.0 PCA  
+
+```{r pca}
+
+
+
+#dataframe with all PCs, their variance, and cumulative variance of all PCs
+summary <- data.frame(PC = 1:126, var_explained = (pca$sdev)^2 / sum((pca$sdev)^2), 
+                      cumulative = cumsum(pca$sdev^2 / sum(pca$sdev^2))
+                      )
+summary <- summary %>% 
+  mutate(cumulative_perc = cumulative*100)
+
+
+#usually we only consider the first 30 PCs
+summary <- summary[1:30,]
+
+#different ways to represent the same data
+summary %>%
+  ggplot(aes(x = sort(as.factor(PC)), y = var_explained)) +
+  geom_bar(stat = "identity", fill = "forest green") +
+  # geom_text(aes(label = round(var_explained, digits = 2), vjust = -0.8), size = 2) +
+  theme_minimal() +
+  labs(title = "Variance Explained by each PC") 
+
+summary %>%
+  ggplot(aes(x = sort(as.factor(PC)), y = var_explained))+
+  geom_point(colour = "forest green") +
+  geom_line(group = "PC", colour = "forest green") +
+  theme_minimal() +
+  labs(title = "Variance Explained by each PC") 
+
+
+
+
+#separating the PCA values into its own separate df
+
+
+
+#making a metadata df containing all sample information data
+
+
+```  
+
+
+
+```{r PCA-correaltion}
+
+# install.packages("remotes")
+# library(remotes)
+# remotes::install_github("wvictor14/plomics")
+library(plomics)
+
+
+
+
+
+vv_plot <- variable_variance %>% 
+  as.data.frame() 
+vv_plot <- as.data.frame(t(vv_plot))
+vv_plot <- vv_plot %>% 
+  mutate(Principle_Component = 1:30) %>% 
+  dplyr::select(Principle_Component, everything())
+head(vv_plot)
+vv_plot <- vv_plot %>% 
+  pivot_longer(cols = -c(Principle_Component), names_to = "variables", values_to = "pval") 
+vv_plot <- vv_plot %>% 
+  mutate(pval_cat = case_when(
+    pval > 0.05  ~ "> 0.05",
+    pval < 0.05 & pval > 0.01 ~ "< 0.05",
+    pval < 0.01 & pval > 0.001 ~ "< 0.01",
+    pval < 0.001 ~ "< 0.001"
+  ))
+
+vv_plot %>% 
+  ggplot(aes(x = Principle_Component, y = variables, fill = pval_cat)) +
+  geom_tile() + 
+  theme_bw() +
+  labs(x = "PC", y = "Variables" , fill = "P value")
+
+vv_colpal <- c("< 0.001" = "#ef6a4c", "< 0.01" = "#f59e72", "< 0.05" = "#fde0c5", "> 0.05" = "white")
+vv_plot$Principle_Component <- as.factor(vv_plot$Principle_Component)
+
+g3 <- vv_plot %>% 
+  ggplot(aes(x = Principle_Component, y = variables, fill = pval_cat)) +
+  geom_tile(col = "lightgrey") + 
+  theme_bw() +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_fill_manual(values = vv_colpal) +
+  coord_fixed() + 
+  # theme(legend.position = "bottom") +
+  labs(x = "PC", y = "Variables" , fill = "P value")
+
+g3
+
+# ASSIGNMENT 1: Repeat the lmmatrix function, but this time with using the Squared value. Store it as a separate variable, and plot both the pval and rsquared plots one below each other. 
+
+# Instead of using `scale_fill_manual` for the plot, use `scale_fill_gradient(low = "white", high = "#ef6a4c")` 
+
+
+
+
+ggarrange(g3, g4, ncol = 1, nrow = 2)
+
+```
+
+
+```{r pca-plots}
+
+
+```  
+
+### 7.0 Differential Expression Analysis  
+
+
+```{r DE-covid}
+
+#BiocManager::install("limma")
+library(limma)
+
+
+
+
+
+#"BH", "BY" and "holm"
+topTable(efit_COVID, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05)
+topTable(efit_COVID, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05)
+topTable(efit_COVID, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "p")
+topTable(efit_COVID, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "logFC")
+
+
+```
+
+We know from our PCA that age doesn't seem to contribute to the variation observed. Let's check whether controlling for age in our model changes the results we obtained  
+
+```{r DE-covid-age}
+
+
+
+
+
+topTable(efit_age, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "logFC")
+topTable(efit_age, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "p")
+
+```  
+
+We saw that lactate concentration was contributing to PC2. Let's check if we should be adjusting for this variable. 
+
+```{r DE-covid-age-lactate}
+
+
+
+
+
+#The summary shows that lactate conc indeed does seem to be significantly associated with COVID status. Let's visualise that
+mm_lactate_df %>%
+  ggplot(aes(x = Lactate_mmol.l, y = COVIDyes)) +
+  geom_point(alpha = 0.2, colour = "orange") +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), colour = "orange") +
+  theme_minimal() +
+  labs(title = "Does lactate concentration inform of COVID status?", x = "Lactate (mmol/l)", y = "Probability of COVID-positive status")
+
+
+
+
+topTable(efit_lactate, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "logFC")
+topTable(efit_lactate, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, sort.by = "p")
+
+
+
+``` 
+
+
+```{r S100A9}
+
+S100A9 <- eNorm %>% 
+  rownames_to_column(var = "gene") %>% 
+  filter(gene == "S100A9") %>% 
+  column_to_rownames(var = "gene")
+  
+S100A9 <- as.data.frame(t(S100A9))
+
+S100A9 <- S100A9 %>% 
+  rownames_to_column(var = "sample")
+
+pDat <- pDat %>% 
+  rownames_to_column(var = "sample")
+
+covid <- pDat %>% 
+  dplyr::select(sample, COVID)
+  
+S100A9 <- S100A9 %>% 
+  left_join(covid, by = "sample")
+
+S100A9 %>% 
+  ggplot(aes(x = COVID, y = log2(S100A9), fill = COVID)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("gray", "orange")) +
+  theme_minimal() + 
+  theme(legend.position = "bottom") +
+  labs(x = "COVID Status", y = "log2 (S100A9 RPM)", title = "S100A9: Gene with highest negative logFC change")
+
+```
+
+```{r GBGT1-HBA2}
+
+
+
+
+
+HBA2 %>% 
+  ggplot(aes(x = COVID, y = log2(HBA2), fill = COVID)) +
+  geom_violin() +
+  geom_dotplot(binaxis = "y", stackdir = "center", dotsize = 0.7, fill = "black") +
+  scale_fill_manual(values = c("gray", "orange")) +
+  theme_minimal() + 
+  theme(legend.position = "bottom") +
+  labs(x = "COVID Status", y = "log2 (HBA2 RPM)", title = "HBA2: Gene with highest negative logFC change on including lactate concentration in the model")
+
+```
+
+
+
+```{r timepoint-makecontrasts}
+
+
+set.seed(500)
+
+#we'll call this dummy protein `unicorn`
+
+unicorn_COVID <- pDat %>% 
+  filter(COVID == "yes") %>% 
+  dplyr::select(sample, COVID)
+
+#specifying number of obvs, mean, and sd
+unicorn_COVID <- unicorn_COVID %>% 
+  mutate(unicorn_0days = rnorm(n = 100, mean = 1000, sd = 20), 
+         unicorn_7days = rnorm(n = 100, mean = 500, sd = 20), 
+         unicorn_14days = rnorm(n = 100, mean = 100, sd = 20))
+
+
+
+unicorn_nonCOVID <- pDat %>% 
+  filter(COVID == "no") %>% 
+  dplyr::select(sample, COVID)
+
+unicorn_nonCOVID <- unicorn_nonCOVID %>% 
+  mutate(unicorn_0days = rnorm(n = 26, mean = 100, sd = 10), 
+         unicorn_7days = rnorm(n = 26, mean = 100, sd = 10), 
+         unicorn_14days = rnorm(n = 26, mean = 100, sd = 10))
+
+
+pDat_unicorn <- rbind(unicorn_COVID, unicorn_nonCOVID)
+
+
+pDat_unicorn <- pDat_unicorn %>% 
+  dplyr::select(-COVID)
+
+pDat <- pDat %>% 
+  right_join(pDat_unicorn, by = "sample")
+
+unicorn <- pDat %>% 
+  dplyr::select(sample, COVID, unicorn_0days, unicorn_7days, unicorn_14days)
+
+unicorn <- unicorn %>% 
+  pivot_longer(cols = 3:5, names_to = "days", values_to = "measurment")
+
+unicorn$days <- fct_relevel(unicorn$days, c("unicorn_0days", "unicorn_7days", "unicorn_14days"))
+
+unicorn %>% 
+  ggplot(aes(x = days, y = measurment, fill = days)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("maroon", "hotpink2", "pink")) +
+  theme_minimal() + 
+  theme(legend.position = "bottom") +
+  labs(x = "Day at Measurement", y = "Measurement (in units)", title = "Measurement of Unicorn Protein over Days") +
+  facet_wrap(~COVID)
+
+
+mm_unicorn <- model.matrix(~COVID + unicorn_0days + unicorn_7days + unicorn_14days, pDat) 
+
+mm_unicorn <- as.data.frame(mm_unicorn)
+model2 <- glm(COVIDyes ~ unicorn_0days + unicorn_7days + unicorn_14days, data = mm_unicorn, family = binomial) 
+summary(model2)
+
+
+#we know that there's no actual protein called `unicorn` and hence it isn't actually associated with any changed in gene expression - as we can see from our linear model summary
+
+lmfit_unicorn <- lmFit(eNorm, mm_unicorn)
+
+conmat_unicorns <- makeContrasts(
+  day14_day7 = unicorn_14days - unicorn_7days,
+  day7_day0 = unicorn_7days - unicorn_0days,
+  day14_day0 = unicorn_14days - unicorn_0days,
+  levels = mm_unicorn
+)
+
+#intercept colname is different
+rownames(conmat_unicorns) = colnames(mm_unicorn)
+
+confit_unicorn <- contrasts.fit(lmfit_unicorn, conmat_unicorns) %>% 
+  eBayes()
+
+topTable(confit_unicorn)
+
+decideTests(confit_unicorn, adjust.method = "fdr", p.value = 0.05) %>%
+  summary()
+
+```  
+
+
+### 8.0 Enrichment Analysis
+
+```{r GO-enrichment}
+
+#BiocManager::install("biomaRt")
+library(biomaRt)
+
+
+
+
+# Using the DEGs we got from the lactate model
+genes <- topTable(efit_lactate, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, n = Inf, sort.by = "logFC")
+genes <- rownames(genes)
+
+head(genes)
+
+
+
+#we require the Entrz IDs for all functions after this step - so converting HGNC Symbols to Entrez IDs
+
+
+
+head(hgnc_to_entrez)
+
+#selecting attributes as the GO id, the GO term, the GO term definition, and the cell comparatment that GO term belongs to, searching by the filter/parameter HGNC symbol
+
+
+
+
+head(go_terms)
+
+#deleting all empty rows
+go_terms <- go_terms %>% 
+  mutate_all(na_if,"")
+go_terms <- na.omit(go_terms)
+
+#counting the frequency of each GO term
+go_plot <- go_terms %>% 
+  dplyr::count(name_1006) %>% 
+  dplyr::arrange(desc(n))
+
+
+#we know that the total DEGs we selected were 200, so let's get the percentage of how many of the genes were associated with a particular  GO Term
+head(go_plot)
+go_plot$total <- 200
+go_plot <- go_plot[-1,]
+go_plot <- go_plot %>% 
+  mutate(perc = (n/total)*100) %>% 
+  dplyr::arrange()
+
+head(go_plot)
+
+#for the first 20 GO Terms
+go_plot[1:20,] %>% 
+  ggplot(aes(x = name_1006, y = perc)) +
+  geom_bar(stat = "identity", width = 0.6)
+
+go_plot[1:20,] %>% 
+  ggplot(aes(x = reorder(name_1006, -perc), y = perc)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  coord_cartesian(y = c(0,100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Top 20 GO Terms", subtitle = "For DEGs at adjpval <= 0.05", x = "GO Term", y = "Percentage of DEGs assoc. with GO Term")
+
+#let's all add the cellular compartment to our plot
+component <- go_terms %>% 
+  dplyr::select(name_1006, namespace_1003) %>% 
+  distinct(name_1006, .keep_all = TRUE)
+
+head(component)
+
+go_plot <- go_plot %>% 
+  right_join(component, by = "name_1006")
+
+head(go_plot)
+
+```
+
+```{r GOplot, fig.height=4, width = 4}
+
+go_plot[1:20,] %>% 
+  ggplot(aes(x = reorder(name_1006, -perc), y = perc, fill = namespace_1003)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  scale_fill_manual(values = c("maroon", "navy", "forest green")) +
+  coord_cartesian(y = c(0,100)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "bottom") +
+  scale_y_continuous(breaks = seq(0, 100, 10)) +
+  labs(title = "Top 20 GO Terms", subtitle = "For DEGs at adjpval <= 0.05", x = "GO Term", y = "Percentage of DEGs assoc. with GO Term")
+
+```  
+
+
+```{r KEGG}
+
+library(clusterProfiler)
+
+
+
+
+head(hgnc_to_entrez)
+
+k <- enrichKEGG(gene = hgnc_to_entrez$entrezgene_id, organism = "hsa")
+head(k)
+
+```
+

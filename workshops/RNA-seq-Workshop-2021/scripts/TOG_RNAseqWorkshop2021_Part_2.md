@@ -1,7 +1,7 @@
 ---
 title: "TOG RNA-seq Workshop 2021: Part 2" 
 author: Nikita Telkar 
-date: July 2021
+date: October 2021
 output: 
   html_document: 
     keep_md: yes 
@@ -268,7 +268,9 @@ Now that we have our PC scores, we'll estimate which of our variables are the on
 
 
 ```r
-#remotes::install_github("wvictor14/plomics")
+# install.packages("remotes")
+# library(remotes)
+# remotes::install_github("wvictor14/plomics")
 library(plomics)
 
 #here, we'll select the Pvalue metric
@@ -880,7 +882,7 @@ pDat %>%
 
 ![](TOG_RNAseqWorkshop2021_Part_2_files/figure-html/DE-covid-age-lactate-2.png)<!-- -->
 
-Given that we saw that the S100A9 gene showed the highest negative logFC, let's compare the expression of S100A9 between COVID positive nad negative patients.  
+Given that we saw that the S100A9 gene showed the highest negative logFC, let's compare the expression of S100A9 between COVID positive and negative patients.  
 
 
 ```r
@@ -1228,6 +1230,8 @@ mart = useMart("ensembl", dataset="hsapiens_gene_ensembl")
 genes <- topTable(efit_lactate, coef = "COVIDyes", adjust.method = "fdr", p.value = 0.05, n = Inf, sort.by = "logFC")
 genes <- rownames(genes)
 
+#We'll only use the top 200 genes as the maximum number of queries biomaRt can take is 500
+genes <- genes[1:200]
 head(genes)
 ```
 
@@ -1247,41 +1251,41 @@ head(hgnc_to_entrez)
 
 ```
 ##   hgnc_symbol entrezgene_id
-## 1        AAMP            14
-## 2        AATF         26574
-## 3        AATK          9625
-## 4       ABCA1            19
-## 5      ABCA13        154664
-## 6       ABCC4         10257
+## 1       ABTB1         80325
+## 2        ACTB            60
+## 3       ACTG1            71
+## 4        ADAR           103
+## 5        AIF1           199
+## 6       ALDOA           226
 ```
 
 ```r
-#selecting attributes as the GO id, the GO term, the GO term definition, and the cell comparatment that GO term belongs to, searching by the filter/parameter HGNC symbol
+#selecting attributes as the GO id, the GO term, the GO term definition, and the cell compartment that GO term belongs to, searching by the filter/parameter HGNC symbol
 go_terms <- getBM(attributes = c("hgnc_symbol", "go_id", "name_1006", "definition_1006", "namespace_1003"), filters = "hgnc_symbol", values = genes, mart = mart)
 
 head(go_terms)
 ```
 
 ```
-##   hgnc_symbol      go_id            name_1006
-## 1        AAMP GO:0005515      protein binding
-## 2        AAMP GO:0005737            cytoplasm
-## 3        AAMP GO:0016020             membrane
-## 4        AAMP GO:0005829              cytosol
-## 5        AAMP GO:0005886      plasma membrane
-## 6        AAMP GO:0045171 intercellular bridge
-##                                                                                                                                                                                                                                                                                                                                 definition_1006
-## 1                                                                                                                                                                               Interacting selectively and non-covalently with any protein or protein complex (a complex of two or more proteins that may include other nonprotein molecules).
-## 2                                                                                                                                                                                                                          All of the contents of a cell excluding the plasma membrane and nucleus, but including other subcellular structures.
-## 3                                                                                                                                                                                                                                           A lipid bilayer along with all the proteins and protein complexes embedded in it an attached to it.
-## 4                                                                                                                                                                                                        The part of the cytoplasm that does not contain organelles but which does contain other particulate matter, such as protein complexes.
-## 5                                                                                                                                                                                         The membrane surrounding a cell that separates the cell from its external environment. It consists of a phospholipid bilayer and associated proteins.
-## 6 A direct connection between the cytoplasm of two cells that is formed following the completion of cleavage furrow ingression during cell division. They are usually present only briefly prior to completion of cytokinesis. However, in some cases, such as the bridges between germ cells during their development, they become stabilised.
+##   hgnc_symbol      go_id       name_1006
+## 1       ABTB1                           
+## 2       ABTB1 GO:0005515 protein binding
+## 3       ABTB1 GO:0005737       cytoplasm
+## 4       ABTB1 GO:0006412     translation
+## 5       ABTB1 GO:0005730       nucleolus
+## 6       ABTB1 GO:0005829         cytosol
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        definition_1006
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Interacting selectively and non-covalently with any protein or protein complex (a complex of two or more proteins that may include other nonprotein molecules).
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 All of the contents of a cell excluding the plasma membrane and nucleus, but including other subcellular structures.
+## 4                                                                                                              The cellular metabolic process in which a protein is formed, using the sequence of a mature mRNA or circRNA molecule to specify the sequence of amino acids in a polypeptide chain. Translation is mediated by the ribosome, and begins with the formation of a ternary complex between aminoacylated initiator methionine tRNA, GTP, and initiation factor 2, which subsequently associates with the small subunit of the ribosome and an mRNA or circRNA. Translation ends with the release of a polypeptide chain from the ribosome.
+## 5 A small, dense body one or more of which are present in the nucleus of eukaryotic cells. It is rich in RNA and protein, is not bounded by a limiting membrane, and is not seen during mitosis. Its prime function is the transcription of the nucleolar DNA into 45S ribosomal-precursor RNA, the processing of this RNA into 5.8S, 18S, and 28S components of ribosomal RNA, and the association of these components with 5S RNA and proteins synthesized outside the nucleolus. This association results in the formation of ribonucleoprotein precursors; these pass into the cytoplasm and mature into the 40S and 60S subunits of the ribosome.
+## 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               The part of the cytoplasm that does not contain organelles but which does contain other particulate matter, such as protein complexes.
 ##       namespace_1003
-## 1 molecular_function
-## 2 cellular_component
+## 1                   
+## 2 molecular_function
 ## 3 cellular_component
-## 4 cellular_component
+## 4 biological_process
 ## 5 cellular_component
 ## 6 cellular_component
 ```
@@ -1297,22 +1301,22 @@ go_plot <- go_terms %>%
   dplyr::count(name_1006) %>% 
   dplyr::arrange(desc(n))
 
-#we know that the total DEGs were 5134, so let's get the percentage of how many of the genes were associated with a particular  GO Term
+#we know that the total DEGs we selected were 200, so let's get the percentage of how many of the genes were associated with a particular  GO Term
 head(go_plot)
 ```
 
 ```
-##         name_1006    n
-## 1 protein binding 4686
-## 2         nucleus 2532
-## 3       cytoplasm 2521
-## 4        membrane 2421
-## 5         cytosol 2180
-## 6     nucleoplasm 1750
+##               name_1006   n
+## 1       protein binding 169
+## 2               cytosol 140
+## 3              membrane 136
+## 4             cytoplasm 109
+## 5 extracellular exosome  90
+## 6               nucleus  89
 ```
 
 ```r
-go_plot$total <- 5134
+go_plot$total <- 200
 go_plot <- go_plot[-1,]
 go_plot <- go_plot %>% 
   mutate(perc = (n/total)*100) %>% 
@@ -1322,13 +1326,13 @@ head(go_plot)
 ```
 
 ```
-##                        name_1006    n total     perc
-## 1                        nucleus 2532  5134 49.31827
-## 2                      cytoplasm 2521  5134 49.10401
-## 3                       membrane 2421  5134 47.15621
-## 4                        cytosol 2180  5134 42.46202
-## 5                    nucleoplasm 1750  5134 34.08648
-## 6 integral component of membrane 1287  5134 25.06817
+##               name_1006   n total perc
+## 1               cytosol 140   200 70.0
+## 2              membrane 136   200 68.0
+## 3             cytoplasm 109   200 54.5
+## 4 extracellular exosome  90   200 45.0
+## 5               nucleus  89   200 44.5
+## 6           RNA binding  88   200 44.0
 ```
 
 ```r
@@ -1362,13 +1366,13 @@ head(component)
 ```
 
 ```
-##              name_1006     namespace_1003
-## 1      protein binding molecular_function
-## 2            cytoplasm cellular_component
-## 3             membrane cellular_component
-## 4              cytosol cellular_component
-## 5      plasma membrane cellular_component
-## 6 intercellular bridge cellular_component
+##         name_1006     namespace_1003
+## 1 protein binding molecular_function
+## 2       cytoplasm cellular_component
+## 3     translation biological_process
+## 4       nucleolus cellular_component
+## 5         cytosol cellular_component
+## 6 plasma membrane cellular_component
 ```
 
 ```r
@@ -1379,13 +1383,13 @@ head(go_plot)
 ```
 
 ```
-##                        name_1006    n total     perc     namespace_1003
-## 1                        nucleus 2532  5134 49.31827 cellular_component
-## 2                      cytoplasm 2521  5134 49.10401 cellular_component
-## 3                       membrane 2421  5134 47.15621 cellular_component
-## 4                        cytosol 2180  5134 42.46202 cellular_component
-## 5                    nucleoplasm 1750  5134 34.08648 cellular_component
-## 6 integral component of membrane 1287  5134 25.06817 cellular_component
+##               name_1006   n total perc     namespace_1003
+## 1               cytosol 140   200 70.0 cellular_component
+## 2              membrane 136   200 68.0 cellular_component
+## 3             cytoplasm 109   200 54.5 cellular_component
+## 4 extracellular exosome  90   200 45.0 cellular_component
+## 5               nucleus  89   200 44.5 cellular_component
+## 6           RNA binding  88   200 44.0 molecular_function
 ```
 
 
@@ -1476,12 +1480,12 @@ head(hgnc_to_entrez)
 
 ```
 ##   hgnc_symbol entrezgene_id
-## 1        AAMP            14
-## 2        AATF         26574
-## 3        AATK          9625
-## 4       ABCA1            19
-## 5      ABCA13        154664
-## 6       ABCC4         10257
+## 1       ABTB1         80325
+## 2        ACTB            60
+## 3       ACTG1            71
+## 4        ADAR           103
+## 5        AIF1           199
+## 6       ALDOA           226
 ```
 
 ```r
@@ -1490,33 +1494,29 @@ head(k)
 ```
 
 ```
-##                ID                             Description GeneRatio  BgRatio
-## hsa03010 hsa03010                                Ribosome  103/2442 158/8096
-## hsa04110 hsa04110                              Cell cycle   76/2442 126/8096
-## hsa05171 hsa05171          Coronavirus disease - COVID-19  119/2442 232/8096
-## hsa05166 hsa05166 Human T-cell leukemia virus 1 infection  104/2442 222/8096
-## hsa03460 hsa03460                  Fanconi anemia pathway   35/2442  54/8096
-## hsa05161 hsa05161                             Hepatitis B   78/2442 162/8096
+##                ID                    Description GeneRatio  BgRatio
+## hsa03010 hsa03010                       Ribosome    71/150 158/8101
+## hsa05171 hsa05171 Coronavirus disease - COVID-19    77/150 232/8101
+## hsa05140 hsa05140                  Leishmaniasis    10/150  77/8101
+## hsa04145 hsa04145                      Phagosome    13/150 152/8101
+## hsa04380 hsa04380     Osteoclast differentiation    10/150 128/8101
 ##                pvalue     p.adjust       qvalue
-## hsa03010 4.946130e-20 1.627277e-17 1.192278e-17
-## hsa04110 1.645486e-12 2.706824e-10 1.983243e-10
-## hsa05171 7.428625e-12 8.146726e-10 5.968966e-10
-## hsa05166 8.604393e-08 7.077113e-06 5.185279e-06
-## hsa03460 1.409062e-07 9.271626e-06 6.793161e-06
-## hsa05161 9.266551e-07 5.081159e-05 3.722877e-05
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            geneID
-## hsa03010                                                                  2197/65003/55052/6150/79590/10573/55168/54460/6134/4736/6135/6136/6137/23521/9045/6138/6139/6141/6142/6143/6144/6146/9349/6147/6152/6154/6155/6157/6158/6159/6122/6156/6160/6161/6164/11224/6165/25873/6173/6166/6167/6168/6169/6170/6124/6171/6125/6128/6129/6130/6132/6133/6175/6176/6181/6204/6205/6206/6207/6208/6209/6210/6217/6218/6222/6223/6187/6224/6227/6228/6229/6230/6231/6232/6233/6234/6235/6188/6189/6191/6193/6194/6201/6202/6203/3921/7311/6182/64928/54948/63875/9801/51069/9553/51073/64963/6183/51021/51373/51116/64969/64968/64965
-## hsa04110                                                                                                                                                                                                                             64682/51529/25847/25906/472/699/894/8555/246184/996/1032/1387/8454/1869/1871/1874/2033/51343/8379/10459/4173/4175/4193/4609/5000/5111/5885/5925/5934/6500/4087/4089/8243/9126/10274/10735/7027/7040/7532/7533/29882/545/701/890/891/9133/898/991/8697/993/8318/990/8317/983/1017/1021/1022/1028/1111/10926/1875/9700/4085/4171/4172/4998/4999/23595/23594/5347/9232/5933/2810/7272/7465/7709
-## hsa05171 6868/103/712/1675/1147/23586/5610/2162/2197/64135/9641/8517/3572/3654/3661/3716/5603/5595/4938/4939/4940/5290/5291/5579/6134/4736/6135/6136/6137/23521/9045/6138/6139/6141/6142/6143/6144/6146/9349/6147/6152/6154/6155/6157/6158/6159/6122/6156/6160/6161/6164/11224/6165/25873/6173/6166/6167/6168/6169/6170/6124/6171/6125/6128/6129/6130/6132/6133/6175/6176/6181/6204/6205/6206/6207/6208/6209/6210/6217/6218/6222/6223/6187/6224/6227/6228/6229/6230/6231/6232/6233/6234/6235/6188/6189/6191/6193/6194/6201/6202/6203/3921/6772/6773/6774/340061/23118/29110/7097/7297/7311/727/3725/5600/5601/4793/5296/7124/7189
-## hsa05166                                                                                      113/207/208/64682/51529/25847/25906/1386/1388/472/567/581/821/894/915/916/920/246184/996/1147/1385/64764/9586/1387/200186/1869/1871/2033/2874/3108/3109/3113/3115/3117/3119/3122/3123/8517/3554/3689/3716/8850/10524/3845/3932/4055/8379/5604/5605/6416/4214/9020/5595/4609/4893/5290/5291/8498/5925/5971/293/4087/4089/6688/6722/6776/7040/706/7419/7514/29882/545/701/890/9133/898/958/991/8697/1017/1111/10488/23373/1739/2005/9700/3111/3112/3265/3725/2648/4049/4085/5601/4772/5296/9232/6908/9519/7124/115650/8295/55697/7417
-## hsa03460                                                                                                                                                                                                                                                                                                                                                                                                                       2067/5980/548593/7398/57599/545/84126/641/672/675/83990/378708/201254/146956/2072/80233/91442/2177/2178/2189/55215/55120/57697/4292/80198/79728/5429/51426/5888/51455/80010/116028/9894/8940/29089
-## hsa05161                                                                                                                                                                                                                      207/208/317/369/1386/1388/537/581/637/673/843/836/1147/1385/64764/9586/1387/54205/1654/23586/1869/1871/2033/64135/9641/8517/3654/3661/3716/3717/3845/5604/5605/5606/6416/4214/5603/5595/4609/4893/5111/5290/5291/5579/5894/5925/4089/6654/6655/6772/6773/6774/6776/10454/23118/29110/7040/7097/7297/7419/572/332/890/898/1017/10488/1643/3265/3725/5609/5600/5601/4772/5296/148022/114609/7124/7189
+## hsa03010 1.193419e-86 2.016878e-84 1.808972e-84
+## hsa05171 2.951818e-82 2.494286e-80 2.237167e-80
+## hsa05140 1.330748e-06 7.496548e-05 6.723781e-05
+## hsa04145 4.283327e-06 1.809706e-04 1.623156e-04
+## hsa04380 1.229408e-04 4.155400e-03 3.727048e-03
+##                                                                                                                                                                                                                                                                                                                                                                                                     geneID
+## hsa03010                              2197/6134/4736/6135/6136/6137/23521/9045/6138/6139/6141/6142/6143/6144/9349/6147/6152/6154/6155/6157/6158/6159/6122/6156/6160/6161/6164/11224/6165/6173/6167/6168/6170/6124/6171/6125/6128/6129/6130/6132/6133/6175/6176/6181/6204/6205/6206/6208/6210/6217/6218/6222/6223/6187/6224/6228/6229/6230/6232/6233/6235/6188/6189/6191/6193/6194/6201/6202/6203/3921/7311
+## hsa05171 103/2197/4938/4939/4940/6134/4736/6135/6136/6137/23521/9045/6138/6139/6141/6142/6143/6144/9349/6147/6152/6154/6155/6157/6158/6159/6122/6156/6160/6161/6164/11224/6165/6173/6167/6168/6170/6124/6171/6125/6128/6129/6130/6132/6133/6175/6176/6181/6204/6205/6206/6208/6210/6217/6218/6222/6223/6187/6224/6228/6229/6230/6232/6233/6235/6188/6189/6191/6193/6194/6201/6202/6203/3921/6772/7097/7311
+## hsa05140                                                                                                                                                                                                                                                                                                                                               1535/1915/2214/2215/3122/3123/3689/653361/6772/7097
+## hsa04145                                                                                                                                                                                                                                                                                                                                   60/71/11151/1535/2214/2215/3122/3123/3689/653361/6890/7097/7846
+## hsa04380                                                                                                                                                                                                                                                                                                                                       1535/2214/2215/353514/11025/102725035/653361/6688/6772/7305
 ##          Count
-## hsa03010   103
-## hsa04110    76
-## hsa05171   119
-## hsa05166   104
-## hsa03460    35
-## hsa05161    78
+## hsa03010    71
+## hsa05171    77
+## hsa05140    10
+## hsa04145    13
+## hsa04380    10
 ```
 
