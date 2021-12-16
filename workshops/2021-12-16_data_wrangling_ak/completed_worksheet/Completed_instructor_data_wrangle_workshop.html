@@ -1138,7 +1138,7 @@ mutate(rel_growth = pop-first(pop)) </code></pre>
 <div id="use-cases-for-across" class="section level3" number="6.0.2">
 <h3><span class="header-section-number">6.0.2</span> Use cases for across</h3>
 <p>Say you would like to summarize the mean and median values for lifeExp, gdpPercap and pop in the gapminder dataset by continent and year.</p>
-<p><strong>Without across: </strong></p>
+<p><strong>Without across:</strong></p>
 <p>Earlier we used the <code>summarize()</code> function to achieve this.</p>
 <pre class="r"><code>gapminder %&gt;% 
   group_by(continent,year) %&gt;%

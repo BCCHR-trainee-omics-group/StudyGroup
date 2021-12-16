@@ -503,7 +503,7 @@ tibble %>% DPLYR_FUN(across,COLNAME,FUNCTION_FOR_COLs)
 
 Say you would like to summarize the mean and median values for lifeExp, gdpPercap and pop in the gapminder dataset by continent and year.
 
-**Without across: **
+**Without across:**
 
 Earlier we used the `summarize()` function to achieve this. 
 
