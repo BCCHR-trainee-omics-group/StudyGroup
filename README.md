@@ -1,10 +1,10 @@
-# Data Analysis Support Group
+# Welcome to the Trainee 'Omics Group's (TOG) GitHub!
 
-This is for the **Trainee Omics Group (TOG)** -ran group. We host trainee-led tutorials and help sessions focused on the analysis of biological data. Details on scheduling, curriculum and engagement can be found here.
+Here, you'll find all of the scripts from our workshops. TOG is the resident data analysis and bioinformatics trainee support group at BC Children’s Hospital Research Institute, and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
 
 **Contact Us**   
 For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/).    
-Or write us an email at: tog (at) bcchr (dot) ca
+Or write us an email at: tog@bcchr.ca
 
 # Workshops
 - [Introduction to plotting in R: ggplot2](workshops/2019-07-24_intro_to_ggplot2)
@@ -21,18 +21,15 @@ Or write us an email at: tog (at) bcchr (dot) ca
 - [Multi-omic integration with SMITE](workshops/2021_09_28_multi_omics_SMITE)
 
 # Upcoming Schedule
-| Date | Time | Where | What |
+| Date | Time | Where | What | Lead | 
 | --- | --- | --- | --- |
-| 2021-09-28| 1:00PM - 2:00PM | Virtual | DNA methylation and expression integration and network analysis with SMITE |
+| 2022-01-19 | 3:00 - 4:00 PM PST | Virtual - Zoom | What is R? |  Divya Anatsri |  
+| February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |  
 
-# Open help session schedule
-Keep an eye out for emails from our mailing list for zoom links to the following open help sessions:
-|Date	    |  Weekday |	Time
+# Open Help Session schedule
+[Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing). Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
+
+| Date |  Weekday |	Time |
 | --- | --- | --- |
-|5/17/2021|	Mon     |	2:00PM - 3:00PM
-|6/17/2021|	Thu     |	2:00PM - 3:00PM
-|7/16/2021|	Fri     |	2:00PM - 3:00PM
-|8/17/2021|	Tue     |	2:00PM - 3:00PM
-
-
+| 2022-01-27 |	Thursday |	2:00PM - 3:00PM |
 
