@@ -21,10 +21,11 @@ Or write us an email at: tog@bcchr.ca
 - [Multi-omic integration with SMITE](workshops/2021_09_28_multi_omics_SMITE)
 
 # Upcoming Schedule
-| Date | Time | Where | What | Lead | 
-| --- | --- | --- | --- |
-| 2022-01-19 | 3:00 - 4:00 PM PST | Virtual - Zoom | What is R? |  Divya Anatsri |  
-| February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |  
+
+| Date | Time | Where | What | Lead |  
+| --- | --- | --- | --- |  
+| 2022-01-19 | 3:00 - 4:00 PM PST | Virtual - Zoom | What is R? |  Divya Anatsri |   
+| February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
 
 # Open Help Session schedule
 [Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing). Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
