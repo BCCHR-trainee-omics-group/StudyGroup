@@ -23,7 +23,7 @@ Or write us an email at: tog@bcchr.ca
 # Upcoming Schedule
 
 | Date | Time | Where | What | Lead |  
-| --- | --- | --- | --- |  
+| --- | --- | --- | --- | --- |  
 | 2022-01-19 | 3:00 - 4:00 PM PST | Virtual - Zoom | What is R? |  Divya Anatsri |   
 | February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
 
