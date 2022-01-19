@@ -6,7 +6,7 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/).    
 Or write us an email at: tog@bcchr.ca
 
-# Workshops
+## Workshops
 - [Introduction to plotting in R: ggplot2](workshops/2019-07-24_intro_to_ggplot2)
 - [Introduction to R markdown](workshops/2019-09-05_intro_to_rmarkdown)
 - [Introduction to data manipulation](workshops/2019-10-03_intro_to_data_manipulation)
@@ -20,14 +20,14 @@ Or write us an email at: tog@bcchr.ca
 - [RNAseq Analysis](workshops/RNA-seq-Workshop-2021)
 - [Multi-omic integration with SMITE](workshops/2021_09_28_multi_omics_SMITE)
 
-# Upcoming Schedule
+## Upcoming Schedule
 
-| Date | Time | Where | What | Lead |  
+| Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | --- | --- | --- |  
 | 2022-01-19 | 3:00 - 4:00 PM PST | Virtual - Zoom | What is R? |  Divya Anatsri |   
 | February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
 
-# Open Help Session schedule
+## Open Help Session schedule
 [Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing). Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
 
 | Date |  Weekday |	Time |
