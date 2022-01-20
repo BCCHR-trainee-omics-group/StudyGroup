@@ -32,5 +32,5 @@ Or write us an email at: tog@bcchr.ca
 
 | Date |  Weekday |	Time |
 | --- | --- | --- |
-| 2022-01-27 |	Thursday |	2:00PM - 3:00PM |
+| 2022-01-27 |	Thursday |	12 noon - 1:00PM |
 
