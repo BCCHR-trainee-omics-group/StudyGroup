@@ -41,7 +41,7 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 
 | Date | Time | Where | Talk Title | Speaker |  
 | --- | --- | --- | --- | --- |  
-| 2022-01-27 | 1:00 - 2:00 p.m. PST | [Zoom](https://ubc.zoom.us/j/69268175718?pwd=bjMzWkFZakVTbzlTVEYvczJJL0kxdz09) | Major sources of a variation in the placental methylome | [Victor Yuan](https://victor.rbind.io/) |   
+| 2022-01-27 | 1:00 - 2:00 p.m. PST | [Zoom](https://ubc.zoom.us/j/69268175718?pwd=bjMzWkFZakVTbzlTVEYvczJJL0kxdz09) | Major sources of variation in the placental methylome | [Victor Yuan](https://victor.rbind.io/) |   
 
 <br>  
 
