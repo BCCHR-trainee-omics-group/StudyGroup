@@ -2,11 +2,10 @@
 
 Here, you'll find all of the scripts from our workshops. TOG is the resident data analysis and bioinformatics trainee support group at BC Children’s Hospital Research Institute, and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
 
-**Contact Us:**   
-For more content and to contact us, visit us at our website: [http://bcchr.ca/tog/](http://bcchr.ca/tog/).    
-Or write us an email at: tog@bcchr.ca  
-[Slack](togorg.slack.com)   
-[Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)
+### Get in touch!  
+[Website](http://bcchr.ca/tog/) | [Email](tog@bcchr.ca) | [TOG Community Slack](togorg.slack.com) | [Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)  
+
+<br> 
 
 ## Workshops
 
@@ -29,18 +28,32 @@ Or write us an email at: tog@bcchr.ca
 
 <br>  
 
-## Upcoming Workshops
+## Upcoming Workshops  
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | --- | --- | --- |  
-| February 2022 | TBA | Virtual | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
+| February 2022 | TBA | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
+| 2022-03-01 | 1:00 - 2:00 p.m. PST | Zoom | Writing your Thesis using R Markdown | [Victor Yuan](https://victor.rbind.io/) |   
+
+<br>
+
+## Upcoming Seminars  
+
+| Date | Time | Where | Talk Title | Speaker |  
+| --- | --- | --- | --- | --- |  
+| 2022-01-27 | 1:00 - 2:00 p.m. PST | [Zoom](https://ubc.zoom.us/j/69268175718?pwd=bjMzWkFZakVTbzlTVEYvczJJL0kxdz09) | Major sources of a variation in the placental methylome | [Victor Yuan](https://victor.rbind.io/) |   
 
 <br>  
 
-## Data Support Sessions Schedule
-[Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing). Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
+## Data Support Sessions Schedule  
+[Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing) Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
 
 | Date |  Weekday |	Time |
 | --- | --- | --- |
-| 2022-01-27 |	Thursday |	12 noon - 1:00PM |
+| 2022-01-27 |	Thursday |	12 noon - 1:00 p.m. PST |  
+
+<br> 
+
+<img width="176" alt="logo" src="https://user-images.githubusercontent.com/59856969/150653135-4810c05b-91db-49a0-a480-b5672541fa0b.png">
+
 
