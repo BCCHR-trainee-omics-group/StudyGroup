@@ -50,7 +50,7 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 
 | Date |  Weekday |	Time |
 | --- | --- | --- |
-| 2022-01-27 |	Thursday |	12 noon - 1:00 p.m. PST |  
+| 2022-02-10 |	Thursday |	12 noon - 1:00 p.m. PST |  
 
 <br> 
 
