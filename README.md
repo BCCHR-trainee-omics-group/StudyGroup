@@ -30,9 +30,11 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 
 ## Upcoming Workshops  
 
+### [Register here](https://forms.gle/9YouDdc2UM6TgK4W6)
+
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | --- | --- | --- |  
-| February 2022 | TBA | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
+| 2022-02-23 | 2:00 - 3:00 p.m. PST | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
 | 2022-03-01 | 1:00 - 2:00 p.m. PST | Zoom | Writing your Thesis using R Markdown | [Victor Yuan](https://victor.rbind.io/) |   
 
 <br>
