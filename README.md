@@ -34,18 +34,18 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | --- | --- | --- |  
-| 2022-02-23 | 2:00 - 3:00 p.m. PST | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R | Jeff Bone |   
-| 2022-03-01 | 1:00 - 2:00 p.m. PST | Zoom | Writing your Thesis using R Markdown | [Victor Yuan](https://victor.rbind.io/) |   
+| 2022-03-01 | 1:00 - 2:00 PM PST | Zoom | Writing your Thesis using R Markdown | [Dr. Victor Yuan](https://victor.rbind.io/) |   
+| 2022-04-13 | 2:00 - 3:00 PM PST | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R: Part 2 | Jeff Bone |   
+
 
 <br>
 
 ## Upcoming Seminars  
 
 | Date | Time | Where | Talk Title | Speaker |  
-| --- | --- | --- | --- | --- |  
-| 2022-01-27 | 1:00 - 2:00 p.m. PST | [Zoom](https://ubc.zoom.us/j/69268175718?pwd=bjMzWkFZakVTbzlTVEYvczJJL0kxdz09) | Major sources of variation in the placental methylome | [Victor Yuan](https://victor.rbind.io/) |   
-| 2022-02-24 | 1:00 - 1:30 p.m. PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Understanding how Childhood Infection-Induced Immune Response Can Target Leukemia-initiating Cells| Dr. Ali Farrokhi|   
-| 2022-02-24 | 1:30 - 2:00 p.m. PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Identification of cerebrospinal fluid markers of CNS involvement in pediatric acute lymphoblastic leukemia| Dr. Georgina Barnabas|   
+| --- | --- | --- | --- | --- |    
+| 2022-02-24 | 1:00 - 1:30 PM PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Understanding how Childhood Infection-Induced Immune Response Can Target Leukemia-initiating Cells| Dr. Ali Farrokhi|   
+| 2022-02-24 | 1:30 - 2:00 PM PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Identification of cerebrospinal fluid markers of CNS involvement in pediatric acute lymphoblastic leukemia| Dr. Georgina Barnabas|   
 <br>  
 
 ## Data Support Sessions Schedule  
@@ -53,7 +53,7 @@ Here, you'll find all of the scripts from our workshops. TOG is the resident dat
 
 | Date |  Weekday |	Time |
 | --- | --- | --- |
-| 2022-02-10 |	Thursday |	12 noon - 1:00 p.m. PST |  
+| 2022-03-10 |	Thursday |	12 noon - 1:00 PM PST |  
 
 <br> 
 
