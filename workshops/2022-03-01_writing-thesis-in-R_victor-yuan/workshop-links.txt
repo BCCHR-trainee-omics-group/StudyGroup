@@ -1,0 +1,32 @@
+Workshop slides*******************************************************************
+
+https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/2022-03-01_writing-thesis-in-R_victor-yuan/2022%20Writing%20your%20thesis%20in%20R%20with%20ubcdown.pdf
+
+
+Setup**************************************************************************************************
+
+Download this repository as a zip file on your computer:  https://github.com/wvictor14/ubcdown/tree/2022update
+
+1. Click code -> download zip
+2. Unzip and open the folder
+3. Double click / open the ubcdown.Rproj file, this will open Rstudio
+
+4. Install R packages:
+install.packages(c('tinytex', 'rmarkdown', "knitr", "kableExtra","png","grid","dplyr","tibble", "readr“, “bookdown”))
+tinytex::install_tinytex()
+# restart Rstudio and then confirm that you have LaTeX with 
+tinytex:::is_tinytex()
+
+5. Open main_script.Rmd, and click “knit”. The first time you knit, R will try and install all relevant LaTex packages
+If it doesn’t knit, the error message may indicate some difficulty installing LaTex packages - you may need to manually install some LaText packages. See this https://bookdown.org/yihui/rmarkdown-cookbook/install-latex-pkgs.html
+
+Links************************************************************************************************
+
+https://bookdown.org/yihui/rmarkdown/
+https://bookdown.org/yihui/bookdown/
+https://github.com/ismayc/thesisdown
+
+Original UBCdown template https://github.com/jepa/ubcdown
+My 2022 update - https://github.com/wvictor14/ubcdown/tree/2022update
+
+https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/2022-03-01_writing-thesis-in-R_victor-yuan/2022%20Writing%20your%20thesis%20in%20R%20with%20ubcdown.pdf
