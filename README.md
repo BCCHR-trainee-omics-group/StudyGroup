@@ -1,9 +1,17 @@
 # Welcome to the Trainee 'Omics Group's (TOG) GitHub!
 
-Here, you'll find all of the scripts from our workshops. [TOG](http://bcchr.ca/tog/) is the resident data analysis and bioinformatics trainee support group at BC Children’s Hospital Research Institute, and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
+[TOG](http://bcchr.ca/tog/) is the resident data analysis and bioinformatics trainee support group at the [British Columbia Children’s Hospital Research Institute](http://bcchr.ca), and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
+
+> Here, you'll find all of the scripts from our workshops  
+
+<br>  
 
 ### Get in touch!  
-[Website](http://bcchr.ca/tog/) | [Email](tog@bcchr.ca) | [TOG Community Slack](togorg.slack.com) | [Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)  
+[Website](http://bcchr.ca/tog/)   
+[Email](tog@bcchr.ca)  
+[TOG Community Slack](togorg.slack.com)  
+[Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)  
+[Previous Workshop Recordings](https://bcchr.ca/tog/tog-events/workshop-recordings)  
 
 <br> 
 
@@ -12,8 +20,9 @@ Here, you'll find all of the scripts from our workshops. [TOG](http://bcchr.ca/t
 ### R/RStudio and Version Control
 - [What is R?](workshops/2022_01_19_what_is_R)  
 - [Introduction to R markdown](workshops/2019-09-05_intro_to_rmarkdown)  
-- [R_not_so_scary](workshops/2019-10-31_R_not_so_scary)  
-- [Intro to Git/Github](workshops/2019-11-28_will_casazza)
+- [R - Not So Scary!](workshops/2019-10-31_R_not_so_scary)  
+- [Intro to Git/Github](workshops/2019-11-28_will_casazza)   
+- [Writing your Thesis using RMarkdown](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2022_03_01_writing_your_thesis_in_R_)  
 
 ### Data Cleanup and Vizualisation
 - [Introduction to Data Manipulation](workshops/2019-10-03_intro_to_data_manipulation) and [Data Wrangling](2021-12-16_data_wrangling_ak)
@@ -23,7 +32,7 @@ Here, you'll find all of the scripts from our workshops. [TOG](http://bcchr.ca/t
 ### Analysis  
 - [Intro to EWAS](workshops/2020-10-29_intro_to_ewas)  
 - [Gene Ontology Enrichment](workshops/2020-11-26_gene_ontology_enrichment)  
-- [RNAseq Analysis](workshops/RNA-seq-Workshop-2021)  
+- [RNA-seq Analysis](workshops/RNA-seq-Workshop-2021)  
 - [Multi-omic integration with SMITE](workshops/2021_09_28_multi_omics_SMITE)  
 
 <br>  
@@ -34,9 +43,7 @@ Here, you'll find all of the scripts from our workshops. [TOG](http://bcchr.ca/t
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | --- | --- | --- |  
-| 2022-03-01 | 1:00 - 2:00 PM PST | Zoom | Writing your Thesis using R Markdown | [Dr. Victor Yuan](https://victor.rbind.io/) |   
 | 2022-04-13 | 2:00 - 3:00 PM PST | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R: Part 2 | Jeff Bone |   
-
 
 <br>
 
