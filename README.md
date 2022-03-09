@@ -1,6 +1,6 @@
 # Welcome to the Trainee 'Omics Group's (TOG) GitHub!
 
-Here, you'll find all of the scripts from our workshops. TOG is the resident data analysis and bioinformatics trainee support group at BC Children’s Hospital Research Institute, and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
+Here, you'll find all of the scripts from our workshops. [TOG](http://bcchr.ca/tog/) is the resident data analysis and bioinformatics trainee support group at BC Children’s Hospital Research Institute, and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
 
 ### Get in touch!  
 [Website](http://bcchr.ca/tog/) | [Email](tog@bcchr.ca) | [TOG Community Slack](togorg.slack.com) | [Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)  
