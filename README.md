@@ -52,7 +52,8 @@
 | Date | Time | Where | Talk Title | Speaker |  
 | --- | --- | --- | --- | --- |    
 | 2022-02-24 | 1:00 - 1:30 PM PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Understanding how Childhood Infection-Induced Immune Response Can Target Leukemia-initiating Cells| Dr. Ali Farrokhi|   
-| 2022-02-24 | 1:30 - 2:00 PM PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Identification of cerebrospinal fluid markers of CNS involvement in pediatric acute lymphoblastic leukemia| Dr. Georgina Barnabas|   
+| 2022-02-24 | 1:30 - 2:00 PM PST | [Zoom](https://ubc.zoom.us/j/65198610953?pwd=NHQ4U3ZPNFNTQVZpUEJSUUJSMlJRdz09) |Identification of cerebrospinal fluid markers of CNS involvement in pediatric acute lymphoblastic leukemia| Dr. Georgina Barnabas| 
+| 2022-03-31 | 1:00 - 2:00 PM PST | [Zoom]( https://ubc.zoom.us/j/69023752433?pwd=N2tBT2tlT0lhQ05JNWF4L3J5Y3ludz09) |Microgliome, an interactive microglia gene regulation browser| Jennifer Kim| 
 <br>  
 
 ## Data Support Sessions Schedule  
