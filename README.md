@@ -21,7 +21,7 @@
 - [What is R?](workshops/2022_01_19_what_is_R)  
 - [Introduction to R markdown](workshops/2019-09-05_intro_to_rmarkdown)  
 - [R - Not So Scary!](workshops/2019-10-31_R_not_so_scary)  
-- [Intro to Git/Github](workshops/2019-11-28_will_casazza)   
+- [Intro to Git/Github](workshops/2021-16-02_intro_to_github)   
 - [Writing your Thesis using RMarkdown](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2022_03_01_writing_your_thesis_in_R_)  
 
 ### Data Cleanup and Vizualisation
