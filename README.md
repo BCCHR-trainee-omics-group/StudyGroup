@@ -25,7 +25,7 @@
 - [Writing your Thesis using RMarkdown](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/2022_03_01_writing_your_thesis_in_R_)  
 
 ### Data Cleanup and Vizualisation
-- [Introduction to Data Manipulation](workshops/2019-10-03_intro_to_data_manipulation) and [Data Wrangling](2021-12-16_data_wrangling_ak)
+- [Introduction to Data Manipulation](workshops/2019-10-03_intro_to_data_manipulation) and [Data Wrangling](workshops/22021-12-16_data_wrangling_ak)
 - [Introduction to plotting in R using ggplot2](workshops/2020-07-09_intro-to-ggplot2_victor_yuan)
 - [Heatmaps and PCA](workshops/2020-05-26_Heatmaps_and_PCA)
 
