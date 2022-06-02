@@ -57,12 +57,13 @@
 | 2022-04-28 | 1:00 - 2:00 PM PST | [Zoom]( https://ubc.zoom.us/j/68836453834?pwd=SWdCYmNmZE9JQk9RV0g0aWt3VDNQQT09) | Using mass spectrometry to understand cancer metabolism| Dr. Seth Parker| 
 <br>  
 
-## Data Support Sessions Schedule  
-[Sign up for our data support session here!](https://docs.google.com/spreadsheets/d/1ov1wU8CKx1hiwG02gAr_iTioZBSR7FMSwGhUvrQfnbw/edit?usp=sharing) Every month, we hold these open help sessions wherer you can bring your data and ask specific analysis-related questions. Keep an eye out for emails from our mailing list for zoom links for the upcoming sessions:
+## Databinge 
+TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https://ninc.med.ubc.ca/databinge/) initiative to bring all our TOG Community members increased health data analytics support! Each session includes a themed discussion, along with concurrent data support.  
 
-| Date |  Weekday |	Time |
-| --- | --- | --- |
-| 2022-03-10 |	Thursday |	12 noon - 1:00 PM PST |  
+**When**: Every Friday, from 12:30 - 1:30 PM
+There is no need to register, everyone is welcome!  
+
+**For June 2 2022, Friday: Themed discussion topic - Planning experiments, effect sizes, power calculations.**   
 
 <br> 
 
