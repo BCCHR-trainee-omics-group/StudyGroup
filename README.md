@@ -42,8 +42,8 @@
 ### [Register here](https://forms.gle/9YouDdc2UM6TgK4W6)
 
 | Date | Time | Where | Workshop Name | Lead |  
-| --- | --- | --- | --- | --- |  
-| 2022-04-13 | 2:00 - 3:00 PM PST | Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R: Part 2 | Jeff Bone |   
+| --- | --- | ---- | -- | --- |  
+| 2022-06-15 | 12 noon - 1:00 PM PDT | In-person: BCCHR Room 3113 <br> Online: on Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R: Part 2 | Jeff Bone |   
 
 <br>
 
@@ -57,13 +57,11 @@
 | 2022-04-28 | 1:00 - 2:00 PM PST | [Zoom]( https://ubc.zoom.us/j/68836453834?pwd=SWdCYmNmZE9JQk9RV0g0aWt3VDNQQT09) | Using mass spectrometry to understand cancer metabolism| Dr. Seth Parker| 
 <br>  
 
-## Databinge 
-TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https://ninc.med.ubc.ca/databinge/) initiative to bring all our TOG Community members increased health data analytics support! Each session includes a themed discussion, along with concurrent data support.  
+## Databinge  
 
-**When**: Every Friday, from 12:30 - 1:30 PM
-There is no need to register, everyone is welcome!  
-
-**For June 2 2022, Friday: Themed discussion topic - Planning experiments, effect sizes, power calculations.**   
+| Databinge Information | Databinge Flyer |
+| :-- |:-------------------------: |
+TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https://ninc.med.ubc.ca/databinge/) initiative to bring all our TOG Community members increased health data analytics support! Each session includes a themed discussion, along with concurrent data support. <br> <br>  **When**: Every Friday, from 12:30 - 1:30 PM. <br> <br> There is no need to register, everyone is welcome! <br> <br> **June 10 2022, Friday: Databinge Showcase** |  ![TOG_Databinge](https://user-images.githubusercontent.com/59856969/173140667-06e06cc1-185c-4c96-9775-0515fd8649c6.png)    
 
 <br> 
 
