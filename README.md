@@ -8,10 +8,16 @@
 
 ### Get in touch!  
 [Website](http://bcchr.ca/tog/)   
-[Email](tog@bcchr.ca)  
+[Email](mailto:tog@bcchr.ca)  
 [TOG Community Slack](togorg.slack.com)  
 [Mailing List Signup](mailto:sympa@list.bcchr.ca?subject=subscribe%20trainee_omics_group%20Firstname%20Lastname)  
 [Previous Workshop Recordings](https://bcchr.ca/tog/tog-events/workshop-recordings)  
+
+<br>
+
+**Are you looking to connect and collaborate with other labs and/or trainees for some data-specific expertise?  
+[Email us](mailto:tog@bcchr.ca), and we'll get you in touch with the right people from within our vast UBC-wide network!** 
+
 
 <br> 
 
