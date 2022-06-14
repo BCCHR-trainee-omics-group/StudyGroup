@@ -23,7 +23,7 @@ Welcome to the BCCHR Trainee Omics Group's Introduction to R and R Studio worksh
 
 Our goals at the end of today are (1) for you to feel comfortable performing basics operations in R, and (2) to give you the ability to self-guide online tutorials or attend future workshops.
 
-Etherpad link for asking questions: https://etherpad.opendev.org/p/TOG_IntroR_June24 
+Etherpad link for asking questions: https://etherpad.opendev.org/p/Intro_R_Workshop_June_2022
 
 
 ### 1.1  What is R?
