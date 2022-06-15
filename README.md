@@ -67,7 +67,7 @@
 
 | Databinge Information | Databinge Flyer |
 | :-- |:-------------------------: |
-TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https://ninc.med.ubc.ca/databinge/) initiative to bring all our TOG Community members increased health data analytics support! Each session includes a themed discussion, along with concurrent data support. <br> <br>  **When**: Every Friday, from 12:30 - 1:30 PM. <br> <br> There is no need to register, everyone is welcome! <br> <br> **June 10 2022, Friday: Databinge Showcase** |  ![TOG_Databinge](https://user-images.githubusercontent.com/59856969/173140667-06e06cc1-185c-4c96-9775-0515fd8649c6.png)    
+TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https://ninc.med.ubc.ca/databinge/) initiative to bring all our TOG Community members increased health data analytics support! Each session includes a themed discussion, along with concurrent data support. <br> <br>  **When**: Every Friday, from 12:30 - 1:30 PM. <br> <br> There is no need to register, everyone is welcome! <br> <br> **June 17 2022, Friday: Themed discussion topic - Fluorescence microscopy, tissue clearing and expansion** |  ![TOG_Databinge](https://user-images.githubusercontent.com/59856969/173140667-06e06cc1-185c-4c96-9775-0515fd8649c6.png)    
 
 <br> 
 
