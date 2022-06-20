@@ -23,6 +23,11 @@
 
 ## Workshops
 
+Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-events/workshop-recordings)!  
+
+### Statistics
+- [Most Commonly Used Statistical Tests in Healthcare Research using R ](https://github.com/BCCHR-trainee-omics-group/StudyGroup/tree/master/workshops/Statistical_Tests_in_R)  
+
 ### R/RStudio and Version Control
 - [What is R?](workshops/2022_01_19_what_is_R)  
 - [Introduction to R markdown](workshops/2019-09-05_intro_to_rmarkdown)  
