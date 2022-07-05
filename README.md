@@ -54,7 +54,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | ---- | -- | --- |  
-| 2022-06-15 | 12 noon - 1:00 PM PDT | In-person: BCCHR Room 3113 <br> Online: on Zoom | Most Commonly Used Statistical Tests in Healthcare Research using R: Part 2 | Jeff Bone |   
+| 18 - 20 July 2022 | 9:00 AM - 1:00 PM PDT | In-person: BCCHR Room 2108 | 16S Microbiome Analysis | [Gut4Health](https://www.bcchr.ca/gut4health) |   
 
 <br>
 
