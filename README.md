@@ -54,9 +54,14 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | ---- | -- | --- |  
-| 18 - 20 July 2022 | 9:00 AM - 1:00 PM PDT | In-person: BCCHR Room 2108 | 16S Microbiome Analysis | [Gut4Health](https://www.bcchr.ca/gut4health) |   
+| 18 - 20 July 2022 | 9:00 AM - 1:00 PM PDT | In-person: BCCHR Room 2108 | 16S Microbiome Analysis | [Gut4Health](https://www.bcchr.ca/gut4health) | 
+
+| The Precision Health Summer Bootcamp 2022| PHB Flyer |
+| :-- |:-------------------------: |
+| The Precision Health Initiative at BCCHR, the BCCHR Trainee ’Omics Group (TOG), and UBC Advanced Research Computing (ARC) are pleased to present the Precision Health Bootcamp Summer 2022 Workshop Series! This set of workshops will focus on using UBC’s Advanced Research Computing Sockeye Platform for the analysis of ‘big data’. <br> This includes beginner workshops for new users using high performance computing, and intermediate-to-advanced topics covering Precision Health data types such as whole genome sequencing, DNA methylation, genetic association testing, RNA-sequencing and single-cell RNA-sequencing, multi-omic integration, functional MRI, and more! <br> <br> **Eligibility:** Active UBC researchers <br> **Dates:** July 25th - August 10th, 2022 <br> **Format + Location:** Hybrid – UBC Koerner Library Research Commons AND Online via Zoom <br> **[Registration Link](https://bit.ly/PrecisionHealthBootcamp2022):** https://bit.ly/PrecisionHealthBootcamp2022 <br> **Registration Cost:** FREE! This year the workshop is being covered by our sponsors - but space is limited so register ASAP <br> <br> [Check out the full descriptions of the workshops here.](https://github.com/Phillip-a-richmond/PrecisionHealthVirtualEnvironment/blob/main/Workshops/PrecisionHealthBootcamp2022WorkshopDescriptions.md)| ![PrecisionHealthAnalysisBootcampFlyer](https://user-images.githubusercontent.com/59856969/177430665-e02faa08-c97d-4f58-adbb-5b5becc99694.png)  | 
 
 <br>
+
 
 ## Upcoming Seminars  
 
