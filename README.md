@@ -57,7 +57,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Date | Time | Where | Workshop Name | Lead |  
 | --- | --- | ---- | -- | --- |  
-| 17 August 2022 | 1:00 PM - 2:00 PM PDT | In-person: BCCHR Room 2108 | [Graphic Design for Science Communication | Erin Tanaka | 
+| 17 August 2022 | 1:00 PM - 2:00 PM PDT | In-person: BCCHR Room 2108 | Graphic Design for Science Communication | Erin Tanaka | 
 
 <br>
 
