@@ -79,4 +79,7 @@ TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https
 
 <img width="176" alt="logo" src="https://user-images.githubusercontent.com/59856969/150653135-4810c05b-91db-49a0-a480-b5672541fa0b.png">
 
+## $100 TOG seminar award draw
+| Information | Flyer |
+
 
