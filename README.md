@@ -77,12 +77,13 @@ TOG has now partenerd with UBC's Dynamic Brain Circuits' (DBC) [Databinge](https
 
 <br> 
 
-<img width="176" alt="logo" src="https://user-images.githubusercontent.com/59856969/150653135-4810c05b-91db-49a0-a480-b5672541fa0b.png">
 
 ## $100 TOG Seminar Award Draw
 | Award Information | Award Flyer |
 | :-- |:-------------------------: |
 You are invited to a $100 award draw for speakers that present their work at the TOG seminar series. Please, find attached the announcement poster and a quick [survey](https://docs.google.com/forms/d/e/1FAIpQLSdgC1jw-VDxQX_jAbKDzygwa_fja_oeKLTeSW2evvWUMFeRBg/viewform) to help us serve you better. |  ![TOG_Seminar Award](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/c838bd566c4a26d4f99d7ad51fac3b441ae083a6/TOG%20seminar%20poster.jpg)  
 
+<br>
 
+<img width="176" alt="logo" src="https://user-images.githubusercontent.com/59856969/150653135-4810c05b-91db-49a0-a480-b5672541fa0b.png">
 
