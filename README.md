@@ -55,9 +55,11 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 ### [Register here](https://forms.gle/9YouDdc2UM6TgK4W6)
 
-| Date | Time | Where | Workshop Name | Lead |  
-| --- | --- | ---- | -- | --- |  
-| 17 August 2022 | 1:00 PM - 2:00 PM PDT | In-person: BCCHR Room 2108 | Graphic Design for Science Communication | Erin Tanaka | 
+
+| Upcoming Workshops | Flyer |
+| :-------------------- |:--: |
+| **Intro to Programming** <br> 14 October 2022 <br> 1:00 - 4:00 PM PDT <br> Online on Zoom <br> Led by: TOG + [Databinge](https://braincircuits.med.ubc.ca/activities/dbc-intro-to-programming-courses/)  <br> <br> **Intro to Python**: 1:00 - 2:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/63782251649?pwd=UnlHOTNLa1NENElKbUVvOGNNTE1EZz09)  <br> <br> **Intro to R**: 2:00 - 3:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/68397543074?pwd=ZHYwOUNMQldPdFFCRnBIT3VSQW9iZz09)  <br> <br> **Intro to MATLAB**: 3:00 - 4:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/69083176732?pwd=dHFqaElzcG1mY2dOR09rZENqeHJUZz09)| <img width="500" alt="logo" src="https://user-images.githubusercontent.com/59856969/195441163-b68d4f9a-60d3-4375-907f-7c8e261277a4.png"> | 
+
 
 <br>
 
