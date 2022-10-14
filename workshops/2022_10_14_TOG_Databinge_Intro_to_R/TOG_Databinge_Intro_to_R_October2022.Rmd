@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 0.0 Introduction  
 
-This script is adapted from from the British Columbia Children's Hospital Research Institute Trainee 'Omics Group's [Intro to R](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/2021-07-24_intro-to-R/intro-R-workshop.Rmd) and [Jordan Sicherman's](https://github.com/jsicherman/WorkshopR/blob/master/workshops/01_getting-started.Rmd) and has been reworked by [Nikita Telkar](https://github.com/nikita-telkar/) and [Will Cassaza](https://github.com/wilcas) for the TOG + Databinge Intro to Programming Workshops 2022 
+This script is adapted from from the British Columbia Children's Hospital Research Institute Trainee 'Omics Group's [Intro to R](https://github.com/BCCHR-trainee-omics-group/StudyGroup/blob/master/workshops/2021-07-24_intro-to-R/intro-R-workshop.Rmd) and [Jordan Sicherman's](https://github.com/jsicherman/WorkshopR/blob/master/workshops/01_getting-started.Rmd) and has been reworked by [Nikita Telkar](https://github.com/nikita-telkar/) and [Will Casazza](https://github.com/wilcas) for the TOG + Databinge Intro to Programming Workshops 2022 
 
 ***  
 
@@ -36,7 +36,7 @@ Today, we are going to:
 
 ## 2.0 Introducing R and RStudio  
 
-### 2.1 Downlaod R and RStudio  
+### 2.1 Download R and RStudio  
 
 > 1.  Download R from [CRAN](https://cran.r-project.org/)  
 > 2.  Download [RStudio](https://rstudio.com/products/rstudio/download/preview/)  
