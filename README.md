@@ -2,7 +2,7 @@
 
 [TOG](http://bcchr.ca/tog/) is the resident data analysis and bioinformatics trainee support group at the [British Columbia Children’s Hospital Research Institute](http://bcchr.ca), and we host workshops and seminars focused on the analysis methodologies used in biomedical healthcare research.  
 
-> Here, you'll find all of the scripts from our workshops  
+> Here, you'll find all of the scripts from our workshops!  
 
 <br>  
 
@@ -53,12 +53,12 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 ## Upcoming Workshops  
 
-### [Register here](https://forms.gle/9YouDdc2UM6TgK4W6)
+### [Register here](https://forms.gle/3whWGnp4z1KhMSpn7)
 
 
-| Upcoming Workshops | Flyer |
-| :-------------------- |:--: |
-| **Intro to Programming** <br> 14 October 2022 <br> 1:00 - 4:00 PM PDT <br> Online on Zoom <br> Led by: TOG + [Databinge](https://braincircuits.med.ubc.ca/activities/dbc-intro-to-programming-courses/)  <br> <br> **Intro to Python**: 1:00 - 2:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/63782251649?pwd=UnlHOTNLa1NENElKbUVvOGNNTE1EZz09)  <br> <br> **Intro to R**: 2:00 - 3:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/68397543074?pwd=ZHYwOUNMQldPdFFCRnBIT3VSQW9iZz09)  <br> <br> **Intro to MATLAB**: 3:00 - 4:00 PM PDT <br> [Zoom Link](https://ubc.zoom.us/j/69083176732?pwd=dHFqaElzcG1mY2dOR09rZENqeHJUZz09)| <img width="500" alt="logo" src="https://user-images.githubusercontent.com/59856969/195441163-b68d4f9a-60d3-4375-907f-7c8e261277a4.png"> | 
+| Workshop Name | Date | Time | Location | Lead |  
+| :---- | :-- | :-- | :-- | :-- |
+| Intro to Data Wrangling in R | 17 November 2022 | 12:30 - 1:30 PM PDT | In-person: BCCHR Room 2108 <br> Online: Zoom | Lina Jenane |  
 
 
 <br>
@@ -66,9 +66,9 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 ## Upcoming Seminars  
 
-| Date | Time | Where | Talk Title | Speaker |  
-| --- | --- | --- | --- | --- |    
-| 2022-04-28 | 1:00 - 2:00 PM PST | [Zoom]( https://ubc.zoom.us/j/68836453834?pwd=SWdCYmNmZE9JQk9RV0g0aWt3VDNQQT09) | Using mass spectrometry to understand cancer metabolism| Dr. Seth Parker| 
+| Talk Tile | Date | Time | Location | Lead |  
+| :---- | :-- | :-- | :-- | :-- | 
+| Special Databinge | 25 November 2022 | 12:30 - 1:30 PM PDT | Online: [Zoom](https://ubc.zoom.us/j/168788388?pwd=UGhGdFN2THB0empjRlVRUGs1b3MvZz09) | [Dr. Jeff Clune](http://jeffclune.com/) | 
 <br>  
 
 ## Databinge  
