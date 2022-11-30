@@ -58,7 +58,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Workshop Name | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- |
-| Intro to Data Wrangling in R | 17 November 2022 | 12:30 - 1:30 PM PDT | In-person: BCCHR Room 2108 <br> Online: Zoom | Lina Jenane |  
+| Intro to R Markdown | 14 December 2022 | 2:30 - 3:30 PM PST | Zoom | Will Casazza |  
 
 
 <br>
