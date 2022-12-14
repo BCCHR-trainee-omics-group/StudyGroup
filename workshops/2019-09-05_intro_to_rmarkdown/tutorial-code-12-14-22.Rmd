@@ -1,0 +1,108 @@
+---
+title: "TOG Tutorial December 14"
+author: "William Casazza"
+date: "14/12/2022"
+output:
+  html_document: 
+    toc: yes
+    df_print: default
+    number_sections: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=8)
+```
+
+# Our first our script in Rmarkdown
+
+```{r}
+print("hello world")
+```
+# Step 1: Load libraries
+
+```{r}
+# install.packages("knitr")
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(here)
+i_am("tutorial-code-12-14-22.Rmd")
+```
+
+
+# Step 2: load data
+
+```{r}
+data("iris")
+attach(iris)
+
+iris <- iris
+str(iris)
+head(iris)
+tail(iris)
+summary(iris)
+```
+![](iris_image.png)
+
+```{r}
+iris %>%
+  group_by(Species) %>% #group data by species
+  summarize(mean.length = mean(Sepal.Length),
+            mean.width = mean(Sepal.Width))
+ggplot(iris, aes(x=Sepal.Length, y= Sepal.Width, color=Species))+ #what data
+  geom_point() #how to visualize data
+  
+```
+
+```{r}
+iris %>% 
+  group_by(Species) %>% 
+  summarize(mean.length = mean(Petal.Length),
+            mean.width = mean(Petal.Width))
+
+#plot
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, col = Species)) +
+  geom_point()
+```
+```{r}
+iris
+```
+# Part 3: printing pretty tables with kable
+```{r}
+summary(iris)
+kable(summary(iris),caption= "summary of iris data")
+```
+
+# Part 4: code chunk options
+
+```{r,eval=FALSE}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, col = Species)) +
+  geom_point()
+```
+
+```{r,fig.height=2,fig.width=2}
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width, col = Species)) +
+  geom_point()
+```
+
+# Part 5: Taking notes
+
+I'm now reporting the standard deviation of the petal width for setosa iris as: `r sd(iris[iris$Species == "setosa","Petal.Width"])`. 
+
+How am I organizing this document:
+
+  * Set-up
+    * load library
+   * load data
+  * second example
+    + first item
+    - second item
+    * third item
+    
+Numbered steps:
+
+1. step 1
+1. Step 2
+
+Format text *bold* **italicize**

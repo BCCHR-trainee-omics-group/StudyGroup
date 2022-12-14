@@ -21,7 +21,11 @@ By Giulia Del Gobbo
 
 
 ```{r setup main, echo = F}
-setwd("/Volumes/RobinsonLab/Giulia/Volunteering/TOG/StudyGroup_tutorials")
+require(here)
+require(knitr)
+require(dplyr)
+require(ggplot2)
+i_am("RMarkdown_Tutorial.Rmd")
 ```
 
 
