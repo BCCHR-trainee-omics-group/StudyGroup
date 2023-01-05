@@ -68,6 +68,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Talk Tile | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- | 
+| Differential DNA methylation associated with cumulative family adversity in children| 26 January 2023 | 12:30 - 1:30 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Meingold Chan | 
 | Special Databinge | 25 November 2022 | 12:30 - 1:30 PM PDT | Online: [Zoom](https://ubc.zoom.us/j/168788388?pwd=UGhGdFN2THB0empjRlVRUGs1b3MvZz09) | [Dr. Jeff Clune](http://jeffclune.com/) | 
 <br>  
 
