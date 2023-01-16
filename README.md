@@ -68,7 +68,8 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Talk Tile | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- | 
-| Differential DNA methylation associated with cumulative family adversity in children| 26 January 2023 | 12:00 - 1:00 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Meingold Chan | 
+| Differential DNA methylation associated with cumulative family adversity in children| 26 January 2023 | 12:00 - 12:30 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Meingold Chan | 
+| A misused (and misleading) correlation analysis| 26 January 2023 | 12:30 - 1:30 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Gabriela Cohen Freue| 
 <br>  
 
 ## Databinge  
