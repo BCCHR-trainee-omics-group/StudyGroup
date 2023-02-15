@@ -58,7 +58,8 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Workshop Name | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- |
-| Most Commonly Used Statistical Tests in Healthcare Research using R | 25 January 2023 | 1:30 - 2:30 PM PDT | Zoom | Jeffrey Bone |  
+| Principles and Techniques for Science Communication | 1 March 2023 | 2:00 - 3:00 PM PST | Hybrid (BCCHR 2108 & Zoom) | Erin Tanaka |  
+| Introduction to ggplot2 | 5 April 2023 | 2:00 - 3:00 PM PST | Hybrid (BCCHR 2108 & Zoom) | Nikita Telkar |  
 
 
 <br>
@@ -66,10 +67,10 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 ## Upcoming Seminars  
 
-| Talk Tile | Date | Time | Location | Lead |  
+| Talk Tile | Date | Time | Location | Speaker |  
 | :---- | :-- | :-- | :-- | :-- | 
-| Differential DNA methylation associated with cumulative family adversity in children| 26 January 2023 | 12:00 - 12:30 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Meingold Chan | 
-| A misused (and misleading) correlation analysis| 26 January 2023 | 12:30 - 1:30 PM PDT | Hybrid- Room CFRI 3113 Online: [Zoom](https://ubc.zoom.us/j/8505347738?pwd=aGFpekRFMEpFMVhwSjVYQTJITmdGUT09) | Dr. Gabriela Cohen Freue| 
+| TBD | 2 March 2023 | 12:00 - 12:30 PM PST | Hybrid (BCCHR 3113 & Zoom) | Dorothy Lin | 
+
 <br>  
 
 ## Databinge  
