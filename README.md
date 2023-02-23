@@ -69,7 +69,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Talk Tile | Date | Time | Location | Speaker |  
 | :---- | :-- | :-- | :-- | :-- | 
-| TBD | 2 March 2023 | 12:00 - 12:30 PM PST | Hybrid (BCCHR 3113 & Zoom) | Dorothy Lin | 
+| Prenatal exposure to bisphenols and phthalates and infant gestational epigenetic age| 2 March 2023 | 12:00 - 12:30 PM PST | Hybrid (BCCHR 3113 & [Zoom](https://ubc.zoom.us/j/69510327379?pwd=eFJrZTRKVzNiRjIyV2xzczJBK2pVdz09)) | Dorothy Lin | 
 
 <br>  
 
