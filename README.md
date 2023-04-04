@@ -58,12 +58,11 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Workshop Name | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- |
-| ARC Presents: R on Sockeye | 31 March 2023 | 12:00 - 2:00 PM PDT | Zoom | Jeff Gardner & Jerry Li |  
 | Introduction to ggplot2 | 5 April 2023 | 2:00 - 3:00 PM PDT | Hybrid (BCCHR 2108 & Zoom) | Nikita Telkar |  
 | Most Commonly Used Statistical Tests in Healthcare Research - Part II | 26 April 2023 | 1:00 - 2:00 PM PDT | Zoom | Jeff Bone |
 | Writing Functions in R | 18 May 2023 | 10:30 - 11:30 AM PDT | Hybrid (BCCHR 2108 & Zoom) | Zoe Lofft |
-| Multi-Omics | 7 June 2023 | Time TBD | Zoom | Amrit Singh |
-| Proteomics | July: Date TBD | Time TBD | Zoom | Enes Ergin |
+| Multi-Omics | 7 June 2023 | 1:00 - 3:00 PM PDT | Zoom | Amrit Singh |
+| Proteomics | 13 July 2023 | 1:00 - 3:00 PM PDT | Hybrid (BCCHR 2108 & Zoom) | Enes Ergin |
 
 
 <br>
@@ -73,7 +72,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Talk Tile | Date | Time | Location | Speaker |  
 | :---- | :-- | :-- | :-- | :-- | 
-| Prenatal exposure to bisphenols and phthalates and infant gestational epigenetic age| 2 March 2023 | 12:00 - 12:30 PM PST | Hybrid (BCCHR 3113 & [Zoom](https://ubc.zoom.us/j/69510327379?pwd=eFJrZTRKVzNiRjIyV2xzczJBK2pVdz09)) | Dorothy Lin | 
+
 
 <br>  
 
