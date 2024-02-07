@@ -58,8 +58,7 @@ Our Worskhop recordings are available on our [website](https://bcchr.ca/tog/tog-
 
 | Workshop Name | Date | Time | Location | Lead |  
 | :---- | :-- | :-- | :-- | :-- |
-| Multi-Omics | 7 June 2023 | 1:00 - 3:00 PM PDT | Zoom | Amrit Singh |
-| Proteomics | 13 July 2023 | 1:00 - 3:00 PM PDT | Hybrid (BCCHR 2108 & Zoom) | Enes Ergin |
+| Utilization of public GEO data in R | 23 February 2024 | 1:00 - 2:30 PM PST | Hybrid | Jiyoung Han |
 
 
 <br>
