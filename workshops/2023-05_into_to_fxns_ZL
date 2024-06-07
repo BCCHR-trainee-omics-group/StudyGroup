@@ -1,0 +1,165 @@
+#
+# Date: Jan 28, 2023
+# Updated: April 20, 2023
+# Authors: Zoe Lofft  (email: zlofft@gmail.com)
+#
+# OBJECTIVES: TOG FUNctions workshop
+
+# NOTES:
+# RESOURCES: TOG github:https://github.com/BCCHR-trainee-omics-group/StudyGroup
+
+#TOC> ==========================================================================
+#TOC>
+#TOC>                                
+#TOC> --------------------------------------------------------------------------
+#TOC>   0        To do before workshop
+#TOC>   1        Preliminary example
+#TOC>   2        No formatting heatmaps
+#TOC>   3        magicHeatmap
+#TOC>   4        Activity
+#TOC> ==========================================================================
+
+
+# ====      BEFORE STARTING  ===================================================
+# try loading multiple at once
+Packages <- c("pheatmap", "RColorBrewer", "dplyr", "ggplot2")
+lapply(Packages, library, character.only=TRUE)
+
+library (pheatmap)
+library(RColorBrewer)
+library(dplyr)
+library(ggplot2)
+
+# ====    ii  Data Prep  =======================================================
+
+# Read in the raw data
+raw_counts <- read.csv("raw_counts.csv", row.names = 1)
+str(raw_counts)
+
+heatmap1 <-
+  raw_counts[, c(
+    "geneSymbol",
+    "CD1_F",
+    "CD2_F",
+    "CD3_F",
+    "CD4_F",
+    "CD5_F",
+    "CDF_1",
+    "CDF2_F",
+    "CDF3_F",
+    "CDF4_F",
+    "CDF5_F"
+  )]
+
+# Alter the sub-set to contain only the rows you want (aka genes) of the samples
+heatmap1 <-
+  heatmap1[c(
+    "ENSMUSG00000023057.5",
+    "ENSMUSG00000032080.6",
+    "ENSMUSG00000025467.8",
+    "ENSMUSG00000033788.15"
+  ),]
+
+# Make the genes the rownames instead
+row.names(heatmap1) <- heatmap1$geneSymbol
+
+# Remove the ID column since we want genes as the row names
+heatmap1 <- select(heatmap1, -1)
+
+# Turn your data frame into a matrix, you need to do this to make a heatmap
+heatmap1 <- data.matrix(heatmap1)
+
+#===============================================================================
+# Heatmap Function
+magicHeatmap <- function(dataMatrix, mainTitle) {
+  pheatmap(
+    mat = dataMatrix,
+    cluster_rows = FALSE,
+    clustering_distance_cols = "correlation",
+    clustering_method = "average",
+    scale = "row",
+    color = colorRampPalette(rev(brewer.pal(n = 7, name ="YlGnBu")))(100),
+    cellheight = 10,
+    cellwidth = 20,
+    fontsize_row = 7, 
+    fontsize_col = 9,
+    height = 3,
+    main = mainTitle
+  )
+}
+
+# ====    1  Preliminary example  ==============================================
+##CALCULATE BMI- weight = 130lb, height = 165cm
+
+### LET'S WRITE A FUNCTION 
+BMI_calc <- function(myWeight, myHeight) {
+  kg_weight <- myWeight/2.2
+  m_height <- (myHeight/100)^2
+  return(kg_weight/m_height)
+}
+
+BMI_calc(114, 161)
+BMI_calc(130, 165)
+
+
+# ====    2  No formatting heatmap  ============================================
+###example of pheatmap without the function
+base_heatmap <- pheatmap(heatmap1)
+
+
+# ====    3  magicHeatmap  =====================================================
+
+my_heatmap <- magicHeatmap(heatmap1, "Test Heatmap")
+
+
+# ====    4  Activity  =========================================================
+### F to C option 
+f_to_c <- function(temp_F) {
+  temp_C <- (temp_F-32)*5/9
+  return(temp_C)
+}
+
+f_to_c(18)
+
+### graphing option 
+
+my_data <- ToothGrowth
+
+my_data_summary <- group_by(my_data, supp, dose) %>%
+  summarise(
+    mean = mean(len, na.rm = TRUE),
+    sd = sd(len, na.rm = TRUE)
+  )
+
+my_data_summary$dose <- as.factor(my_data_summary$dose)
+
+
+# graph function- magic wand 
+magicGraph <- function(dataObject, mainTitle, uniqueCaption) {
+  ggplot(data = dataObject, aes (x = dose, y = mean, fill = supp)) +
+    geom_bar(
+      stat = "identity",
+      color = "black",
+      width = 0.5,
+      position = position_dodge()
+    ) +
+    scale_fill_manual(values = c("#FFFF99", "#66CCFF")) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd),
+                  width = 0.25,
+                  position = position_dodge(0.5)) +
+    labs(
+      title = mainTitle,
+      caption = uniqueCaption,
+      subtitle = "Based on vitamin C supplement and dose",
+      y = "Length (mm)",
+      x = "Dose (mg)",
+      fill = "supplement"
+    ) +
+    theme(plot.title = element_text(hjust = 0.5, face = "bold")) +
+    theme(plot.caption = element_text(hjust = 0, size = 10)) +
+    theme(plot.subtitle = element_text(hjust = 0.5))
+  
+}
+
+magicGraph(my_data_summary, "my test graph", "my test caption")
+magicGraph(my_data_summary, "second graph :D", "my second caption :)")
